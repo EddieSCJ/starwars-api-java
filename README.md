@@ -31,7 +31,6 @@ O docker compose está executando os testes antes de subir mas caso queira
 
 
 ### Mas eu não sei como fazer as requisições
-1. Aha espertinho
-2. Após a etapa anterior copie este link http://localhost:8080/swagger-ui.html
-3. Cole este link no navegador mais próximo
-4. Leia a documentação
+1. Após a etapa anterior copie este link http://localhost:8080/swagger-ui.html
+2. Cole este link no navegador mais próximo
+3. Leia a documentação
