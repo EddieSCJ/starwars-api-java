@@ -13,7 +13,6 @@
 10. Documentação com swagger
 11. Dockeirização Multi-stage
 12. Conexão com mongo-db
-13. Ficou faltando BDD porque deu medo de não dar tempo de mockar o server com wiremock 
 
 ### Testando
 O docker compose está executando os testes antes de subir mas caso queira
