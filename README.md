@@ -15,6 +15,11 @@
 12. Conexão com mongo-db
 13. Ficou faltando BDD porque deu medo de não dar tempo de mockar o server com wiremock 
 
+### Testando
+O docker compose está executando os testes antes de subir mas caso queira
+1. Abra o Intellij
+2. Execute o path de testes
+
 ### Rodando o sistema
 1. Instale o docker
 2. Tenha certeza de que a porta 8080 está livre
@@ -23,6 +28,7 @@
 5. Abra o insomnia ou outro cliente
 6. Acesse o localhost:8080
 7. Faça suas requisições
+
 
 ### Mas eu não sei como fazer as requisições
 1. Aha espertinho
