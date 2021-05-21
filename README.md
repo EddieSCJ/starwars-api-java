@@ -1,4 +1,4 @@
-# Star Wars Api - B2W Desafio Técnico
+# Star Wars Api - Desafio Técnico
 
 ## O que o sistema cobre ? (Duração de 19 horas de código sem parar)
 1. Testes unitários de uma ponta a outra
