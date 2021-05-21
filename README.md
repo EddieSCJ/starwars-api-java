@@ -1,6 +1,6 @@
 # Star Wars Api - Desafio Técnico
 
-## O que o sistema cobre ? (Duração de 19 horas de código sem parar)
+## O que o sistema cobre ?
 1. Testes unitários de uma ponta a outra
 2. Boas abstrações de OO
 3. Helpers
