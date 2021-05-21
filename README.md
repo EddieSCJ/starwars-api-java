@@ -12,7 +12,8 @@
 9. DTOs
 10. Documentação com swagger
 11. Dockeirização Multi-stage
-12. Ficou faltando BDD porque deu medo de não dar tempo de mockar o server com wiremock 
+12. Conexão com mongo-db
+13. Ficou faltando BDD porque deu medo de não dar tempo de mockar o server com wiremock 
 
 ### Rodando o sistema
 1. Instale o docker
