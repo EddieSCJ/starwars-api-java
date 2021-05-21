@@ -35,11 +35,3 @@ O docker compose está executando os testes antes de subir mas caso queira
 2. Após a etapa anterior copie este link http://localhost:8080/swagger-ui.html
 3. Cole este link no navegador mais próximo
 4. Leia a documentação
-
-### Mas eu não sei ler
-1. Execute a etapa anterior
-2. Clique no primeiro dropdown que ver
-3. Clique na primeira cor que ver
-4. Clique no botão superior esquerdo
-5. Clique no botão azul abaixo
-6. Veja a mágica acontecer
