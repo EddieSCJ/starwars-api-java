@@ -1,8 +1,0 @@
-com/api/starwars/services/PlanetServiceTest.java
- com.api.starwars.services.PlanetServiceTest
-com/api/starwars/consumers/StarWarsApiConsumerTest.java
- com.api.starwars.consumers.StarWarsApiConsumerTest
-com/api/starwars/StarwarsApplicationTests.java
- com.api.starwars.StarwarsApplicationTests
-com/api/starwars/controllers/PlanetControllerTest.java
- com.api.starwars.controllers.PlanetControllerTest
