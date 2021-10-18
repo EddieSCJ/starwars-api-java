@@ -1,32 +1,29 @@
 package com.api.starwars.planet.services;
 
 
-
 import com.api.starwars.planet.model.domain.Planet;
-import com.api.starwars.planet.model.view.Planet;
+import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.api.starwars.planet.model.view.PlanetJson;
 import org.springframework.data.domain.Page;
 
+import javax.naming.ServiceUnavailableException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public interface IPlanetService {
 
-    Integer getMoviesAppearancesQuantity(String planetName) throws IOException, InterruptedException;
+    Page<Planet> findAll(Integer page, String order, String direction, Integer size) throws IOException, InterruptedException;
 
-    List<Planet> findAll() throws IOException, InterruptedException;
+    Planet findById(String id, Long cacheInDays) throws Exception;
 
-    Page<PlanetJson> findAll(Integer page, String order, String direction) throws IOException, InterruptedException;
+    Planet findByName(String name, Long cacheInDays) throws Exception;
 
-    Optional<Planet> findById(String id) throws IOException, InterruptedException;
+    MongoPlanet save(Planet planet);
 
-    Optional<Planet> findByName(String name) throws IOException, InterruptedException;
-
-    Planet save(Planet planet);
+    List<MongoPlanet> saveAll(List<Planet> planets);
 
     void deleteById(String id);
 
-    Optional<Planet> alreadyExists(String name, String id);
+    List<PlanetJson> planetsToPlanetJson(List<Planet> planets) throws ServiceUnavailableException;
 
 }

@@ -1,6 +1,5 @@
 package com.api.starwars.planet.model.domain;
 
-import com.api.starwars.planet.model.mongo.MongoPlanet;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,15 +7,20 @@ import lombok.Data;
 @Builder
 public class Planet {
 
-    public String id;
+    private final String id;
     private final String name;
     private final String climate;
     private final String terrain;
+    private final Integer movieAppeareces;
+    private final Long cacheInDays;
 
-    public Planet(String name, String climate, String terrain) {
+    public Planet(String id, String name, String climate, String terrain, Integer movieAppeareces, Long cacheInDays) {
+        this.id = id;
         this.name = name;
         this.climate = climate;
         this.terrain = terrain;
+        this.movieAppeareces = movieAppeareces;
+        this.cacheInDays = cacheInDays;
     }
 
 

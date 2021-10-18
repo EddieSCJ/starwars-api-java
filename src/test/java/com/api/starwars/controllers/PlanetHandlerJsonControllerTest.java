@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PlanetJsonControllerTest {
+public class PlanetHandlerJsonControllerTest {
 
     private final static String RIGHT_PLANET_NAME = "Tatooine";
     private final static String WRONG_PLANET_NAME = "Tatooine Do Meio Fio";

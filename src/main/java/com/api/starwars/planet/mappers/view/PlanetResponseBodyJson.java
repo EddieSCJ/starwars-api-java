@@ -10,7 +10,7 @@ import java.util.List;
 public class PlanetResponseBodyJson {
 
     private final Integer count;
-    private final List<PlanetJson> results;
+    private final List<MPlanetJson> results;
 
 
 }

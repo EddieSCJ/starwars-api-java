@@ -1,5 +1,6 @@
 package com.api.starwars.planet.repositories.planets;
 
+import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
-import java.util.List;
+import java.util.Optional;
 
 import static com.api.starwars.planet.model.mongo.Constants.FIELD_ID;
 import static com.api.starwars.planet.model.mongo.Constants.FIELD_NAME;
@@ -23,34 +25,25 @@ public class PlanetRepository implements IPlanetRepository {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<MongoPlanet> findAll() {
-        return mongoTemplate.findAll(MongoPlanet.class);
+    public Optional<MongoPlanet> findByName(String name) {
+        Criteria lowercase = where(FIELD_NAME).is(name.toLowerCase());
+        Criteria uppercase = where(FIELD_NAME).is(name.toUpperCase());
+        Criteria capitalized = where(FIELD_NAME).is(StringUtils.capitalize(name));
 
+        Criteria criteria = new Criteria().orOperator(lowercase, uppercase, capitalized);
+
+        return Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
     }
 
     @Override
-    public MongoPlanet findByName(String name) {
-        Criteria criteria = where(FIELD_NAME).is(name);
-        return mongoTemplate.findOne(query(criteria), MongoPlanet.class);
-    }
-
-    @Override
-    public MongoPlanet findbyId(String id) {
+    public Optional<MongoPlanet> findbyId(String id) {
         Criteria criteria = where(FIELD_ID).is(id);
-        return mongoTemplate.findOne(query(criteria), MongoPlanet.class);
+        return Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
     }
 
     @Override
-    public MongoPlanet findByNameOrId(String name, String id) {
-        Criteria findById = where(FIELD_ID).is(id);
-        Criteria criteria = where(FIELD_NAME).is(name)
-                .orOperator(findById);
-
-        return mongoTemplate.findOne(query(criteria), MongoPlanet.class);
-    }
-
-    @Override
-    public MongoPlanet save(MongoPlanet mongoPlanet) {
+    public MongoPlanet save(Planet planet) {
+        MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
         return mongoTemplate.save(mongoPlanet);
     }
 

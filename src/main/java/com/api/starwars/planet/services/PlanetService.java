@@ -1,18 +1,16 @@
 package com.api.starwars.planet.services;
 
-import com.api.starwars.consumers.StarWarsApiConsumer;
-import com.api.starwars.consumers.dtos.PlanetResponseDTO;
-import com.api.starwars.domain.Planet;
-import com.api.starwars.domain.dtos.PlanetDTO;
 import com.api.starwars.planet.mappers.StarWarsApiMapper;
+import com.api.starwars.planet.mappers.view.MPlanetJson;
+import com.api.starwars.planet.mappers.view.PlanetResponseBodyJson;
 import com.api.starwars.planet.mappers.view.PlanetResponseJson;
 import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.api.starwars.planet.model.view.PlanetJson;
+import com.api.starwars.planet.repositories.planets.IPlanetMongoRepository;
 import com.api.starwars.planet.repositories.planets.IPlanetRepository;
-import com.api.starwars.repositories.PlanetRepository;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,86 +31,120 @@ public class PlanetService implements IPlanetService {
     StarWarsApiMapper starWarsApiMapper;
 
     @Autowired
+    IPlanetMongoRepository planetMongoRepository;
+
+    @Autowired
     IPlanetRepository planetRepository;
 
-    @Value("${com.api.starwars.page_size.default}")
-    private Integer pageSizeDefault;
-
-    /**
-     * Como a API usa um tipo de LIKE pra fazer a busca de planetas
-     * vou assumir que a posição 0 é a mais próxima do que foi pedido
-     */
-
     @Override
-    public Integer getMoviesAppearancesQuantity(String planetName)  {
-        PlanetResponseJson planets = starWarsApiMapper.getPlanetBy(planetName);
-        if (planets.getPlanetResponseBodyJson().getCount() == 0) return 0;
-        return planets.getPlanetResponseBodyJson().getResults().get(0).getFilms().size();
-    }
+    public Page<Planet> findAll(Integer page, String order, String direction, Integer size)
+            throws IOException, InterruptedException {
 
-    @Override
-    public List<Planet> findAll()  {
-        List<MongoPlanet> mongoPlanets = planetRepository.findAll();
-        return mongoPlanets.stream().map(MongoPlanet::toDomain).collect(Collectors.toList());
-
-    }
-
-    @Override
-    public Page<PlanetJson> findAll(Integer page, String order, String direction)  {
         Sort sort = direction.equals("ASC") ? Sort.by(order).ascending() : Sort.by(order).descending();
-        PageRequest pageRequest = PageRequest.of(page, pageSizeDefault, sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<MongoPlanet> mongoPlanets = planetRepository.findAll(pageRequest);
+        long count = planetMongoRepository.count();
 
-        List<PlanetJson> planets = new ArrayList<>();
+        if (count == 0) {
+            PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
+            PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.getPlanetResponseBodyJson();
+            List<MPlanetJson> results = planetResponseBodyJson.getResults();
 
-        for (MongoPlanet mongoPlanet : mongoPlanets) {
-            Planet planet = mongoPlanet.toDomain();
-            planets.add(new PlanetJson(planet, getMoviesAppearancesQuantity(planet.getName())));
+            List<Planet> planets = results
+                    .parallelStream()
+                    .map(planetJson ->
+                            Planet.builder()
+                                    .id(null)
+                                    .name(planetJson.getName())
+                                    .climate(planetJson.getClimate())
+                                    .terrain(planetJson.getTerrain())
+                                    .movieAppeareces(planetJson.getFilms().size())
+                                    .build()
+                    ).collect(Collectors.toList());
+
+            List<MongoPlanet> mongoPlanets = saveAll(planets);
+            planets = mongoPlanets.parallelStream().map(MongoPlanet::toDomain).collect(Collectors.toList());
+
+            return new PageImpl<>(planets, pageRequest, mongoPlanets.size());
         }
 
-        return new PageImpl<>(planets);
+        Page<MongoPlanet> mongoPlanets = planetMongoRepository.findAll(pageRequest);
+        List<Planet> planets = mongoPlanets.getContent().parallelStream().map(MongoPlanet::toDomain)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(planets, pageRequest, mongoPlanets.getTotalElements());
 
     }
 
     @Override
-    public Optional<Planet> findById(String id)  {
-        MongoPlanet mongoPlanet = planetRepository.findbyId(id);
-        return optionalPlanet(mongoPlanet);
+    public Planet findById(String id, Long cacheInDays) throws Exception {
+        Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
+
+        if (mongoPlanet.isEmpty()) {
+            throw new Exception(); //TODO trocar para notfound
+        }
+
+        Planet planet = mongoPlanet.get().toDomain();
+        if (planet.getCacheInDays() > cacheInDays) {
+          return searchInStarWarsMapper(planet.getName(), planet.getId());
+        }
+
+        return planet;
     }
 
     @Override
-    public Optional<Planet> findByName(String name)  {
-        MongoPlanet mongoPlanet = planetRepository.findByName(name);
-        return optionalPlanet(mongoPlanet);
+    public Planet findByName(String name, Long cacheInDays) throws Exception {
+        Optional<MongoPlanet> mongoPlanet = planetRepository.findByName(name);
+
+        if (mongoPlanet.isEmpty() || mongoPlanet.get().toDomain().getCacheInDays() > cacheInDays) {
+            return searchInStarWarsMapper(name, null);
+        }
+
+        return mongoPlanet.get().toDomain();
     }
 
     @Override
-    public Planet save(Planet planet) {
-        MongoPlanet mongoPlanet = new MongoPlanet(planet);
-        return planetRepository.save(mongoPlanet).toDomain();
+    public MongoPlanet save(Planet planet) {
+        MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
+        return planetMongoRepository.save(mongoPlanet);
     }
+
+    @Override
+    public List<MongoPlanet> saveAll(List<Planet> planets) {
+        List<MongoPlanet> mongoPlanets = planets.parallelStream().map(MongoPlanet::fromDomain).collect(Collectors.toList());
+        return planetMongoRepository.saveAll(mongoPlanets);
+    }
+
 
     @Override
     public void deleteById(String id) {
         planetRepository.deleteById(id);
     }
 
-    // TODO transfor it in an optional
+    private Planet searchInStarWarsMapper(String name, String id) throws Exception {
+
+        PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanetBy(name);
+        PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.getPlanetResponseBodyJson();
+        List<MPlanetJson> results = planetResponseBodyJson.getResults();
+        if(results.isEmpty()) throw new Exception(); //TODO trocar para notfound
+
+        MPlanetJson mPlanetJson = results.get(0);
+        Planet updatedPlanet = Planet.builder()
+                .id(id)
+                .name(mPlanetJson.getName())
+                .climate(mPlanetJson.getClimate())
+                .terrain(mPlanetJson.getTerrain())
+                .movieAppeareces(mPlanetJson.getFilms().size())
+                .build();
+
+        MongoPlanet updatedMongoPlanet = planetRepository.save(updatedPlanet);
+        return updatedMongoPlanet.toDomain();
+    }
+
     @Override
-    public Map<String, Object> alreadyExists(String name, String id) {
-        Planet planet = planetRepository.findByNameOrId(name, id);
-        Map<String, Object> map = new HashMap<>();
+    public List<PlanetJson> planetsToPlanetJson(List<Planet> planets) {
 
-        map.put("alreadyExists", planet != null);
-        map.put("planet", planet);
-
-        return map;
+        return planets.parallelStream().map(PlanetJson::fromDomain).collect(Collectors.toList());
     }
 
-
-    public Optional<Planet> optionalPlanet(MongoPlanet mongoPlanet) {
-        if(mongoPlanet == null) return Optional.empty();
-        else return Optional.of(mongoPlanet.toDomain());
-    }
 }

@@ -1,25 +1,19 @@
 package com.api.starwars.planet.repositories.planets;
 
 
+import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.mongo.MongoPlanet;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface IPlanetRepository {
+public interface IPlanetRepository  {
 
-    List<MongoPlanet> findAll();
+    Optional<MongoPlanet> findByName(String name);
 
-    Page<MongoPlanet> findAll(PageRequest page);
+    Optional<MongoPlanet> findbyId(String id);
 
-    MongoPlanet findByName(String name);
-
-    MongoPlanet findbyId(String id);
-
-    MongoPlanet findByNameOrId(String name, String id);
-
-    MongoPlanet save(MongoPlanet mongoPlanet);
+    MongoPlanet save(Planet planet);
 
     void deleteById(String id);
 }

@@ -1,11 +1,5 @@
 package com.api.starwars.services;
 
-import com.api.starwars.consumers.StarWarsApiConsumer;
-import com.api.starwars.consumers.dtos.PlanetResponseBodyDTO;
-import com.api.starwars.consumers.dtos.PlanetResponseDTO;
-import com.api.starwars.domain.Planet;
-import com.api.starwars.domain.dtos.PlanetDTO;
-import com.api.starwars.repositories.PlanetRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class PlanetJsonServiceTest {
+public class PlanetHandlerJsonServiceTest {
 
     private final static com.api.starwars.consumers.dtos.PlanetDTO rightPlanetDTO = com.api.starwars.consumers.dtos.PlanetDTO.builder().films(Arrays.asList("film1", "film2", "film3", "film4", "film5")).build();
     private final static PlanetResponseBodyDTO rightPlanetReponseBodyDTO = PlanetResponseBodyDTO.builder().results(Collections.singletonList(rightPlanetDTO)).count(1).build();

@@ -1,6 +1,8 @@
 package com.api.starwars.planet.model.view;
 
 import com.api.starwars.planet.model.domain.Planet;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -10,6 +12,8 @@ import static com.api.starwars.helpers.ErrorMessageHelper.notEmpty;
 import static com.api.starwars.helpers.ErrorMessageHelper.notNull;
 
 @Data
+@AllArgsConstructor
+@Builder
 public class PlanetJson {
 
     private final String id;
@@ -25,14 +29,31 @@ public class PlanetJson {
 
     @NotEmpty(message = "O terreno " + notEmpty)
     @NotNull(message = "O terreno " + notNull)
-    private final Integer quantidadeDeAparicoesEmFilmes;
+    private final Integer _quantidadeDeAparicoesEmFilmes;
 
-    public PlanetJson(Planet planet, Integer appearances) {
-        this.id = planet.getId();
-        this.nome = planet.getName();
-        this.clima = planet.getClimate();
-        this.terreno = planet.getTerrain();
-        this.quantidadeDeAparicoesEmFilmes = appearances;
+    @NotNull(message = "O cache " + notNull)
+    private final Long _cacheEmDias;
+
+    public Planet toDomain() {
+        return Planet.builder()
+                .id(this.id)
+                .name(this.nome)
+                .climate(this.clima)
+                .terrain(this.terreno)
+                .movieAppeareces(this._quantidadeDeAparicoesEmFilmes)
+                .cacheInDays(_cacheEmDias)
+                .build();
+    }
+
+    public static PlanetJson fromDomain(Planet planet) {
+        return PlanetJson.builder()
+                .id(planet.getId())
+                .nome(planet.getName())
+                .clima(planet.getClimate())
+                .terreno(planet.getTerrain())
+                ._quantidadeDeAparicoesEmFilmes(planet.getMovieAppeareces())
+                ._cacheEmDias(planet.getCacheInDays())
+                .build();
     }
 
 }
