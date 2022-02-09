@@ -1,4 +1,4 @@
-package com.api.starwars.documentation;
+package com.api.commons.documentation.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,10 @@
 package com.api.starwars.planet.handlers;
 
+import com.api.commons.response.Response;
 import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.api.starwars.planet.model.view.PlanetJson;
 import com.api.starwars.planet.services.IPlanetService;
-import com.api.starwars.response.Response;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -65,10 +65,10 @@ public class PlanetHandler {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(NAME)
+    @GetMapping()
     public ResponseEntity<Response<PlanetJson>> getByName(
-            @PathVariable String name,
-            @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "0") Long cacheInDays
     ) throws Exception {
         Planet planet = planetService.findByName(name, cacheInDays);
 

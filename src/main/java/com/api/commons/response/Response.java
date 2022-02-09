@@ -1,4 +1,4 @@
-package com.api.starwars.response;
+package com.api.commons.response;
 
 import com.api.commons.response.HttpResponses;
 import com.fasterxml.jackson.annotation.JsonProperty;
