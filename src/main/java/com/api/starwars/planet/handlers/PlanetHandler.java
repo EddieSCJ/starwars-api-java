@@ -65,9 +65,9 @@ public class PlanetHandler {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping()
+    @GetMapping(NAME)
     public ResponseEntity<Response<PlanetJson>> getByName(
-            @RequestParam(defaultValue = "") String name,
+            @PathVariable String name,
             @RequestParam(defaultValue = "0") Long cacheInDays
     ) throws Exception {
         Planet planet = planetService.findByName(name, cacheInDays);

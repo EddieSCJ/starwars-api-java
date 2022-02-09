@@ -46,27 +46,9 @@ public class PlanetService implements IPlanetService {
         long count = planetMongoRepository.count();
 
         if (count == 0) {
-            PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
-            PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
-            List<MPlanetJson> results = planetResponseBodyJson.results();
+            List<Planet> planets = updateWithStarWarsApi();
 
-            List<Planet> planets = results
-                    .parallelStream()
-                    .map(planetJson ->
-                            new Planet(
-                                    null,
-                                    planetJson.name(),
-                                    planetJson.climate(),
-                                    planetJson.terrain(),
-                                    planetJson.films().size(),
-                                    0L
-                            )
-                    ).collect(Collectors.toList());
-
-            List<MongoPlanet> mongoPlanets = saveAll(planets);
-            planets = mongoPlanets.parallelStream().map(MongoPlanet::toDomain).collect(Collectors.toList());
-
-            return new PageImpl<>(planets, pageRequest, mongoPlanets.size());
+            return new PageImpl<>(planets, pageRequest, planets.size());
         }
 
         Page<MongoPlanet> mongoPlanets = planetMongoRepository.findAll(pageRequest);
