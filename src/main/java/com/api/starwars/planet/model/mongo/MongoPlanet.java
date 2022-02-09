@@ -26,34 +26,37 @@ public class MongoPlanet {
     private final String name;
     private final String climate;
     private final String terrain;
-    private final Integer movieAppearences;
+    private final Integer movieAppearances;
 
     @Field("created")
     @CreatedDate
     private LocalDateTime creationDate;
 
+
     public Planet toDomain() {
         LocalDateTime now = LocalDateTime.now();
         long daysBetween = Duration.between(creationDate, now).toDays();
 
-        return Planet.builder()
-                .id(this.id)
-                .name(this.name)
-                .terrain(this.terrain)
-                .climate(this.climate)
-                .movieAppeareces(this.movieAppearences)
-                .cacheInDays(daysBetween)
-                .build();
+        return new Planet(
+                this.id,
+                this.name,
+                this.terrain,
+                this.climate,
+                this.movieAppearances,
+                daysBetween
+        );
     }
 
     public static MongoPlanet fromDomain(Planet planet) {
-        return MongoPlanet.builder()
-                .id(planet.getId())
-                .name(planet.getName())
-                .terrain(planet.getTerrain())
-                .climate(planet.getClimate())
-                .movieAppearences(planet.getMovieAppeareces())
-                .build();
+        return new MongoPlanet(
+                planet.id(),
+                planet.name(),
+                planet.terrain(),
+                planet.climate(),
+                planet.movieAppearances(),
+                null
+        );
     }
+
 
 }

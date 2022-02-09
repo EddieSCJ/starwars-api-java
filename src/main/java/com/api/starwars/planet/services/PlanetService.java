@@ -47,19 +47,20 @@ public class PlanetService implements IPlanetService {
 
         if (count == 0) {
             PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
-            PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.getPlanetResponseBodyJson();
-            List<MPlanetJson> results = planetResponseBodyJson.getResults();
+            PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
+            List<MPlanetJson> results = planetResponseBodyJson.results();
 
             List<Planet> planets = results
                     .parallelStream()
                     .map(planetJson ->
-                            Planet.builder()
-                                    .id(null)
-                                    .name(planetJson.getName())
-                                    .climate(planetJson.getClimate())
-                                    .terrain(planetJson.getTerrain())
-                                    .movieAppeareces(planetJson.getFilms().size())
-                                    .build()
+                            new Planet(
+                                    null,
+                                    planetJson.name(),
+                                    planetJson.climate(),
+                                    planetJson.terrain(),
+                                    planetJson.films().size(),
+                                    0L
+                            )
                     ).collect(Collectors.toList());
 
             List<MongoPlanet> mongoPlanets = saveAll(planets);
@@ -85,8 +86,8 @@ public class PlanetService implements IPlanetService {
         }
 
         Planet planet = mongoPlanet.get().toDomain();
-        if (planet.getCacheInDays() > cacheInDays) {
-          return searchInStarWarsMapper(planet.getName(), planet.getId());
+        if (planet.cacheInDays() > cacheInDays) {
+          return searchInStarWarsMapper(planet.name(), planet.id());
         }
 
         return planet;
@@ -96,7 +97,7 @@ public class PlanetService implements IPlanetService {
     public Planet findByName(String name, Long cacheInDays) throws Exception {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findByName(name);
 
-        if (mongoPlanet.isEmpty() || mongoPlanet.get().toDomain().getCacheInDays() > cacheInDays) {
+        if (mongoPlanet.isEmpty() || mongoPlanet.get().toDomain().cacheInDays() > cacheInDays) {
             return searchInStarWarsMapper(name, null);
         }
 
@@ -124,18 +125,19 @@ public class PlanetService implements IPlanetService {
     private Planet searchInStarWarsMapper(String name, String id) throws Exception {
 
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanetBy(name);
-        PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.getPlanetResponseBodyJson();
-        List<MPlanetJson> results = planetResponseBodyJson.getResults();
+        PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
+        List<MPlanetJson> results = planetResponseBodyJson.results();
         if(results.isEmpty()) throw new Exception(); //TODO trocar para notfound
 
         MPlanetJson mPlanetJson = results.get(0);
-        Planet updatedPlanet = Planet.builder()
-                .id(id)
-                .name(mPlanetJson.getName())
-                .climate(mPlanetJson.getClimate())
-                .terrain(mPlanetJson.getTerrain())
-                .movieAppeareces(mPlanetJson.getFilms().size())
-                .build();
+        Planet updatedPlanet = new Planet(
+                id,
+                mPlanetJson.name(),
+                mPlanetJson.climate(),
+                mPlanetJson.terrain(),
+                mPlanetJson.films().size(),
+                0L
+        );
 
         MongoPlanet updatedMongoPlanet = planetRepository.save(updatedPlanet);
         return updatedMongoPlanet.toDomain();

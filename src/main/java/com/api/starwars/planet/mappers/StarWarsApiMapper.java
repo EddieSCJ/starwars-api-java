@@ -36,10 +36,10 @@ public class StarWarsApiMapper implements IStarWarsApiMapper {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         PlanetResponseBodyJson planetResponseBodyJson = gson.fromJson(response.body(), PlanetResponseBodyJson.class);
 
-        return PlanetResponseJson.builder()
-                .statusCode(response.statusCode())
-                .planetResponseBodyJson(planetResponseBodyJson)
-                .build();
+        return new PlanetResponseJson(
+                response.statusCode(),
+                planetResponseBodyJson
+        );
     }
 
 }

@@ -5,12 +5,4 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
-@Builder
-public class PlanetResponseBodyJson {
-
-    private final Integer count;
-    private final List<MPlanetJson> results;
-
-
-}
+public record PlanetResponseBodyJson(Integer count, List<MPlanetJson> results) {}
