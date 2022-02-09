@@ -47,7 +47,6 @@ public class PlanetService implements IPlanetService {
 
         if (count == 0) {
             List<Planet> planets = updateWithStarWarsApi();
-
             return new PageImpl<>(planets, pageRequest, planets.size());
         }
 
