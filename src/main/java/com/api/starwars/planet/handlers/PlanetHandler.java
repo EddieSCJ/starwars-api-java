@@ -26,8 +26,12 @@ import static com.api.starwars.planet.util.EndpointConstants.*;
 @Api(description = "Planets Endpoint", tags = "Planets")
 public class PlanetHandler {
 
+    private final IPlanetService planetService;
+
     @Autowired
-    IPlanetService planetService;
+    public PlanetHandler(IPlanetService planetService) {
+        this.planetService = planetService;
+    }
 
     @GetMapping
     public ResponseEntity<Response<Page<PlanetJson>>> findAll(

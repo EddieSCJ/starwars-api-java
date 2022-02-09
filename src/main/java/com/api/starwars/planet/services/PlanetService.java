@@ -9,7 +9,6 @@ import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.api.starwars.planet.model.view.PlanetJson;
 import com.api.starwars.planet.repositories.planets.IPlanetMongoRepository;
 import com.api.starwars.planet.repositories.planets.IPlanetRepository;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,8 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,14 +24,17 @@ import java.util.stream.Collectors;
 @Service
 public class PlanetService implements IPlanetService {
 
-    @Autowired
-    StarWarsApiMapper starWarsApiMapper;
+    private final StarWarsApiMapper starWarsApiMapper;
+    private final IPlanetMongoRepository planetMongoRepository;
+    private final IPlanetRepository planetRepository;
 
     @Autowired
-    IPlanetMongoRepository planetMongoRepository;
-
-    @Autowired
-    IPlanetRepository planetRepository;
+    public PlanetService(StarWarsApiMapper starWarsApiMapper, IPlanetMongoRepository planetMongoRepository,
+                         IPlanetRepository planetRepository) {
+        this.starWarsApiMapper = starWarsApiMapper;
+        this.planetMongoRepository = planetMongoRepository;
+        this.planetRepository = planetRepository;
+    }
 
     @Override
     public Page<Planet> findAll(Integer page, String order, String direction, Integer size)
@@ -87,7 +87,7 @@ public class PlanetService implements IPlanetService {
 
         Planet planet = mongoPlanet.get().toDomain();
         if (planet.cacheInDays() > cacheInDays) {
-          return searchInStarWarsMapper(planet.name(), planet.id());
+            return searchInStarWarsMapper(planet.name(), planet.id());
         }
 
         return planet;
@@ -122,12 +122,12 @@ public class PlanetService implements IPlanetService {
         planetRepository.deleteById(id);
     }
 
-    private Planet searchInStarWarsMapper(String name, String id) throws Exception {
+    public Planet searchInStarWarsMapper(String name, String id) throws Exception {
 
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanetBy(name);
         PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
         List<MPlanetJson> results = planetResponseBodyJson.results();
-        if(results.isEmpty()) throw new Exception(); //TODO trocar para notfound
+        if (results.isEmpty()) throw new Exception(); //TODO trocar para notfound
 
         MPlanetJson mPlanetJson = results.get(0);
         Planet updatedPlanet = new Planet(
@@ -142,6 +142,31 @@ public class PlanetService implements IPlanetService {
         MongoPlanet updatedMongoPlanet = planetRepository.save(updatedPlanet);
         return updatedMongoPlanet.toDomain();
     }
+
+    @Override
+    public List<Planet> updateWithStarWarsApi() throws IOException, InterruptedException {
+        PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
+        PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
+        List<MPlanetJson> results = planetResponseBodyJson.results();
+
+        List<Planet> planets = results
+                .parallelStream()
+                .map(planetJson ->
+                        new Planet(
+                                null,
+                                planetJson.name(),
+                                planetJson.climate(),
+                                planetJson.terrain(),
+                                planetJson.films().size(),
+                                0L
+                        )
+                ).collect(Collectors.toList());
+
+        List<MongoPlanet> mongoPlanets = saveAll(planets);
+        return mongoPlanets.parallelStream().map(MongoPlanet::toDomain).collect(Collectors.toList());
+
+    }
+
 
     @Override
     public List<PlanetJson> planetsToPlanetJson(List<Planet> planets) {

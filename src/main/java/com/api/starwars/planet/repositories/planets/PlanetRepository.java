@@ -20,9 +20,14 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Repository
 public class PlanetRepository implements IPlanetRepository {
 
-    @Autowired
     @Qualifier("mongoTemplate")
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
+
+    @Autowired
+    public PlanetRepository(MongoTemplate mongoTemplate){
+        this.mongoTemplate = mongoTemplate;
+    }
+
 
     @Override
     public Optional<MongoPlanet> findByName(String name) {

@@ -26,4 +26,6 @@ public interface IPlanetService {
 
     List<PlanetJson> planetsToPlanetJson(List<Planet> planets) throws ServiceUnavailableException;
 
+    List<Planet> updateWithStarWarsApi() throws IOException, InterruptedException;
+
 }
