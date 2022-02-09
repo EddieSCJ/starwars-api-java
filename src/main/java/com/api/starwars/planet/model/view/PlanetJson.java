@@ -5,8 +5,8 @@ import com.api.starwars.planet.model.domain.Planet;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import static com.api.starwars.helpers.ErrorMessageHelper.notEmpty;
-import static com.api.starwars.helpers.ErrorMessageHelper.notNull;
+import static com.api.commons.helpers.ErrorMessageHelper.notEmpty;
+import static com.api.commons.helpers.ErrorMessageHelper.notNull;
 
 public record PlanetJson(String id,
                          @NotEmpty(message = "O nome " + notEmpty) @NotNull(message = "O nome " + notNull) String nome,
