@@ -38,11 +38,11 @@ public class PlanetHandler {
             @RequestParam(name = "direction", defaultValue = "ASC") String direction,
             @RequestParam(name = "size", defaultValue = "15") Integer size
     ) throws IOException, InterruptedException {
-        log.info("Iniciando busca por todos os planetas. Pagina: {}, ordenacao: {}, direcao: {}, tamanho: {}", page, order, direction, size);
+        log.info("Iniciando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
         Page<Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
 
-        log.info("Finalizando busca por todos os planetas. Pagina: {}, ordenacao: {}, direcao: {}, tamanho: {}", page, order, direction, size);
+        log.info("Finalizando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
         return ResponseEntity.ok(PageResponse.fromPage(pageResponse));
     }
 
@@ -51,11 +51,11 @@ public class PlanetHandler {
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
     ) throws Exception {
-        log.info("Iniciando busca por planeta pelo id: {}. cacheInDays: {}", id, cacheInDays);
+        log.info("Iniciando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
         Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
-        log.info("Finalizando busca por planeta pelo id: {}. cacheInDays: {}", id, cacheInDays);
+        log.info("Finalizando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
         return ResponseEntity.ok(planetJson);
     }
 
@@ -64,26 +64,30 @@ public class PlanetHandler {
             @PathVariable String name,
             @RequestParam(defaultValue = "0") Long cacheInDays
     ) throws Exception {
-        log.info("Iniciando busca por planeta pelo nome: {}. cacheInDays: {}", name, cacheInDays);
+        log.info("Iniciando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
         Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
-        log.info("Finalizando busca por planeta pelo nome: {}. cacheInDays: {}", name, cacheInDays);
+        log.info("Finalizando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
         return ResponseEntity.ok(planetJson);
     }
 
     @PostMapping
     public ResponseEntity<PlanetJson> post(@Valid PlanetJson planet) {
-        log.info("Iniciando cadastro de planeta. name: {}", planet.getName());
+        log.info("Iniciando cadastro de planeta por nome. name: {}.", planet.getName());
         MongoPlanet mongoPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(mongoPlanet.toDomain());
 
+        log.info("Finalizando cadastro de planeta por nome. id {}. name: {}.", planetJson.getId(), planet.getName());
         return ResponseEntity.ok(planetJson);
     }
 
     @DeleteMapping(ID)
     public ResponseEntity<?> delete(@PathVariable String id) {
+        log.info("Iniciando exclusão de planeta pelo id: {}.", id);
         planetService.deleteById(id);
+
+        log.info("Finalizando exclusão de planeta pelo id: {}.", id);
         return ResponseEntity.noContent().build();
     }
 }
