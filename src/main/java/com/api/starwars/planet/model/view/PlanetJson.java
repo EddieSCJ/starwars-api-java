@@ -13,29 +13,29 @@ import static com.api.commons.helpers.ErrorMessageHelper.notNull;
 public class PlanetJson {
     private final String id;
 
-    @NotEmpty(message = "O nome " + notEmpty)
-    @NotNull(message = "O nome " + notNull)
-    private final String nome;
+    @NotEmpty(message = "The name " + notEmpty)
+    @NotNull(message = "The name " + notNull)
+    private final String name;
 
-    @NotEmpty(message = "O clima " + notEmpty)
-    @NotNull(message = "O clima " + notNull)
-    private final String clima;
+    @NotEmpty(message = "The climate " + notEmpty)
+    @NotNull(message = "The climate " + notNull)
+    private final String climate;
 
-    @NotEmpty(message = "O terreno " + notEmpty)
-    @NotNull(message = "O terreno " + notNull)
-    private final String terreno;
+    @NotEmpty(message = "The terrain " + notEmpty)
+    @NotNull(message = "The Terrain " + notNull)
+    private final String terrain;
 
-    @NotNull(message = "O cache " + notNull)
-    private final Long _cacheEmDias;
-    private final Integer _quantidadeDeAparicoesEmFilmes;
+    @NotNull(message = "The cache in days " + notNull)
+    private final Long _cacheInDays;
+    private final Integer _movieAppearances;
 
-    public PlanetJson(String id, String nome, String clima, String terreno, Long _cacheEmDias, Integer _quantidadeDeAparicoesEmFilmes) {
+    public PlanetJson(String id, String name, String climate, String terrain, Long _cacheInDays, Integer _movieAppearances) {
         this.id = id;
-        this.nome = nome;
-        this.clima = clima;
-        this.terreno = terreno;
-        this._cacheEmDias = _cacheEmDias;
-        this._quantidadeDeAparicoesEmFilmes = _quantidadeDeAparicoesEmFilmes;
+        this.name = name;
+        this.climate = climate;
+        this.terrain = terrain;
+        this._cacheInDays = _cacheInDays;
+        this._movieAppearances = _movieAppearances;
     }
 
     public static PlanetJson fromDomain(Planet planet) {
@@ -52,11 +52,11 @@ public class PlanetJson {
     public Planet toDomain() {
         return new Planet(
                 this.id,
-                this.nome,
-                this.clima,
-                this.terreno,
-                this._quantidadeDeAparicoesEmFilmes,
-                this._cacheEmDias
+                this.name,
+                this.climate,
+                this.terrain,
+                this._movieAppearances,
+                this._cacheInDays
         );
     }
 

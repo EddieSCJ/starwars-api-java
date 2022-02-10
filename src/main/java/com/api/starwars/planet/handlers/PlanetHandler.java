@@ -6,6 +6,7 @@ import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.api.starwars.planet.model.view.PlanetJson;
 import com.api.starwars.planet.services.IPlanetService;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 import static com.api.starwars.planet.util.EndpointConstants.*;
 
+@Slf4j
 @RestController
 @RequestMapping(API + PLANET)
 //TODO use Tags instead of description
@@ -36,9 +38,11 @@ public class PlanetHandler {
             @RequestParam(name = "direction", defaultValue = "ASC") String direction,
             @RequestParam(name = "size", defaultValue = "15") Integer size
     ) throws IOException, InterruptedException {
+        log.info("Iniciando busca por todos os planetas. Pagina: {}, ordenacao: {}, direcao: {}, tamanho: {}", page, order, direction, size);
         Page<Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
 
+        log.info("Finalizando busca por todos os planetas. Pagina: {}, ordenacao: {}, direcao: {}, tamanho: {}", page, order, direction, size);
         return ResponseEntity.ok(PageResponse.fromPage(pageResponse));
     }
 
@@ -47,9 +51,11 @@ public class PlanetHandler {
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
     ) throws Exception {
+        log.info("Iniciando busca por planeta pelo id: {}. cacheInDays: {}", id, cacheInDays);
         Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
+        log.info("Finalizando busca por planeta pelo id: {}. cacheInDays: {}", id, cacheInDays);
         return ResponseEntity.ok(planetJson);
     }
 
@@ -58,14 +64,17 @@ public class PlanetHandler {
             @PathVariable String name,
             @RequestParam(defaultValue = "0") Long cacheInDays
     ) throws Exception {
+        log.info("Iniciando busca por planeta pelo nome: {}. cacheInDays: {}", name, cacheInDays);
         Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
+        log.info("Finalizando busca por planeta pelo nome: {}. cacheInDays: {}", name, cacheInDays);
         return ResponseEntity.ok(planetJson);
     }
 
     @PostMapping
     public ResponseEntity<PlanetJson> post(@Valid PlanetJson planet) {
+        log.info("Iniciando cadastro de planeta. name: {}", planet.getName());
         MongoPlanet mongoPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(mongoPlanet.toDomain());
 
