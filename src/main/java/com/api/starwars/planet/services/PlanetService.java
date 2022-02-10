@@ -107,17 +107,17 @@ public class PlanetService implements IPlanetService {
 
     public Planet findFromStarWarsApiBy(String name, String id) throws Exception {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanetBy(name);
-        List<MPlanetJson> results = planetResponseJson.planetResponseBodyJson().results();
+        List<MPlanetJson> results = planetResponseJson.planetResponseBodyJson().getResults();
 
         if (results.isEmpty()) throw new Exception(); //TODO trocar para notfound
 
         MPlanetJson mPlanetJson = results.get(0);
         Planet updatedPlanet = new Planet(
                 id,
-                mPlanetJson.name(),
-                mPlanetJson.climate(),
-                mPlanetJson.terrain(),
-                mPlanetJson.films().size(),
+                mPlanetJson.getName(),
+                mPlanetJson.getClimate(),
+                mPlanetJson.getTerrain(),
+                mPlanetJson.getFilms().size(),
                 0L
         );
 
@@ -128,7 +128,7 @@ public class PlanetService implements IPlanetService {
     public List<Planet> findAllFromStarWarsApi() throws IOException, InterruptedException {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
         PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
-        List<MPlanetJson> results = planetResponseBodyJson.results();
+        List<MPlanetJson> results = planetResponseBodyJson.getResults();
 
         List<Planet> planets = results
                 .parallelStream()

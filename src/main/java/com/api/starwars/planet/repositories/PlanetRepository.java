@@ -30,7 +30,7 @@ public class PlanetRepository implements IPlanetRepository {
 
     public Long count() {
         Criteria criteria = where(FIELD_ID).exists(true);
-        return mongoTemplate.count(query(criteria), Long.class);
+        return mongoTemplate.count(query(criteria), MongoPlanet.class);
     }
 
     @Override

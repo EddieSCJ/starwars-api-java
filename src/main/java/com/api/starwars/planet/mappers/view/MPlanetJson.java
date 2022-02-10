@@ -1,10 +1,17 @@
 package com.api.starwars.planet.mappers.view;
 
 import com.api.starwars.planet.model.domain.Planet;
+import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public record MPlanetJson(String name, String climate, String terrain, List<String> films) {
+@Data
+public class MPlanetJson {
+    private String name;
+    private String climate;
+    private String terrain;
+    private List<String> films = new ArrayList<>();
 
     public Planet toDomain() {
         return new Planet(

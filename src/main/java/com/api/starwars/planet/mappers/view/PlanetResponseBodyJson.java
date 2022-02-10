@@ -1,6 +1,11 @@
 package com.api.starwars.planet.mappers.view;
 
+import lombok.Data;
+
 import java.util.List;
 
-public record PlanetResponseBodyJson(Integer count, List<MPlanetJson> results) {
+@Data
+public class PlanetResponseBodyJson {
+    private Integer count;
+    private List<MPlanetJson> results;
 }
