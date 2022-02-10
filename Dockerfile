@@ -1,16 +1,30 @@
-FROM openjdk:11-jdk AS BUILD_IMAGE
+# First stage (build)
+FROM openjdk:16-jdk-slim AS BUILD_IMAGE
+
+# Creating package where will be our application
 ENV APP_HOME=/root/dev/myapp/
-RUN mkdir -p $APP_HOME/src/main/java
 WORKDIR $APP_HOME
+
+# Copying gradle configs to package
 COPY build.gradle gradlew gradlew.bat $APP_HOME
 COPY gradle $APP_HOME/gradle
+
 # download dependencies
+RUN chmod +x gradlew
 RUN ./gradlew build -x :bootJar -x test --continue
+
+# copying dependecies
 COPY . .
+RUN chmod +x gradlew
 RUN ./gradlew build
 
-FROM openjdk:11-jre
+# Second stage (run)
+# Using jdk (necessary to run the build jar)
+FROM openjdk:16-jdk-slim AS RUN_IMAGE
 WORKDIR /root/
+
+#Copying our jar from the first stage
 COPY --from=BUILD_IMAGE /root/dev/myapp/build/libs/*.jar .
+
 EXPOSE 8080
-CMD ["java","-jar","starwars-0.0.1-SNAPSHOT.jar"]
+CMD ["java","-jar","starwars.jar"]

@@ -6,7 +6,7 @@ services:
       - "27017:27017"
     container_name: mongo-db
     volumes:
-      - ./data/db
+      - /data/db
 
   starwars-api:
     depends_on:
