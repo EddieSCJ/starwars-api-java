@@ -12,20 +12,21 @@ import java.util.List;
 
 public interface IPlanetService {
 
-    Page<Planet> findAll(Integer page, String order, String direction, Integer size) throws IOException, InterruptedException;
+    Page<Planet> findAll(Integer page, String order, String direction, Integer size) throws Exception;
 
     Planet findById(String id, Long cacheInDays) throws Exception;
 
     Planet findByName(String name, Long cacheInDays) throws Exception;
 
-    MongoPlanet save(Planet planet);
+    Planet save(Planet planet);
 
-    List<MongoPlanet> saveAll(List<Planet> planets);
+    List<Planet> saveAll(List<Planet> planets);
 
     void deleteById(String id);
 
+    List<Planet> findAllFromStarWarsApi() throws Exception;
+
     List<PlanetJson> planetsToPlanetJson(List<Planet> planets) throws ServiceUnavailableException;
 
-    List<Planet> findAllFromStarWarsApi() throws IOException, InterruptedException;
 
 }
