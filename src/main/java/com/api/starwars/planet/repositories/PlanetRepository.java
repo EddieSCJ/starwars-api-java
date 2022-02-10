@@ -1,15 +1,19 @@
-package com.api.starwars.planet.repositories.planets;
+package com.api.starwars.planet.repositories;
 
 import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.api.starwars.planet.model.mongo.Constants.FIELD_ID;
@@ -24,10 +28,20 @@ public class PlanetRepository implements IPlanetRepository {
     private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public PlanetRepository(MongoTemplate mongoTemplate){
+    public PlanetRepository(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
+    public Long count() {
+        Criteria criteria = where(FIELD_ID).exists(true);
+        return mongoTemplate.count(query(criteria), Long.class);
+    }
+
+    @Override
+    public Optional<MongoPlanet> findbyId(String id) {
+        Criteria criteria = where(FIELD_ID).is(id);
+        return Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
+    }
 
     @Override
     public Optional<MongoPlanet> findByName(String name) {
@@ -37,12 +51,6 @@ public class PlanetRepository implements IPlanetRepository {
 
         Criteria criteria = new Criteria().orOperator(lowercase, uppercase, capitalized);
 
-        return Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
-    }
-
-    @Override
-    public Optional<MongoPlanet> findbyId(String id) {
-        Criteria criteria = where(FIELD_ID).is(id);
         return Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
     }
 

@@ -7,8 +7,8 @@ import com.api.starwars.planet.mappers.view.PlanetResponseJson;
 import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.mongo.MongoPlanet;
 import com.api.starwars.planet.model.view.PlanetJson;
-import com.api.starwars.planet.repositories.planets.IPlanetMongoRepository;
-import com.api.starwars.planet.repositories.planets.IPlanetRepository;
+import com.api.starwars.planet.repositories.IPlanetMongoRepository;
+import com.api.starwars.planet.repositories.IPlanetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,7 +29,8 @@ public class PlanetService implements IPlanetService {
     private final IPlanetRepository planetRepository;
 
     @Autowired
-    public PlanetService(StarWarsApiMapper starWarsApiMapper, IPlanetMongoRepository planetMongoRepository,
+    public PlanetService(StarWarsApiMapper starWarsApiMapper,
+                         IPlanetMongoRepository planetMongoRepository,
                          IPlanetRepository planetRepository) {
         this.starWarsApiMapper = starWarsApiMapper;
         this.planetMongoRepository = planetMongoRepository;
@@ -40,22 +41,20 @@ public class PlanetService implements IPlanetService {
     public Page<Planet> findAll(Integer page, String order, String direction, Integer size)
             throws IOException, InterruptedException {
 
-        Sort sort = direction.equals("ASC") ? Sort.by(order).ascending() : Sort.by(order).descending();
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Sort sort = direction.equals("ASC")
+                ? Sort.by(order).ascending()
+                : Sort.by(order).descending();
 
-        long count = planetMongoRepository.count();
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Long count = planetRepository.count();
 
         if (count == 0) {
-            List<Planet> planets = updateWithStarWarsApi();
+            List<Planet> planets = findAllFromStarWarsApi();
             return new PageImpl<>(planets, pageRequest, planets.size());
         }
 
         Page<MongoPlanet> mongoPlanets = planetMongoRepository.findAll(pageRequest);
-        List<Planet> planets = mongoPlanets.getContent().parallelStream().map(MongoPlanet::toDomain)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(planets, pageRequest, mongoPlanets.getTotalElements());
-
+        return mongoPlanets.map(MongoPlanet::toDomain);
     }
 
     @Override
@@ -63,23 +62,27 @@ public class PlanetService implements IPlanetService {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
 
         if (mongoPlanet.isEmpty()) {
-            throw new Exception(); //TODO trocar para notfound
+            throw new Exception(); //TODO trocar para notfound exception
         }
 
-        Planet planet = mongoPlanet.get().toDomain();
-        if (planet.cacheInDays() > cacheInDays) {
-            return searchInStarWarsMapper(planet.name(), planet.id());
+        Planet domainPlanet = mongoPlanet.get().toDomain();
+        if (domainPlanet.cacheInDays() > cacheInDays) {
+            Planet updatedPlanet = findFromStarWarsApiBy(domainPlanet.name(), domainPlanet.id());
+            return planetRepository.save(updatedPlanet).toDomain();
         }
 
-        return planet;
+        return domainPlanet;
     }
 
     @Override
     public Planet findByName(String name, Long cacheInDays) throws Exception {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findByName(name);
 
-        if (mongoPlanet.isEmpty() || mongoPlanet.get().toDomain().cacheInDays() > cacheInDays) {
-            return searchInStarWarsMapper(name, null);
+        if (mongoPlanet.get().toDomain().cacheInDays() > cacheInDays) {
+            String id = mongoPlanet.get().toDomain().id();
+            Planet planet = findFromStarWarsApiBy(name, id);
+
+            return planetRepository.save(planet).toDomain();
         }
 
         return mongoPlanet.get().toDomain();
@@ -88,7 +91,7 @@ public class PlanetService implements IPlanetService {
     @Override
     public MongoPlanet save(Planet planet) {
         MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
-        return planetMongoRepository.save(mongoPlanet);
+        return planetRepository.save(mongoPlanet.toDomain());
     }
 
     @Override
@@ -97,17 +100,15 @@ public class PlanetService implements IPlanetService {
         return planetMongoRepository.saveAll(mongoPlanets);
     }
 
-
     @Override
     public void deleteById(String id) {
         planetRepository.deleteById(id);
     }
 
-    public Planet searchInStarWarsMapper(String name, String id) throws Exception {
-
+    public Planet findFromStarWarsApiBy(String name, String id) throws Exception {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanetBy(name);
-        PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
-        List<MPlanetJson> results = planetResponseBodyJson.results();
+        List<MPlanetJson> results = planetResponseJson.planetResponseBodyJson().results();
+
         if (results.isEmpty()) throw new Exception(); //TODO trocar para notfound
 
         MPlanetJson mPlanetJson = results.get(0);
@@ -120,38 +121,27 @@ public class PlanetService implements IPlanetService {
                 0L
         );
 
-        MongoPlanet updatedMongoPlanet = planetRepository.save(updatedPlanet);
-        return updatedMongoPlanet.toDomain();
+        return planetRepository.save(updatedPlanet).toDomain();
     }
 
     @Override
-    public List<Planet> updateWithStarWarsApi() throws IOException, InterruptedException {
+    public List<Planet> findAllFromStarWarsApi() throws IOException, InterruptedException {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
         PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
         List<MPlanetJson> results = planetResponseBodyJson.results();
 
         List<Planet> planets = results
                 .parallelStream()
-                .map(planetJson ->
-                        new Planet(
-                                null,
-                                planetJson.name(),
-                                planetJson.climate(),
-                                planetJson.terrain(),
-                                planetJson.films().size(),
-                                0L
-                        )
-                ).collect(Collectors.toList());
+                .map(MPlanetJson::toDomain)
+                .collect(Collectors.toList());
 
         List<MongoPlanet> mongoPlanets = saveAll(planets);
         return mongoPlanets.parallelStream().map(MongoPlanet::toDomain).collect(Collectors.toList());
-
     }
 
 
     @Override
     public List<PlanetJson> planetsToPlanetJson(List<Planet> planets) {
-
         return planets.parallelStream().map(PlanetJson::fromDomain).collect(Collectors.toList());
     }
 
