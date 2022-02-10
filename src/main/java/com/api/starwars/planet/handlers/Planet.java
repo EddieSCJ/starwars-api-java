@@ -1,7 +1,6 @@
 package com.api.starwars.planet.handlers;
 
 import com.api.commons.response.PageResponse;
-import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.view.PlanetJson;
 import com.api.starwars.planet.services.IPlanetService;
 import io.swagger.annotations.Api;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 import static com.api.starwars.planet.util.EndpointConstants.*;
 
@@ -21,12 +19,12 @@ import static com.api.starwars.planet.util.EndpointConstants.*;
 @RequestMapping(API + PLANET)
 //TODO use Tags instead of description
 @Api(description = "Planets Endpoint", tags = "Planets")
-public class PlanetHandler {
+public class Planet {
 
     private final IPlanetService planetService;
 
     @Autowired
-    public PlanetHandler(IPlanetService planetService) {
+    public Planet(IPlanetService planetService) {
         this.planetService = planetService;
     }
 
@@ -38,7 +36,7 @@ public class PlanetHandler {
             @RequestParam(name = "size", defaultValue = "15") Integer size
     ) throws Exception {
         log.info("Iniciando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
-        Page<Planet> planets = planetService.findAll(page, order, direction, size);
+        Page<com.api.starwars.planet.model.domain.Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
 
         log.info("Finalizando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
@@ -51,7 +49,7 @@ public class PlanetHandler {
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
     ) throws Exception {
         log.info("Iniciando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
-        Planet planet = planetService.findById(id, cacheInDays);
+        com.api.starwars.planet.model.domain.Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
         log.info("Finalizando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
@@ -64,7 +62,7 @@ public class PlanetHandler {
             @RequestParam(defaultValue = "0") Long cacheInDays
     ) throws Exception {
         log.info("Iniciando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
-        Planet planet = planetService.findByName(name, cacheInDays);
+        com.api.starwars.planet.model.domain.Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
         log.info("Finalizando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
@@ -74,7 +72,7 @@ public class PlanetHandler {
     @PostMapping
     public ResponseEntity<PlanetJson> post(@Valid PlanetJson planet) {
         log.info("Iniciando cadastro de planeta por nome. name: {}.", planet.getName());
-        Planet domainPlanet = planetService.save(planet.toDomain());
+        com.api.starwars.planet.model.domain.Planet domainPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(domainPlanet);
 
         log.info("Finalizando cadastro de planeta por nome. id {}. name: {}.", planetJson.getId(), planet.getName());
