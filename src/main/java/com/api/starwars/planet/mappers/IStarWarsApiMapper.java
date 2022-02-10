@@ -13,7 +13,7 @@ public interface IStarWarsApiMapper {
     HttpClient httpClient = HttpClient.newBuilder()
             .version(Version.HTTP_2)
             .followRedirects(Redirect.NORMAL)
-            .connectTimeout(Duration.ofSeconds(20))
+            .connectTimeout(Duration.ofSeconds(15))
             .build();
 
     @Deprecated

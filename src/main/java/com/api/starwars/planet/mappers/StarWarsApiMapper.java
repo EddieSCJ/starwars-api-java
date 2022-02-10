@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 
 @Service
 public class StarWarsApiMapper implements IStarWarsApiMapper {
@@ -18,28 +17,24 @@ public class StarWarsApiMapper implements IStarWarsApiMapper {
     @Override
     public PlanetResponseJson getPlanetBy(String name) throws IOException, InterruptedException {
         URI apiUri = URI.create(apiAddress + "planets/?search=" + name);
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(apiUri).build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return buildPlanetResponseJson(response);
+        return buildPlanetResponseJson(makeRequest(apiUri));
     }
 
     public PlanetResponseJson getPlanets() throws IOException, InterruptedException {
         URI apiUri = URI.create(apiAddress + "planets");
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(apiUri).build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return buildPlanetResponseJson(makeRequest(apiUri));
+    }
 
-        return buildPlanetResponseJson(response);
+    private HttpResponse<String> makeRequest(URI apiUri) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(apiUri).build();
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     private PlanetResponseJson buildPlanetResponseJson(HttpResponse<String> response) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         PlanetResponseBodyJson planetResponseBodyJson = gson.fromJson(response.body(), PlanetResponseBodyJson.class);
 
-        return new PlanetResponseJson(
-                response.statusCode(),
-                planetResponseBodyJson
-        );
+        return new PlanetResponseJson(response.statusCode(), planetResponseBodyJson);
     }
 
 }
