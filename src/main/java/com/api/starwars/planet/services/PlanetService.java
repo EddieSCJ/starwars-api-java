@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ public class PlanetService implements IPlanetService {
         Long count = planetRepository.count();
 
         if (count == 0) {
-            log.warn("Buscando planetas na api do star wars pois o banco está vazio");
+            log.warn("Busca de planetas no banco não retornou nenhum resultado.");
             List<Planet> planets = findAllFromStarWarsApi();
             List<Planet> savedPlanets = saveAll(planets);
 
