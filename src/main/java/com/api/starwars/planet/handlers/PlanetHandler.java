@@ -19,12 +19,12 @@ import static com.api.starwars.planet.util.EndpointConstants.*;
 @RequestMapping(API + PLANET)
 //TODO use Tags instead of description
 @Api(description = "Planets Endpoint", tags = "Planets")
-public class Planet {
+public class PlanetHandler {
 
     private final IPlanetService planetService;
 
     @Autowired
-    public Planet(IPlanetService planetService) {
+    public PlanetHandler(IPlanetService planetService) {
         this.planetService = planetService;
     }
 
@@ -39,7 +39,7 @@ public class Planet {
         Page<com.api.starwars.planet.model.domain.Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
 
-        log.info("Finalizando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
+        log.info("Busca por todos os planetas concluida com sucesso. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
         return ResponseEntity.ok(PageResponse.fromPage(pageResponse));
     }
 
@@ -52,7 +52,7 @@ public class Planet {
         com.api.starwars.planet.model.domain.Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
-        log.info("Finalizando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
+        log.info("Busca de planeta por id concluida por sucesso. id: {}. cacheInDays: {}.", id, cacheInDays);
         return ResponseEntity.ok(planetJson);
     }
 
@@ -65,7 +65,7 @@ public class Planet {
         com.api.starwars.planet.model.domain.Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
-        log.info("Finalizando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
+        log.info("Busca de planeta pelo nome concluida com sucesso. name: {}. cacheInDays: {}.", name, cacheInDays);
         return ResponseEntity.ok(planetJson);
     }
 
@@ -75,16 +75,16 @@ public class Planet {
         com.api.starwars.planet.model.domain.Planet domainPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(domainPlanet);
 
-        log.info("Finalizando cadastro de planeta por nome. id {}. name: {}.", planetJson.getId(), planet.getName());
+        log.info("Cadastro de planeta por nome concluida. id {}. name: {}.", planetJson.getId(), planet.getName());
         return ResponseEntity.ok(planetJson);
     }
 
     @DeleteMapping(ID)
     public ResponseEntity<?> delete(@PathVariable String id) {
-        log.info("Iniciando exclusão de planeta pelo id: {}.", id);
+        log.info("Iniciando exclusao de planeta pelo id: {}.", id);
         planetService.deleteById(id);
 
-        log.info("Finalizando exclusão de planeta pelo id: {}.", id);
+        log.info("Exclusao de planeta pelo id concluida: {}.", id);
         return ResponseEntity.noContent().build();
     }
 }

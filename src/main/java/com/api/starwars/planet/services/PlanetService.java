@@ -50,7 +50,7 @@ public class PlanetService implements IPlanetService {
         Long count = planetRepository.count();
 
         if (count == 0) {
-            log.warn("Busca de planetas no banco não retornou nenhum resultado.");
+            log.warn("Busca de planetas no banco nao retornou nenhum resultado.");
             List<Planet> planets = findAllFromStarWarsApi();
             List<Planet> savedPlanets = saveAll(planets);
 
@@ -66,7 +66,7 @@ public class PlanetService implements IPlanetService {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
 
         if (mongoPlanet.isEmpty()) {
-            log.warn("Busca de planetas por id não retornou nenhum resultado. id: {}.", id);
+            log.warn("Busca de planetas por id nao retornou nenhum resultado. id: {}.", id);
             throw new Exception(); //TODO trocar para notfound exception
         }
 
@@ -121,7 +121,7 @@ public class PlanetService implements IPlanetService {
         List<MPlanetJson> results = planetResponseJson.planetResponseBodyJson().getResults();
 
         if (results.isEmpty()) {
-            log.warn("Busca de planetas na api do star wars não retornou nenhum resultado. id: {}. name: {}.", id, name);
+            log.warn("Busca de planetas na api do star wars nao retornou nenhum resultado. id: {}. name: {}.", id, name);
             throw new Exception(); //TODO trocar para notfound
         }
 

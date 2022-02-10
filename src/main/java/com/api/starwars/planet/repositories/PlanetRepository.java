@@ -35,7 +35,7 @@ public class PlanetRepository implements IPlanetRepository {
         Criteria criteria = where(FIELD_ID).exists(true);
         Long count = mongoTemplate.count(query(criteria), MongoPlanet.class);
 
-        log.info("Contagem de planetas no banco concluída com sucesso. planetas: {}.", count);
+        log.info("Contagem de planetas no banco concluida com sucesso. planetas: {}.", count);
         return count;
     }
 
@@ -45,9 +45,9 @@ public class PlanetRepository implements IPlanetRepository {
         Criteria criteria = where(FIELD_ID).is(id);
         Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
         if (planet.isEmpty()) {
-            log.warn("Busca de planeta no banco pelo id concluída com sucesso. id: {}. Planeta não encontrado.", id);
+            log.warn("Busca de planeta no banco pelo id concluída com sucesso. id: {}. Planeta nao encontrado.", id);
         }
-        log.info("Busca de planeta no banco pelo id concluída com sucesso. id: {}.", id);
+        log.info("Busca de planeta no banco pelo id concluida com sucesso. id: {}.", id);
         return planet;
     }
 
@@ -62,33 +62,33 @@ public class PlanetRepository implements IPlanetRepository {
         Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
 
         if (planet.isEmpty()) {
-            log.warn("Busca de planeta no banco pelo nome concluída com sucesso. name: {}. Planeta não encontrado.", name);
+            log.warn("Busca de planeta no banco pelo nome concluida com sucesso. name: {}. Planeta nao encontrado.", name);
         }
 
-        log.info("Busca de planeta no banco pelo nome concluída com sucesso. name: {}.", name);
+        log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}.", name);
         return planet;
     }
 
     @Override
     public MongoPlanet save(Planet planet) {
-        log.info("Iniciando criação planeta no banco. name: {}.", planet.name());
+        log.info("Iniciando criacao planeta no banco. name: {}.", planet.name());
         MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
         MongoPlanet savedMongoPlanet = mongoTemplate.save(mongoPlanet);
 
-        log.info("Criação planeta no banco concluída com sucesso. id: {}. name: {}.", planet.id(), planet.name());
+        log.info("Criacao planeta no banco concluida com sucesso. id: {}. name: {}.", planet.id(), planet.name());
         return savedMongoPlanet;
     }
 
     public void deleteById(String id) {
-        log.info("Iniciando exclusão de planeta no banco pelo id. id: {}.", id);
+        log.info("Iniciando exclusao de planeta no banco pelo id. id: {}.", id);
         Criteria criteria = where(FIELD_ID).is(id);
         DeleteResult deleteResult = mongoTemplate.remove(criteria);
         if (deleteResult.getDeletedCount() == 0) {
-            log.warn("Por razões desconhecidas nenhum planeta foi deletado por id. id: {}.", id);
+            log.warn("Por razoes desconhecidas nenhum planeta foi deletado por id. id: {}.", id);
             //TODO throw not found exception
             return;
         }
-        log.info("Exclusão de planeta no banco pelo id concluída com sucesso. id: {}.", id);
+        log.info("Exclusao de planeta no banco pelo id concluida com sucesso. id: {}.", id);
     }
 
 }
