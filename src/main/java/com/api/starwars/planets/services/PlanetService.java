@@ -69,9 +69,11 @@ public class PlanetService implements IPlanetService {
             throw new Exception(); //TODO trocar para notfound exception
         }
 
+
         Planet domainPlanet = mongoPlanet.get().toDomain();
         if (domainPlanet.cacheInDays() > cacheInDays) {
             log.warn("Busca de planetas no banco por id retornou um resultado com cache expirado. id: {}. cacheInDays: {}.", id, cacheInDays);
+
             Planet updatedPlanet = findFromStarWarsApiBy(domainPlanet.name(), domainPlanet.id());
 
             return planetRepository.save(updatedPlanet).toDomain();
@@ -84,10 +86,16 @@ public class PlanetService implements IPlanetService {
     public Planet findByName(String name, Long cacheInDays) throws Exception {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findByName(name);
 
-        if (mongoPlanet.get().toDomain().cacheInDays() > cacheInDays) {
+        if (mongoPlanet.isEmpty()) {
+            log.warn("Busca de planetas por nome nao retornou nenhum resultado. name: {}.", name);
+            Planet planet = findFromStarWarsApiBy(name, null);
+            return planetRepository.save(planet).toDomain();
+        }
+
+        Planet domainPlanet = mongoPlanet.get().toDomain();
+        if (domainPlanet.cacheInDays() > cacheInDays) {
             log.warn("Busca de planetas no banco por id retornou um resultado com cache expirado. name: {}. cacheInDays: {}.", name, cacheInDays);
-            String id = mongoPlanet.get().toDomain().id();
-            Planet planet = findFromStarWarsApiBy(name, id);
+            Planet planet = findFromStarWarsApiBy(name, domainPlanet.id());
 
             return planetRepository.save(planet).toDomain();
         }
@@ -125,14 +133,7 @@ public class PlanetService implements IPlanetService {
         }
 
         MPlanetJson mPlanetJson = results.get(0);
-        return new Planet(
-                id,
-                mPlanetJson.getName(),
-                mPlanetJson.getClimate(),
-                mPlanetJson.getTerrain(),
-                mPlanetJson.getFilms().size(),
-                0L
-        );
+        return mPlanetJson.toDomain(id);
 
     }
 
@@ -148,7 +149,7 @@ public class PlanetService implements IPlanetService {
 
         return results
                 .parallelStream()
-                .map(MPlanetJson::toDomain)
+                .map(planet -> planet.toDomain(null))
                 .collect(Collectors.toList());
     }
 

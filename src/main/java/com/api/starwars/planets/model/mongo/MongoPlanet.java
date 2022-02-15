@@ -20,41 +20,45 @@ import java.time.LocalDateTime;
 public class MongoPlanet {
 
     @Id
-    public String id;
+    @Indexed(unique = true)
+    private final String id;
 
     @Indexed(unique = true)
     private final String name;
-    private final String climate;
-    private final String terrain;
+    private final String[] climate;
+    private final String[] terrain;
     private final Integer movieAppearances;
 
     @Field("created")
     @CreatedDate
     private LocalDateTime creationDate;
 
+    public static MongoPlanet fromDomain(Planet planet) {
+        return new MongoPlanet(
+                planet.id(),
+                planet.name(),
+                planet.climate(),
+                planet.terrain(),
+                planet.movieAppearances(),
+                null
+        );
+    }
 
     public Planet toDomain() {
         LocalDateTime now = LocalDateTime.now();
+        if (creationDate == null) {
+            creationDate = now;
+        }
+
         long daysBetween = Duration.between(creationDate, now).toDays();
 
         return new Planet(
                 this.id,
                 this.name,
-                this.terrain,
                 this.climate,
+                this.terrain,
                 this.movieAppearances,
                 daysBetween
-        );
-    }
-
-    public static MongoPlanet fromDomain(Planet planet) {
-        return new MongoPlanet(
-                planet.id(),
-                planet.name(),
-                planet.terrain(),
-                planet.climate(),
-                planet.movieAppearances(),
-                null
         );
     }
 

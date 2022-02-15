@@ -31,27 +31,33 @@ import static com.mongodb.ReadPreference.secondaryPreferred;
 @RefreshScope
 public class MongoConfiguration {
 
-    @Value("${mongo.readPreferenceTags:}")
+    @Value("${spring.data.mongodb.readPreferenceTags:}")
     private String readPreferenceTags;
 
-    @Value("${mongo.username:}")
+    @Value("${spring.data.mongodb.username:}")
     private String username;
 
-    @Value("${mongo.password:}")
+    @Value("${spring.data.mongodb.password:}")
     private String password;
 
-    @Value("${mongo.host}")
+    @Value("${spring.data.mongodb.host}")
     private String host;
 
-    @Value("${mongo.port:}")
+    @Value("${spring.data.mongodb.port:}")
     private String port;
+
+    @Value("${spring.data.mongodb.database:}")
+    private String databaseName;
+
+    @Value("${spring.data.mongodb.authSource:}")
+    private String authSource;
 
     @Bean
     @RefreshScope
     public MongoClient client() {
         log.warn("Refreshing MongoClient");
 
-        String completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}", username, password, host, port);
+        String completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}/{4}?authSource={5}", username, password, host, port, databaseName, authSource);
 
         final MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(new ConnectionString(completeUri)).build();
         return MongoClients.create(settings, SpringDataMongoDB.driverInformation());

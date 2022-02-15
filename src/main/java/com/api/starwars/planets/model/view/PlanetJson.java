@@ -1,6 +1,7 @@
 package com.api.starwars.planets.model.view;
 
 import com.api.starwars.planets.model.domain.Planet;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -10,6 +11,7 @@ import static com.api.starwars.commons.helpers.ErrorMessageHelper.notEmpty;
 import static com.api.starwars.commons.helpers.ErrorMessageHelper.notNull;
 
 @Data
+@AllArgsConstructor
 public class PlanetJson {
     private final String id;
 
@@ -19,24 +21,15 @@ public class PlanetJson {
 
     @NotEmpty(message = "The climate " + notEmpty)
     @NotNull(message = "The climate " + notNull)
-    private final String climate;
+    private final String[] climate;
 
     @NotEmpty(message = "The terrain " + notEmpty)
     @NotNull(message = "The Terrain " + notNull)
-    private final String terrain;
+    private final String[] terrain;
 
     @NotNull(message = "The cache in days " + notNull)
-    private final Long _cacheInDays;
-    private final Integer _movieAppearances;
-
-    public PlanetJson(String id, String name, String climate, String terrain, Long _cacheInDays, Integer _movieAppearances) {
-        this.id = id;
-        this.name = name;
-        this.climate = climate;
-        this.terrain = terrain;
-        this._cacheInDays = _cacheInDays;
-        this._movieAppearances = _movieAppearances;
-    }
+    private final Long cacheInDays;
+    private final Integer movieAppearances;
 
     public static PlanetJson fromDomain(Planet planet) {
         return new PlanetJson(
@@ -55,8 +48,8 @@ public class PlanetJson {
                 this.name,
                 this.climate,
                 this.terrain,
-                this._movieAppearances,
-                this._cacheInDays
+                this.movieAppearances,
+                this.cacheInDays
         );
     }
 

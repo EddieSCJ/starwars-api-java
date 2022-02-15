@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 @Data
 @Builder
 public class PageResponse<T> {
@@ -11,7 +13,7 @@ public class PageResponse<T> {
     Integer size;
     Integer totalPages;
     Long totalElements;
-    T result;
+    List<T> result;
 
     public static PageResponse fromPage(Page page) {
         return PageResponse

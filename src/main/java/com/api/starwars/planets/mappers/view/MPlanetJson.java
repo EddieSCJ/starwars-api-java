@@ -13,12 +13,12 @@ public class MPlanetJson {
     private String terrain;
     private List<String> films = new ArrayList<>();
 
-    public Planet toDomain() {
+    public Planet toDomain(String id) {
         return new Planet(
-                null,
+                id,
                 this.name,
-                this.climate,
-                this.terrain,
+                this.climate.replaceAll(" ", "").split(","),
+                this.terrain.replaceAll(" ", "").split(","),
                 this.films.size(),
                 0L
         );
