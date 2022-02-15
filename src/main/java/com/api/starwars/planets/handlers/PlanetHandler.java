@@ -16,7 +16,7 @@ import static com.api.starwars.planets.util.EndpointConstants.*;
 
 @Slf4j
 @RestController
-@RequestMapping(API + PLANET)
+@RequestMapping(value = PLANET)
 @Tag(name = "Planets")
 public class PlanetHandler {
 
