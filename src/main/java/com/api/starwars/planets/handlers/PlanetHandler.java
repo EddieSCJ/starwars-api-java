@@ -3,7 +3,7 @@ package com.api.starwars.planets.handlers;
 import com.api.starwars.commons.response.PageResponse;
 import com.api.starwars.planets.model.view.PlanetJson;
 import com.api.starwars.planets.services.IPlanetService;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,8 +17,7 @@ import static com.api.starwars.planets.util.EndpointConstants.*;
 @Slf4j
 @RestController
 @RequestMapping(API + PLANET)
-//TODO use Tags instead of description
-@Api(description = "Planets Endpoint", tags = "Planets")
+@Tag(name = "Planets")
 public class PlanetHandler {
 
     private final IPlanetService planetService;
