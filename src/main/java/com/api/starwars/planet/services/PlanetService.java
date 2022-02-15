@@ -2,7 +2,6 @@ package com.api.starwars.planet.services;
 
 import com.api.starwars.planet.mappers.StarWarsApiMapper;
 import com.api.starwars.planet.mappers.view.MPlanetJson;
-import com.api.starwars.planet.mappers.view.PlanetResponseBodyJson;
 import com.api.starwars.planet.mappers.view.PlanetResponseJson;
 import com.api.starwars.planet.model.domain.Planet;
 import com.api.starwars.planet.model.mongo.MongoPlanet;
@@ -118,7 +117,7 @@ public class PlanetService implements IPlanetService {
 
     public Planet findFromStarWarsApiBy(String name, String id) throws Exception {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanetBy(name);
-        List<MPlanetJson> results = planetResponseJson.planetResponseBodyJson().getResults();
+        List<MPlanetJson> results = planetResponseJson.getResults();
 
         if (results.isEmpty()) {
             log.warn("Busca de planetas na api do star wars nao retornou nenhum resultado. id: {}. name: {}.", id, name);
@@ -140,8 +139,7 @@ public class PlanetService implements IPlanetService {
     @Override
     public List<Planet> findAllFromStarWarsApi() throws Exception {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
-        PlanetResponseBodyJson planetResponseBodyJson = planetResponseJson.planetResponseBodyJson();
-        List<MPlanetJson> results = planetResponseBodyJson.getResults();
+        List<MPlanetJson> results = planetResponseJson.getResults();
 
         if (results.isEmpty()) {
             log.warn("Busca de planetas na api do star wars não retornou nenhum resultado.");

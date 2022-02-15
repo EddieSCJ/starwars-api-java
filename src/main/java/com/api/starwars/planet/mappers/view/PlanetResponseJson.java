@@ -1,4 +1,11 @@
 package com.api.starwars.planet.mappers.view;
 
-public record PlanetResponseJson(Integer statusCode, PlanetResponseBodyJson planetResponseBodyJson) {
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class PlanetResponseJson {
+    private Integer count;
+    private List<MPlanetJson> results;
 }
