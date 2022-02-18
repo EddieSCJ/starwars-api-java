@@ -1,7 +1,8 @@
-package com.api.starwars.planets.repositories;
+package com.api.starwars.domain.planets.repositories;
 
-import com.api.starwars.planets.model.domain.Planet;
-import com.api.starwars.planets.model.mongo.MongoPlanet;
+import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
+import com.api.starwars.domain.planets.model.domain.Planet;
+import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
 import com.mongodb.client.result.DeleteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
-import static com.api.starwars.planets.model.mongo.Constants.FIELD_ID;
-import static com.api.starwars.planets.model.mongo.Constants.FIELD_NAME;
+import static com.api.starwars.domain.planets.model.mongo.Constants.FIELD_ID;
+import static com.api.starwars.domain.planets.model.mongo.Constants.FIELD_NAME;
+import static java.text.MessageFormat.format;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 

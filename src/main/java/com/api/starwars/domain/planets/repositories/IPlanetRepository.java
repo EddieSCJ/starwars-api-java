@@ -1,4 +1,4 @@
-package com.api.starwars.planets.repositories;
+package com.api.starwars.domain.planets.repositories;
 
 
 import com.api.starwars.planets.model.domain.Planet;

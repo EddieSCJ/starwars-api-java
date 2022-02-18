@@ -1,9 +1,10 @@
-package com.api.starwars.planets.handlers;
+package com.api.starwars.domain.planets.handlers;
 
+import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
 import com.api.starwars.commons.response.PageResponse;
-import com.api.starwars.planets.model.domain.Planet;
-import com.api.starwars.planets.model.view.PlanetJson;
-import com.api.starwars.planets.services.IPlanetService;
+import com.api.starwars.domain.planets.model.domain.Planet;
+import com.api.starwars.domain.planets.model.view.PlanetJson;
+import com.api.starwars.domain.planets.services.IPlanetService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import static com.api.starwars.planets.util.EndpointConstants.*;
 
 @Slf4j
 @RestController
@@ -43,7 +42,7 @@ public class PlanetHandler {
         return ResponseEntity.ok(PageResponse.fromPage(pageResponse));
     }
 
-    @GetMapping(ID)
+    @GetMapping("/{id}")
     public ResponseEntity<PlanetJson> getByID(
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
@@ -56,7 +55,7 @@ public class PlanetHandler {
         return ResponseEntity.ok(planetJson);
     }
 
-    @GetMapping(NAME)
+    @GetMapping("/search")
     public ResponseEntity<PlanetJson> getByName(
             @PathVariable String name,
             @RequestParam(defaultValue = "0") Long cacheInDays
@@ -79,8 +78,8 @@ public class PlanetHandler {
         return ResponseEntity.ok(planetJson);
     }
 
-    @DeleteMapping(ID)
-    public ResponseEntity<?> delete(@PathVariable String id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable String id) throws HttpNotFoundException {
         log.info("Iniciando exclusao de planeta pelo id: {}.", id);
         planetService.deleteById(id);
 

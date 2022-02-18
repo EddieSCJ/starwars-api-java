@@ -1,13 +1,13 @@
-package com.api.starwars.planets.services;
+package com.api.starwars.domain.planets.services;
 
-import com.api.starwars.planets.mappers.StarWarsApiMapper;
-import com.api.starwars.planets.mappers.view.MPlanetJson;
-import com.api.starwars.planets.mappers.view.PlanetResponseJson;
-import com.api.starwars.planets.model.domain.Planet;
-import com.api.starwars.planets.model.mongo.MongoPlanet;
-import com.api.starwars.planets.model.view.PlanetJson;
-import com.api.starwars.planets.repositories.IPlanetMongoRepository;
-import com.api.starwars.planets.repositories.IPlanetRepository;
+import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
+import com.api.starwars.domain.planets.mappers.StarWarsApiMapper;
+import com.api.starwars.domain.planets.mappers.view.MPlanetJson;
+import com.api.starwars.domain.planets.mappers.view.PlanetResponseJson;
+import com.api.starwars.domain.planets.model.domain.Planet;
+import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
+import com.api.starwars.domain.planets.repositories.IPlanetMongoRepository;
+import com.api.starwars.domain.planets.repositories.IPlanetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

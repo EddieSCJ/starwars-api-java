@@ -1,6 +1,6 @@
-package com.api.starwars.planets.mappers;
+package com.api.starwars.domain.planets.mappers;
 
-import com.api.starwars.planets.mappers.view.PlanetResponseJson;
+import com.api.starwars.domain.planets.mappers.view.PlanetResponseJson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

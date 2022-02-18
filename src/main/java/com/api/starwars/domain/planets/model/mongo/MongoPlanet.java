@@ -1,6 +1,6 @@
-package com.api.starwars.planets.model.mongo;
+package com.api.starwars.domain.planets.model.mongo;
 
-import com.api.starwars.planets.model.domain.Planet;
+import com.api.starwars.domain.planets.model.domain.Planet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,8 +1,8 @@
-package com.api.starwars.planets.services;
+package com.api.starwars.domain.planets.services;
 
 
-import com.api.starwars.planets.model.domain.Planet;
-import com.api.starwars.planets.model.view.PlanetJson;
+import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
+import com.api.starwars.domain.planets.model.domain.Planet;
 import org.springframework.data.domain.Page;
 
 import javax.naming.ServiceUnavailableException;

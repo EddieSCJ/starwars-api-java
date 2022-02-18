@@ -1,6 +1,6 @@
-package com.api.starwars.planets.mappers.view;
+package com.api.starwars.domain.planets.mappers.view;
 
-import com.api.starwars.planets.model.domain.Planet;
+import com.api.starwars.domain.planets.model.domain.Planet;
 import lombok.Data;
 
 import java.util.ArrayList;

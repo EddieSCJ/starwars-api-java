@@ -1,4 +1,4 @@
-package com.api.starwars.planets.model.mongo;
+package com.api.starwars.domain.planets.model.mongo;
 
 public class Constants {
     public static String FIELD_ID = "_id";

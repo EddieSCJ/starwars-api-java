@@ -1,4 +1,4 @@
-package com.api.starwars.planets.handlers.config;
+package com.api.starwars.domain.planets.handlers.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
