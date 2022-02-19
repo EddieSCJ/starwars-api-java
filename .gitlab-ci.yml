@@ -9,3 +9,6 @@ sonarqube-check:
       - .sonar/cache
   script: gradle sonarqube -Dsonar.host.url=https://e939645dd11873.lhrtunnel.link --stacktrace
   allow_failure: false
+  only:
+    - main
+    - merge_requests
