@@ -8,4 +8,4 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script: gradle sonarqube
-  allow_failure: true
+  allow_failure: false
