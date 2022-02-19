@@ -1,8 +1,8 @@
 package com.api.starwars.domain.planets.repositories;
 
 
-import com.api.starwars.planets.model.domain.Planet;
-import com.api.starwars.planets.model.mongo.MongoPlanet;
+import com.api.starwars.domain.planets.model.domain.Planet;
+import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
 
 import java.util.Optional;
 

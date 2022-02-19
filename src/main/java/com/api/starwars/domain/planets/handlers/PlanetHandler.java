@@ -1,6 +1,5 @@
 package com.api.starwars.domain.planets.handlers;
 
-import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
 import com.api.starwars.commons.response.PageResponse;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import com.api.starwars.domain.planets.model.view.PlanetJson;
@@ -16,7 +15,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping(value = PLANET)
+@RequestMapping(value = "/planets")
 @Tag(name = "Planets")
 public class PlanetHandler {
 
@@ -33,7 +32,7 @@ public class PlanetHandler {
             @RequestParam(name = "order", defaultValue = "name") String order,
             @RequestParam(name = "direction", defaultValue = "ASC") String direction,
             @RequestParam(name = "size", defaultValue = "15") Integer size
-    ) throws Exception {
+    ) {
         log.info("Iniciando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
         Page<Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
@@ -46,7 +45,7 @@ public class PlanetHandler {
     public ResponseEntity<PlanetJson> getByID(
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
-    ) throws Exception {
+    ) {
         log.info("Iniciando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
         Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
@@ -57,9 +56,9 @@ public class PlanetHandler {
 
     @GetMapping("/search")
     public ResponseEntity<PlanetJson> getByName(
-            @PathVariable String name,
+            @RequestParam String name,
             @RequestParam(defaultValue = "0") Long cacheInDays
-    ) throws Exception {
+    ) {
         log.info("Iniciando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
         Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
@@ -79,7 +78,7 @@ public class PlanetHandler {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) throws HttpNotFoundException {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         log.info("Iniciando exclusao de planeta pelo id: {}.", id);
         planetService.deleteById(id);
 

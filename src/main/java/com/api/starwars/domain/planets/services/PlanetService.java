@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.text.MessageFormat.format;
+
 @Slf4j
 @Service
 public class PlanetService implements IPlanetService {
@@ -38,8 +40,7 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Page<Planet> findAll(Integer page, String order, String direction, Integer size)
-            throws Exception {
+    public Page<Planet> findAll(Integer page, String order, String direction, Integer size) {
 
         Sort sort = direction.equals("ASC")
                 ? Sort.by(order).ascending()
@@ -61,12 +62,12 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet findById(String id, Long cacheInDays) throws Exception {
+    public Planet findById(String id, Long cacheInDays) {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
 
         if (mongoPlanet.isEmpty()) {
             log.warn("Busca de planetas por id nao retornou nenhum resultado. id: {}.", id);
-            throw new Exception(); //TODO trocar para notfound exception
+            throw new HttpNotFoundException(format("Planeta com id {0} não encontrado.", id));
         }
 
 
@@ -83,7 +84,7 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet findByName(String name, Long cacheInDays) throws Exception {
+    public Planet findByName(String name, Long cacheInDays) {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findByName(name);
 
         if (mongoPlanet.isEmpty()) {
@@ -123,13 +124,13 @@ public class PlanetService implements IPlanetService {
         planetRepository.deleteById(id);
     }
 
-    public Planet findFromStarWarsApiBy(String name, String id) throws Exception {
+    public Planet findFromStarWarsApiBy(String name, String id) {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanetBy(name);
         List<MPlanetJson> results = planetResponseJson.getResults();
 
         if (results.isEmpty()) {
             log.warn("Busca de planetas na api do star wars nao retornou nenhum resultado. id: {}. name: {}.", id, name);
-            throw new Exception(); //TODO trocar para notfound
+            throw new HttpNotFoundException(format("Planeta com nome {0} não encontrado.", name));
         }
 
         MPlanetJson mPlanetJson = results.get(0);
@@ -138,13 +139,13 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public List<Planet> findAllFromStarWarsApi() throws Exception {
+    public List<Planet> findAllFromStarWarsApi() {
         PlanetResponseJson planetResponseJson = starWarsApiMapper.getPlanets();
         List<MPlanetJson> results = planetResponseJson.getResults();
 
         if (results.isEmpty()) {
             log.warn("Busca de planetas na api do star wars não retornou nenhum resultado.");
-            throw new Exception(); //TODO trocar para notfound
+            throw new HttpNotFoundException("Nenhum planeta encontrado.");
         }
 
         return results
@@ -153,10 +154,5 @@ public class PlanetService implements IPlanetService {
                 .collect(Collectors.toList());
     }
 
-
-    @Override
-    public List<PlanetJson> planetsToPlanetJson(List<Planet> planets) {
-        return planets.parallelStream().map(PlanetJson::fromDomain).collect(Collectors.toList());
-    }
 
 }
