@@ -1,7 +1,14 @@
 plugins {
     id 'org.springframework.boot' version '2.4.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "org.sonarqube" version "3.3"
     id 'java'
+}
+sonarqube {
+    properties {
+        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
+        property "sonar.qualitygate.wait", true
+    }
 }
 
 compileJava.options.encoding = 'UTF-8'
