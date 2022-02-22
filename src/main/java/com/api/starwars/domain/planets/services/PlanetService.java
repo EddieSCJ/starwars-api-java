@@ -1,5 +1,6 @@
 package com.api.starwars.domain.planets.services;
 
+import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
 import com.api.starwars.domain.planets.mappers.StarWarsApiMapper;
 import com.api.starwars.domain.planets.mappers.view.MPlanetJson;
@@ -8,6 +9,7 @@ import com.api.starwars.domain.planets.model.domain.Planet;
 import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
 import com.api.starwars.domain.planets.repositories.IPlanetMongoRepository;
 import com.api.starwars.domain.planets.repositories.IPlanetRepository;
+import com.api.starwars.domain.planets.validations.PlanetValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -64,7 +66,6 @@ public class PlanetService implements IPlanetService {
     @Override
     public Planet findById(String id, Long cacheInDays) {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
-
         if (mongoPlanet.isEmpty()) {
             log.warn("Busca de planetas por id nao retornou nenhum resultado. id: {}.", id);
             throw new HttpNotFoundException(format("Planeta com id {0} não encontrado.", id));
@@ -105,7 +106,13 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet save(Planet planet) {
+    public Planet save(Planet planet) throws Exception {
+        final PlanetValidator planetValidator = new PlanetValidator();
+        List<String> errorMessages = planetValidator.validate(planet);
+        if (!errorMessages.isEmpty()) {
+            throw new HttpBadRequestException(errorMessages);
+        }
+
         MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
         return planetRepository.save(mongoPlanet.toDomain()).toDomain();
     }

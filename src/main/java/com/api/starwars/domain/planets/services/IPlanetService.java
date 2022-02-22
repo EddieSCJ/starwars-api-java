@@ -14,7 +14,7 @@ public interface IPlanetService {
 
     Planet findByName(String name, Long cacheInDays);
 
-    Planet save(Planet planet);
+    Planet save(Planet planet) throws Exception;
 
     List<Planet> saveAll(List<Planet> planets);
 

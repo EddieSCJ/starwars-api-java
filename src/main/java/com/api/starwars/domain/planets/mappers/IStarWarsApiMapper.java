@@ -10,12 +10,6 @@ import java.time.Duration;
 
 public interface IStarWarsApiMapper {
 
-    HttpClient httpClient = HttpClient.newBuilder()
-            .version(Version.HTTP_2)
-            .followRedirects(Redirect.NORMAL)
-            .connectTimeout(Duration.ofSeconds(15))
-            .build();
-
     @Deprecated
     String api = "https://swapi.co/";
 

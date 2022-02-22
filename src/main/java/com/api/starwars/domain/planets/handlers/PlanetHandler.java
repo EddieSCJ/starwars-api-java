@@ -68,12 +68,13 @@ public class PlanetHandler {
     }
 
     @PostMapping
-    public ResponseEntity<PlanetJson> post(@Valid @RequestBody PlanetJson planet) {
+    public ResponseEntity<PlanetJson> post(@Valid @RequestBody PlanetJson planet) throws Exception {
         log.info("Iniciando cadastro de planeta por nome. name: {}.", planet.getName());
+
         Planet domainPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(domainPlanet);
 
-        log.info("Cadastro de planeta por nome concluida. id {}. name: {}.", planetJson.getId(), planet.getName());
+        log.info("Cadastro de planeta por nome concluido. id {}. name: {}.", planetJson.getId(), planet.getName());
         return ResponseEntity.ok(planetJson);
     }
 
