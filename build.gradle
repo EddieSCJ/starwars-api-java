@@ -4,9 +4,10 @@ plugins {
     id "org.sonarqube" version "3.3"
     id 'java'
 }
+
 sonarqube {
     properties {
-        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
+        property "sonar.projectKey", "EddieSCJ_starwars-api-java_AX8fIGzOyWypSRkiy2gf"
         property "sonar.qualitygate.wait", true
     }
 }
