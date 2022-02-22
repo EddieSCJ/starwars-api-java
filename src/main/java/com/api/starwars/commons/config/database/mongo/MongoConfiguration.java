@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.SpringDataMongoDB;
 import org.springframework.data.mongodb.core.MongoDatabaseFactorySupport;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -27,7 +26,6 @@ import static com.mongodb.ReadPreference.secondaryPreferred;
 
 @Slf4j
 @Configuration
-@EnableMongoRepositories(basePackages = {"com.api.starwars.planets.repositories"})
 @RefreshScope
 public class MongoConfiguration {
 
@@ -52,12 +50,20 @@ public class MongoConfiguration {
     @Value("${spring.data.mongodb.authSource:}")
     private String authSource;
 
+    @Value("${spring.profiles.active}")
+    private String profile;
+
     @Bean
     @RefreshScope
     public MongoClient client() {
         log.warn("Refreshing MongoClient");
 
-        String completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}/{4}?authSource={5}", username, password, host, port, databaseName, authSource);
+        String completeUri;
+        if (profile != null && profile.equals("dev")) {
+            completeUri = MessageFormat.format("mongodb://{0}:{1}/{2}?authSource={3}", host, port, databaseName, authSource);
+        } else {
+            completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}/{4}?authSource={5}", username, password, host, port, databaseName, authSource);
+        }
 
         final MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(new ConnectionString(completeUri)).build();
         return MongoClients.create(settings, SpringDataMongoDB.driverInformation());
