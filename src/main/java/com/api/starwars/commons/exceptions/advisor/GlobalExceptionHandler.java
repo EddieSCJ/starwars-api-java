@@ -1,6 +1,8 @@
 package com.api.starwars.commons.exceptions.advisor;
 
+import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
+import com.api.starwars.commons.exceptions.view.BadRequestExceptionResponseJson;
 import com.api.starwars.commons.exceptions.view.BaseExceptionResponseJson;
 import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
@@ -25,6 +27,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<BaseExceptionResponseJson> handleGenericException() {
         BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), getApiErrorMessage("internal_server_error"));
+
+        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
+    }
+
+    @ExceptionHandler({HttpBadRequestException.class})
+    public ResponseEntity<BadRequestExceptionResponseJson> handleBadRequest(HttpBadRequestException exception) {
+        BadRequestExceptionResponseJson response = new BadRequestExceptionResponseJson(HttpStatus.BAD_REQUEST.value(), getApiErrorMessage("bad_request"), exception.getErrors());
 
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
