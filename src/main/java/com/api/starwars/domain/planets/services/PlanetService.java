@@ -110,6 +110,7 @@ public class PlanetService implements IPlanetService {
         final PlanetValidator planetValidator = new PlanetValidator();
         List<String> errorMessages = planetValidator.validate(planet);
         if (!errorMessages.isEmpty()) {
+            log.warn("Erro ao salvar planeta. name: {}.", planet.name());
             throw new HttpBadRequestException(errorMessages);
         }
 
