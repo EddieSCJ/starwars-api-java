@@ -7,7 +7,7 @@ plugins {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "EddieSCJ_starwars-api-java_AX8fIGzOyWypSRkiy2gf"
+        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
         property "sonar.qualitygate.wait", true
     }
 }
