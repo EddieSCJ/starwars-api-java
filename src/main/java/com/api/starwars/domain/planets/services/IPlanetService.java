@@ -1,6 +1,7 @@
 package com.api.starwars.domain.planets.services;
 
 
+import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import org.springframework.data.domain.Page;
 
@@ -14,7 +15,7 @@ public interface IPlanetService {
 
     Planet findByName(String name, Long cacheInDays);
 
-    Planet save(Planet planet) throws Exception;
+    Planet save(Planet planet);
 
     List<Planet> saveAll(List<Planet> planets);
 

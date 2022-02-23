@@ -1,9 +1,11 @@
 package com.api.starwars.commons.validations;
 
+import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
 import com.api.starwars.commons.helpers.MessageSourceHelper;
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public abstract class AbstractValidator {
 
     protected final List<String> validationMessages = new ArrayList<>();
 
-    public List<String> validate(Object generic) throws Exception {
+    public List<String> validate(Object generic) {
         Field[] declaredFields = generic.getClass().getDeclaredFields();
 
         try {
@@ -21,14 +23,14 @@ public abstract class AbstractValidator {
                 field.setAccessible(true);
                 callGenericValidators(field, generic);
             }
-        } catch (IllegalAccessException | NoSuchFieldException exception) {
-            throw new Exception("Ocorre um erro ao fazer validacao dos campos.");
+        } catch (IllegalAccessException exception) {
+            throw new HttpInternalServerErrorException("Ocorre um erro ao fazer validacao dos campos.");
         }
 
         return validationMessages;
     }
 
-    protected void callGenericValidators(Field field, Object generic) throws IllegalAccessException, NoSuchFieldException {
+    protected void callGenericValidators(Field field, Object generic) throws IllegalAccessException {
         Object value = field.get(generic);
 
         isBlank(field, value);
@@ -54,7 +56,7 @@ public abstract class AbstractValidator {
     private void isEmptyList(Field field, Object value) {
 
         if (field.getType().equals(List.class)) {
-            List list =(List) value;
+            List<?> list =(List<?>) value;
             if (list != null && list.isEmpty()) {
                 String errorMessage = MessageSourceHelper.getFieldErrorMessage("empty");
                 addFieldErrorMessage(field.getName(), errorMessage);

@@ -22,7 +22,7 @@ public class PageResponse<T> {
                 .size(page.getSize())
                 .totalPages(page.getTotalPages())
                 .totalElements(page.getTotalElements())
-                .result(page.getContent())
+                .result(List.of(page.getContent()))
                 .build();
     }
 }

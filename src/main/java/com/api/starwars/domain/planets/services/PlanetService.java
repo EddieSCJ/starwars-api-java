@@ -106,7 +106,7 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet save(Planet planet) throws Exception {
+    public Planet save(Planet planet) throws HttpBadRequestException {
         final PlanetValidator planetValidator = new PlanetValidator();
         List<String> errorMessages = planetValidator.validate(planet);
         if (!errorMessages.isEmpty()) {
