@@ -27,7 +27,7 @@ public class PlanetHandler {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse> getAll(
+    public ResponseEntity<PageResponse<Planet>> getAll(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "order", defaultValue = "name") String order,
             @RequestParam(name = "direction", defaultValue = "ASC") String direction,
@@ -70,10 +70,11 @@ public class PlanetHandler {
     @PostMapping
     public ResponseEntity<PlanetJson> post(@Valid @RequestBody PlanetJson planet) {
         log.info("Iniciando cadastro de planeta por nome. name: {}.", planet.getName());
+
         Planet domainPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(domainPlanet);
 
-        log.info("Cadastro de planeta por nome concluida. id {}. name: {}.", planetJson.getId(), planet.getName());
+        log.info("Cadastro de planeta por nome concluido. id {}. name: {}.", planetJson.getId(), planet.getName());
         return ResponseEntity.ok(planetJson);
     }
 

@@ -16,7 +16,10 @@ public class MessageSourceHelper {
 
     public static String getApiErrorMessage(String error) {
         return messageSource.getMessage(format("error.api.{0}", error), null, new Locale("pt-br"));
+    }
 
+    public static String getFieldErrorMessage(String error) {
+        return messageSource.getMessage(format("field.error.{0}", error), null, new Locale("pt-br"));
     }
 
 }

@@ -1,8 +1,8 @@
 package com.api.starwars.commons.exceptions.view;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class BaseExceptionResponseJson {
     private final Integer httpStatusCode;
     private final String message;
