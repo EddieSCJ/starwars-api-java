@@ -1,7 +1,6 @@
 package com.api.starwars.domain.planets.services;
 
 
-import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import org.springframework.data.domain.Page;
 

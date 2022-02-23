@@ -28,35 +28,35 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseExceptionResponseJson> handleGenericException() {
         BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), getApiErrorMessage("internal_server_error"));
 
-        return ResponseEntity.status(response.getHTTP_STATUS_CODE()).body(response);
+        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
     @ExceptionHandler({HttpBadRequestException.class})
     public ResponseEntity<BadRequestExceptionResponseJson> handleBadRequest(HttpBadRequestException exception) {
         BadRequestExceptionResponseJson response = new BadRequestExceptionResponseJson(HttpStatus.BAD_REQUEST.value(), getApiErrorMessage("bad_request"), exception.getErrors());
 
-        return ResponseEntity.status(response.getHTTP_STATUS_CODE()).body(response);
+        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
     @ExceptionHandler({HttpNotFoundException.class, NotFound.class})
     public ResponseEntity<BaseExceptionResponseJson> handleNotFoundException(Exception ex) {
         BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpNotFoundException.HTTP_STATUS_CODE, ex.getMessage());
 
-        return ResponseEntity.status(response.getHTTP_STATUS_CODE()).body(response);
+        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
     @ExceptionHandler({NoHandlerFoundException.class})
     public ResponseEntity<BaseExceptionResponseJson> handleNoHandlerFoundException() {
         BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.NOT_FOUND.value(), getApiErrorMessage("resource_not_found"));
 
-        return ResponseEntity.status(response.getHTTP_STATUS_CODE()).body(response);
+        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
     @ExceptionHandler({MethodNotAllowedException.class, HttpRequestMethodNotSupportedException.class})
     public ResponseEntity<BaseExceptionResponseJson> handleMethodNotAllowedException() {
         BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.METHOD_NOT_ALLOWED.value(), getApiErrorMessage("method_not_allowed"));
 
-        return ResponseEntity.status(response.getHTTP_STATUS_CODE()).body(response);
+        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
 }
