@@ -52,16 +52,23 @@ public abstract class AbstractValidator {
     }
 
     private void isEmptyList(Field field, Object value) {
-        if (field.getType().equals(List.class) && ((List) value).isEmpty()) {
-            String errorMessage = MessageSourceHelper.getFieldErrorMessage("empty");
-            addFieldErrorMessage(field.getName(), errorMessage);
+
+        if (field.getType().equals(List.class)) {
+            List list =(List) value;
+            if (list != null && list.isEmpty()) {
+                String errorMessage = MessageSourceHelper.getFieldErrorMessage("empty");
+                addFieldErrorMessage(field.getName(), errorMessage);
+            }
         }
     }
 
     private void isEmptyArray(Field field, Object value) {
-        if(field.getType().isArray() && ((Object[]) value).length == 0 )  {
-            String errorMessage = MessageSourceHelper.getFieldErrorMessage("empty");
-            addFieldErrorMessage(field.getName(), errorMessage);
+        if(field.getType().isArray())  {
+            Object[] array = (Object[]) value;
+            if (array != null && array.length == 0) {
+                String errorMessage = MessageSourceHelper.getFieldErrorMessage("empty");
+                addFieldErrorMessage(field.getName(), errorMessage);
+            }
         }
     }
 
