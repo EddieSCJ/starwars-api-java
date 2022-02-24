@@ -56,7 +56,7 @@ public class MongoConfiguration {
     @Bean
     @RefreshScope
     public MongoClient client() {
-        log.warn("Refreshing MongoClient");
+        log.info("Refreshing MongoClient");
 
         String completeUri;
         if (profile != null && profile.equals("dev")) {
@@ -72,14 +72,14 @@ public class MongoConfiguration {
     @Bean
     @RefreshScope
     public MongoDatabaseFactorySupport<?> databaseFactory(MongoClient client, MongoProperties properties) {
-        log.warn("Refreshing MongoDatabaseFactory");
+        log.info("Refreshing MongoDatabaseFactory");
         return new SimpleMongoClientDatabaseFactory(client, properties.getMongoClientDatabase());
     }
 
     @Bean(name = "primaryMongoReadNode")
     @RefreshScope
     public MongoTemplate primaryMongoReadNode(MongoDatabaseFactory mongoDatabaseFactory) {
-        log.warn("Refreshing PrimaryMongoReadNode");
+        log.info("Refreshing PrimaryMongoReadNode");
 
         MongoTemplate mongoTemplate = new MongoTemplate(mongoDatabaseFactory);
         mongoTemplate.setReadPreference(primary());
@@ -89,7 +89,7 @@ public class MongoConfiguration {
     @Bean(name = "mongoTemplate")
     @RefreshScope
     public MongoTemplate mongoTemplate(MongoDatabaseFactory databaseFactory) {
-        log.warn("Refresh MongoTemplate");
+        log.info("Refresh MongoTemplate");
 
         MongoTemplate template = new MongoTemplate(databaseFactory);
         template.setReadPreference(getReadPreferenceConfig());
@@ -105,7 +105,7 @@ public class MongoConfiguration {
     }
 
     private TagSet getReadPreferenceTags() {
-        if (StringUtils.isBlank(readPreferenceTags)) {
+        if (StringUtils.isEmpty(readPreferenceTags)) {
             return null;
         }
 

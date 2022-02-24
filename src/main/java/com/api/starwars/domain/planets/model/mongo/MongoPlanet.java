@@ -4,7 +4,6 @@ import com.api.starwars.domain.planets.model.domain.Planet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -30,7 +29,6 @@ public class MongoPlanet {
     private final Integer movieAppearances;
 
     @Field("created")
-    @CreatedDate
     private LocalDateTime creationDate;
 
     public static MongoPlanet fromDomain(Planet planet) {
@@ -40,7 +38,7 @@ public class MongoPlanet {
                 planet.climate(),
                 planet.terrain(),
                 planet.movieAppearances(),
-                null
+                LocalDateTime.now()
         );
     }
 

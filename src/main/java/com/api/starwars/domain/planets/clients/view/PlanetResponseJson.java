@@ -1,4 +1,4 @@
-package com.api.starwars.domain.planets.mappers.view;
+package com.api.starwars.domain.planets.clients.view;
 
 import lombok.Data;
 

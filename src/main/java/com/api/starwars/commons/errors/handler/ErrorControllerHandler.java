@@ -31,9 +31,4 @@ public class ErrorControllerHandler implements ErrorController {
 
         throw new HttpInternalServerErrorException(MessageSourceHelper.getApiErrorMessage("internal_server_error"));
     }
-
-    @Override
-    public String getErrorPath() {
-        return null;
-    }
 }

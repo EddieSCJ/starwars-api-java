@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -45,7 +46,7 @@ public class PlanetHandler {
     public ResponseEntity<PlanetJson> getByID(
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
-    ) {
+    ) throws IOException, InterruptedException {
         log.info("Iniciando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
         Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
@@ -58,7 +59,7 @@ public class PlanetHandler {
     public ResponseEntity<PlanetJson> getByName(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") Long cacheInDays
-    ) {
+    ) throws IOException, InterruptedException {
         log.info("Iniciando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
         Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
