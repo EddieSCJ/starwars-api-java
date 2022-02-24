@@ -47,7 +47,7 @@ public class PlanetRepository implements IPlanetRepository {
         Criteria criteria = where(FIELD_ID).is(id);
         Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
         if (planet.isEmpty()) {
-            log.warn("Busca de planeta no banco pelo id concluída com sucesso. id: {}. Planeta nao encontrado.", id);
+            log.info("Busca de planeta no banco pelo id concluída com sucesso. id: {}. Planeta nao encontrado.", id);
         }
         log.info("Busca de planeta no banco pelo id concluida com sucesso. id: {}.", id);
         return planet;
@@ -64,7 +64,7 @@ public class PlanetRepository implements IPlanetRepository {
         Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
 
         if (planet.isEmpty()) {
-            log.warn("Busca de planeta no banco pelo nome concluida com sucesso. name: {}. Planeta nao encontrado.", name);
+            log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}. Planeta nao encontrado.", name);
         }
 
         log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}.", name);
@@ -86,7 +86,7 @@ public class PlanetRepository implements IPlanetRepository {
         Criteria criteria = where(FIELD_ID).is(id);
         DeleteResult deleteResult = mongoTemplate.remove(criteria);
         if (deleteResult.getDeletedCount() == 0) {
-            log.warn("Nenhum planeta foi deletado por id. id: {}.", id);
+            log.info("Nenhum planeta foi deletado por id. id: {}.", id);
             throw new HttpNotFoundException(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id));
         }
         log.info("Exclusao de planeta no banco pelo id concluida com sucesso. id: {}.", id);

@@ -4,3 +4,15 @@ server:
     context-path: /api/v0/
   error:
     path: /resource-error
+
+clients:
+  starwars:
+    name: starwars
+    url: https://swapi.dev/api/
+
+feign:
+  client:
+    config:
+      starwars:
+        connectTimeout: 1000
+        readTimeout: 1000
