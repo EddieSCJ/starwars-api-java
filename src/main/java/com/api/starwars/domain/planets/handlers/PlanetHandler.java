@@ -76,6 +76,17 @@ public class PlanetHandler {
         return ResponseEntity.ok(planetJson);
     }
 
+    @PutMapping
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
+    public ResponseEntity<PlanetJson> updateById(@RequestBody PlanetJson planetJson) {
+        String id = planetJson.getId();
+        log.info("Iniciando atualizacao de planeta pelo id. id: {}", id);
+        Planet planet = planetService.updateById(id, planetJson.toDomain());
+
+        log.info("Planeta atualizado pelo id com sucesso. id: {}", id);
+        return ResponseEntity.ok(PlanetJson.fromDomain(planet));
+    }
+
     @PostMapping
     @ApiResponse(responseCode = "201", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
     public ResponseEntity<PlanetJson> post(@Valid @RequestBody PlanetJson planet) {

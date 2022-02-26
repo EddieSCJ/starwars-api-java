@@ -32,6 +32,7 @@ public class PlanetService implements IPlanetService {
     private final IStarWarsApiClient starWarsApiClient;
     private final IPlanetMongoRepository planetMongoRepository;
     private final IPlanetRepository planetRepository;
+    private final PlanetValidator planetValidator = new PlanetValidator();
 
     @Autowired
     public PlanetService(IStarWarsApiClient starWarsApiMapper,
@@ -67,18 +68,13 @@ public class PlanetService implements IPlanetService {
     @Override
     public Planet findById(String id, Long cacheInDays) throws IOException, InterruptedException {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
-        if (mongoPlanet.isEmpty()) {
-            log.info("Busca de planetas por id nao retornou nenhum resultado. id: {}.", id);
-            throw new HttpNotFoundException(format("Planeta com id {0} não encontrado.", id));
-        }
-
+        if (mongoPlanet.isEmpty()) {throwNotFound(id);}
 
         Planet domainPlanet = mongoPlanet.get().toDomain();
         if (domainPlanet.cacheInDays() > cacheInDays) {
             log.info("Busca de planetas no banco por id retornou um resultado com cache expirado. id: {}. cacheInDays: {}.", id, cacheInDays);
 
             Planet updatedPlanet = findFromStarWarsApiBy(domainPlanet.name(), domainPlanet.id());
-
             return planetRepository.save(updatedPlanet).toDomain();
         }
 
@@ -108,7 +104,6 @@ public class PlanetService implements IPlanetService {
 
     @Override
     public Planet save(Planet planet) throws HttpBadRequestException {
-        final PlanetValidator planetValidator = new PlanetValidator();
         List<String> errorMessages = planetValidator.validate(planet);
         if (!errorMessages.isEmpty()) {
             log.warn("Erro ao salvar planeta. name: {}.", planet.name());
@@ -117,6 +112,28 @@ public class PlanetService implements IPlanetService {
 
         MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
         return planetRepository.save(mongoPlanet.toDomain()).toDomain();
+    }
+
+    @Override
+    public Planet updateById(String id, Planet planet) {
+        List<String> errorMessages = planetValidator.validate(planet);
+        if (!errorMessages.isEmpty()) {
+            log.warn("Erro ao atualizar planeta. id {}. name: {}.", planet.id(), planet.name());
+            throw new HttpBadRequestException(errorMessages);
+        }
+
+        Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
+        if (mongoPlanet.isEmpty()) {throwNotFound(id);}
+
+        Planet newPlanet = new Planet(
+                id,
+                planet.name(),
+                planet.climate(),
+                planet.terrain(),
+                planet.movieAppearances(),
+                planet.cacheInDays()
+        );
+        return planetRepository.save(newPlanet).toDomain();
     }
 
     @Override
@@ -163,5 +180,11 @@ public class PlanetService implements IPlanetService {
                 .collect(Collectors.toList());
     }
 
+    private void throwNotFound(String id) {
+        log.info("Busca de planetas por id nao retornou nenhum resultado. id: {}.", id);
+        throw new HttpNotFoundException(format("Planeta com id {0} não encontrado.", id));
+    }
 
 }
+
+
