@@ -17,6 +17,8 @@ public interface IPlanetService {
 
     Planet save(Planet planet);
 
+    Planet updateById(String id, Planet planet);
+
     List<Planet> saveAll(List<Planet> planets);
 
     void deleteById(String id);

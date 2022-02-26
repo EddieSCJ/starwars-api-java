@@ -4,10 +4,15 @@ import com.api.starwars.commons.response.PageResponse;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import com.api.starwars.domain.planets.model.view.PlanetJson;
 import com.api.starwars.domain.planets.services.IPlanetService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +33,8 @@ public class PlanetHandler {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<Planet>> getAll(
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
+    public ResponseEntity<PageResponse<PlanetJson>> getAll(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "order", defaultValue = "name") String order,
             @RequestParam(name = "direction", defaultValue = "ASC") String direction,
@@ -43,6 +49,7 @@ public class PlanetHandler {
     }
 
     @GetMapping("/{id}")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
     public ResponseEntity<PlanetJson> getByID(
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
@@ -56,6 +63,7 @@ public class PlanetHandler {
     }
 
     @GetMapping("/search")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
     public ResponseEntity<PlanetJson> getByName(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") Long cacheInDays
@@ -68,7 +76,19 @@ public class PlanetHandler {
         return ResponseEntity.ok(planetJson);
     }
 
+    @PutMapping
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
+    public ResponseEntity<PlanetJson> updateById(@RequestBody PlanetJson planetJson) {
+        String id = planetJson.getId();
+        log.info("Iniciando atualizacao de planeta pelo id. id: {}", id);
+        Planet planet = planetService.updateById(id, planetJson.toDomain());
+
+        log.info("Planeta atualizado pelo id com sucesso. id: {}", id);
+        return ResponseEntity.ok(PlanetJson.fromDomain(planet));
+    }
+
     @PostMapping
+    @ApiResponse(responseCode = "201", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
     public ResponseEntity<PlanetJson> post(@Valid @RequestBody PlanetJson planet) {
         log.info("Iniciando cadastro de planeta por nome. name: {}.", planet.getName());
 
@@ -76,10 +96,11 @@ public class PlanetHandler {
         PlanetJson planetJson = PlanetJson.fromDomain(domainPlanet);
 
         log.info("Cadastro de planeta por nome concluido. id {}. name: {}.", planetJson.getId(), planet.getName());
-        return ResponseEntity.ok(planetJson);
+        return ResponseEntity.status(HttpStatus.CREATED).body(planetJson);
     }
 
     @DeleteMapping("/{id}")
+    @ApiResponse(responseCode = "204", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     public ResponseEntity<?> delete(@PathVariable String id) {
         log.info("Iniciando exclusao de planeta pelo id: {}.", id);
         planetService.deleteById(id);
