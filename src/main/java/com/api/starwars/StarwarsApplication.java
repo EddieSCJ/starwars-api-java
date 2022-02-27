@@ -16,11 +16,10 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @OpenAPIDefinition(info = @Info(
         title = "StarWars API",
         description = "API responsible for gateway between StarWars API and other services",
-        version = "v1",
+        version = "v0",
         contact = @Contact(email = "eddieprofessionalmail@gmail.com", name = "Edcleidson de Souza Cardoso Junior")
 ))
 public class StarwarsApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(StarwarsApplication.class, args);
     }

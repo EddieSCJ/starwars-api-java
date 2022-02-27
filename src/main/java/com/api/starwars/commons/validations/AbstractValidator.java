@@ -5,7 +5,6 @@ import com.api.starwars.commons.helpers.MessageSourceHelper;
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +36,10 @@ public abstract class AbstractValidator {
         isNull(field, value);
         isEmptyList(field, value);
         isEmptyArray(field,value);
+    }
+
+    protected void addFieldErrorMessage(String field, String message) {
+        validationMessages.add(format("Campo {0} {1}", field, message));
     }
 
     private void isBlank(Field field, Object value) {
@@ -72,10 +75,6 @@ public abstract class AbstractValidator {
                 addFieldErrorMessage(field.getName(), errorMessage);
             }
         }
-    }
-
-    protected void addFieldErrorMessage(String field, String message) {
-        validationMessages.add(format("Campo {0} {1}", field, message));
     }
 
 }

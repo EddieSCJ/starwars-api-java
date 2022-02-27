@@ -53,6 +53,9 @@ dependencies {
     /* Testing */
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.3.1'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'org.mockito:mockito-inline:3.8.0'
+
 }
 
 test {

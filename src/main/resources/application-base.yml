@@ -16,3 +16,13 @@ feign:
       starwars:
         connectTimeout: 1000
         readTimeout: 1000
+
+spring:
+  data:
+    mongodb:
+      host: ${dbHost}
+      port: ${dbPort}
+      username: ${dbUsername}
+      database: ${dbName}
+      password: ${dbPwd}
+      authSource: ${dbAuthSource}
