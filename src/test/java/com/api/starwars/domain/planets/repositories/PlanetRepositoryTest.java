@@ -17,18 +17,19 @@ import java.util.Optional;
 
 import static com.api.starwars.domain.planets.model.mongo.Constants.FIELD_ID;
 import static com.api.starwars.domain.planets.model.mongo.Constants.FIELD_NAME;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
+import static utils.Domain.FAKE_ID;
 
 public class PlanetRepositoryTest {
 
-    private final String FAKE_ID = "fake_id";
     @Mock
     private MongoTemplate mongoTemplate;
+
     @InjectMocks
     private PlanetRepository planetRepository;
 
@@ -46,41 +47,37 @@ public class PlanetRepositoryTest {
     }
 
     @Test
-    public void findByIdSuccessful() {
+    public void find_by_id_successful() {
         Criteria criteria = where(FIELD_ID).is(FAKE_ID);
+        when(mongoTemplate.findOne(eq(query(criteria)), eq(MongoPlanet.class))).thenReturn(Domain.getRandomMongoPlanet());
 
-        planetRepository.findbyId(FAKE_ID);
+        planetRepository.findById(FAKE_ID);
         verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
     }
 
     @Test
-    public void findByIdFailWheNotFound() {
+    public void find_by_id_fail_when_not_found() {
         Criteria criteria = where(FIELD_ID).is(FAKE_ID);
         when(mongoTemplate.findOne(query(criteria), eq(any()))).thenReturn(Optional.empty());
 
-        try {
-            planetRepository.findbyId(FAKE_ID);
-            verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
-        }
-        catch (HttpNotFoundException httpNotFoundException) {
-            assertTrue(StringUtils.hasText(httpNotFoundException.getMessage()));
-        }
+        assertThrows(HttpNotFoundException.class, () -> planetRepository.findById(FAKE_ID));
+        verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
 
     }
 
     @Test
-    public void findByNameSuccessful() {
+    public void find_by_name_successful() {
         final String FAKE_NAME = "fake_name";
-        Criteria criteria = findByNameCriteria(FAKE_NAME);
+        Criteria criteria = getFindByNameCriteria(FAKE_NAME);
 
         planetRepository.findByName(FAKE_NAME);
         verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
     }
 
     @Test
-    public void findByNameFailWhenNotFound() {
+    public void find_by_name_fail_when_not_found() {
         final String FAKE_NAME = "fake_name";
-        Criteria criteria = findByNameCriteria(FAKE_NAME);
+        Criteria criteria = getFindByNameCriteria(FAKE_NAME);
 
         when(mongoTemplate.findOne(query(criteria), eq(any()))).thenReturn(Optional.empty());
 
@@ -89,7 +86,7 @@ public class PlanetRepositoryTest {
     }
 
     @Test
-    public void saveSuccessful() {
+    public void save_successful() {
         LocalDateTime dateTime = LocalDateTime.now();
 
         try (MockedStatic<LocalDateTime> mock = Mockito.mockStatic(LocalDateTime.class)) {
@@ -104,7 +101,7 @@ public class PlanetRepositoryTest {
     }
 
     @Test
-    public void deleteByIdSuccessful() {
+    public void delete_by_id_successful() {
         Criteria criteria = where(FIELD_ID).is(FAKE_ID);
 
         when(mongoTemplate.remove(criteria)).thenReturn(DeleteResult.acknowledged(1L));
@@ -114,18 +111,14 @@ public class PlanetRepositoryTest {
     }
 
     @Test()
-    public void deleteByIdFailWhenNotFound() {
+    public void delete_by_id_fail_when_not_found() {
         Criteria criteria = where(FIELD_ID).is(FAKE_ID);
         when(mongoTemplate.remove(criteria)).thenReturn(DeleteResult.acknowledged(0L));
 
-        try {
-            planetRepository.deleteById(FAKE_ID);
-        } catch (HttpNotFoundException httpNotFoundException) {
-            assertTrue(StringUtils.hasText(httpNotFoundException.getMessage()));
-        }
+        assertThrows(HttpNotFoundException.class, () -> planetRepository.deleteById(FAKE_ID));
     }
 
-    public Criteria findByNameCriteria(String FAKE_NAME) {
+    public Criteria getFindByNameCriteria(String FAKE_NAME) {
         Criteria lowercase = where(FIELD_NAME).is(FAKE_NAME.toLowerCase());
         Criteria uppercase = where(FIELD_NAME).is(FAKE_NAME.toUpperCase());
         Criteria capitalized = where(FIELD_NAME).is(StringUtils.capitalize(FAKE_NAME));

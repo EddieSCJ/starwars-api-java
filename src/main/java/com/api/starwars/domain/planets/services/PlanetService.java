@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
 
@@ -67,7 +66,7 @@ public class PlanetService implements IPlanetService {
 
     @Override
     public Planet findById(String id, Long cacheInDays) throws IOException, InterruptedException {
-        Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
+        Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
         if (mongoPlanet.isEmpty()) {throwNotFound(id);}
 
         Planet domainPlanet = mongoPlanet.get().toDomain();
@@ -122,7 +121,7 @@ public class PlanetService implements IPlanetService {
             throw new HttpBadRequestException(errorMessages);
         }
 
-        Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
+        Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
         if (mongoPlanet.isEmpty()) {throwNotFound(id);}
 
         Planet newPlanet = new Planet(
@@ -138,11 +137,11 @@ public class PlanetService implements IPlanetService {
 
     @Override
     public List<Planet> saveAll(List<Planet> planets) {
-        List<MongoPlanet> mongoPlanets = planets.parallelStream().map(MongoPlanet::fromDomain).collect(Collectors.toList());
+        List<MongoPlanet> mongoPlanets = planets.parallelStream().map(MongoPlanet::fromDomain).toList();
         return planetMongoRepository.saveAll(mongoPlanets)
                 .parallelStream()
                 .map(MongoPlanet::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -164,8 +163,7 @@ public class PlanetService implements IPlanetService {
 
     }
 
-    @Override
-    public List<Planet> findAllFromStarWarsApi() {
+    private List<Planet> findAllFromStarWarsApi() {
         PlanetResponseJson planetResponseJson = starWarsApiClient.getPlanets();
         List<MPlanetJson> results = planetResponseJson.getResults();
 
@@ -177,7 +175,7 @@ public class PlanetService implements IPlanetService {
         return results
                 .parallelStream()
                 .map(planet -> planet.toDomain(null))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void throwNotFound(String id) {

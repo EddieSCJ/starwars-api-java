@@ -19,7 +19,6 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.mongodb.ReadPreference.primary;
 import static com.mongodb.ReadPreference.secondaryPreferred;
@@ -113,8 +112,8 @@ public class MongoConfiguration {
 
         List<Tag> tags = Arrays.stream(readPreferenceTags)
                 .map(tag -> tag.split("#"))
-                .map(splittedTag -> new Tag(splittedTag[0], splittedTag[1]))
-                .collect(Collectors.toList());
+                .map(splattedTag -> new Tag(splattedTag[0], splattedTag[1]))
+                .toList();
 
         return new TagSet(tags);
     }

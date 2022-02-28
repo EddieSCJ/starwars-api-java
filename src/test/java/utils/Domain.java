@@ -1,5 +1,7 @@
 package utils;
 
+import com.api.starwars.domain.planets.clients.view.MPlanetJson;
+import com.api.starwars.domain.planets.clients.view.PlanetResponseJson;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
 import com.github.javafaker.Faker;
@@ -10,25 +12,27 @@ import java.util.Random;
 
 public class Domain {
 
-    private static Faker faker = new Faker();
-    private static Random random = new Random();
+    public static final String FAKE_ID = "fake_id";
+
+    private static final Faker FAKER = new Faker();
+    private static final Random RANDOM = new Random();
 
     public static Planet getRandomPlanet() {
-        String[] weathers = new String[]{faker.weather().description(), faker.weather().description()};
-        String[] terrain = new String[]{faker.country().name(), faker.country().name()};
+        String[] weathers = new String[]{FAKER.weather().description(), FAKER.weather().description()};
+        String[] terrain = new String[]{FAKER.country().name(), FAKER.country().name()};
         return new Planet(
-                faker.idNumber().toString(),
-                faker.pokemon().name(),
+                FAKER.idNumber().toString(),
+                FAKER.pokemon().name(),
                 weathers,
                 terrain,
-                random.nextInt(),
-                random.nextLong()
+                RANDOM.nextInt(),
+                RANDOM.nextLong()
         );
     }
 
     public static List<Planet> getRandomPlanetList() {
         List<Planet> planets = new ArrayList<>();
-        for (int i = 0; i<3; i++) {
+        for (int i = 0; i < 3; i++) {
             planets.add(getRandomPlanet());
         }
 
@@ -41,10 +45,45 @@ public class Domain {
 
     public static List<MongoPlanet> getRandomMongoPlanetList() {
         List<MongoPlanet> mongoPlanets = new ArrayList<>();
-        for (int i = 0; i<3; i++) {
+        for (int i = 0; i < 3; i++) {
             mongoPlanets.add(getRandomMongoPlanet());
         }
 
         return mongoPlanets;
     }
+
+    public static PlanetResponseJson getPlanetResponseJson() {
+        List<String> films = List.of(FAKER.rickAndMorty().location(), FAKER.rickAndMorty().location());
+        String weathers = FAKER.weather().description()
+                .concat(",")
+                .concat(FAKER.weather().description());
+
+        String terrain = FAKER.country().name()
+                .concat(",")
+                .concat(FAKER.country().name());
+
+        MPlanetJson mPlanetJson = new MPlanetJson(
+                FAKER.pokemon().name(),
+                weathers,
+                terrain,
+                films
+        );
+
+        PlanetResponseJson planetResponseJson = new PlanetResponseJson();
+        List<MPlanetJson> planets = List.of(mPlanetJson);
+
+        planetResponseJson.setResults(planets);
+        planetResponseJson.setCount(1);
+
+        return planetResponseJson;
+    }
+
+    public static PlanetResponseJson getEmptyPlanetResponseJson() {
+        PlanetResponseJson planetResponseJson = getPlanetResponseJson();
+        planetResponseJson.setResults(new ArrayList<>());
+        planetResponseJson.setCount(0);
+
+        return planetResponseJson;
+    }
+
 }

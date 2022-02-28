@@ -23,6 +23,4 @@ public interface IPlanetService {
 
     void deleteById(String id);
 
-    List<Planet> findAllFromStarWarsApi();
-
 }
