@@ -2,7 +2,7 @@ stages:
   - sonarqube
 
 include:
-  template: base-gitlab-ci.yml
+  local: .base-gitlab-ci.yml
 
 sonarqube-check:
   stage: sonarqube
