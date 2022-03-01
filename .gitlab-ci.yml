@@ -38,3 +38,4 @@ sonarqube-check:
   only:
     - main
     - merge_requests
+    - pipelines
