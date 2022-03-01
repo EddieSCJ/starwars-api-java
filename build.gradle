@@ -8,20 +8,45 @@ plugins {
 
 compileJava.options.encoding = 'UTF-8'
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
-        property "sonar.qualitygate.wait", true
-        property 'sonar.jacoco.reportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
-    }
-}
-
+//Sonar Config
 // Configuration to produce xml
 jacocoTestReport {
     reports {
         xml.enabled true
     }
 }
+
+def allTestCoverageFile = "${rootProject.buildDir}/jacoco/allTestCoverage.exec" as Object
+task jacocoMerge(type: JacocoMerge, group: 'verification') {
+    destinationFile = file(allTestCoverageFile)
+    executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
+}
+
+jacoco {
+    toolVersion = "0.8.3"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
+        property "sonar.qualitygate.wait", true
+        property "sonar.jacoco.reportPaths", allTestCoverageFile
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    sonarqube {
+        properties {
+            property "sonar.jacoco.reportPaths", allTestCoverageFile
+        }
+    }
+
+    test.finalizedBy(jacocoMerge)
+}
+
 
 configurations {
     compileOnly {
