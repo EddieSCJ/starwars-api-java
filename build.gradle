@@ -8,7 +8,6 @@ plugins {
 
 compileJava.options.encoding = 'UTF-8'
 
-//Sonar Config
 // Configuration to produce xml
 jacocoTestReport {
     reports {
@@ -16,12 +15,14 @@ jacocoTestReport {
     }
 }
 
+// Getting Jacoco Test Report executable
 def allTestCoverageFile = "${rootProject.buildDir}/jacoco/allTestCoverage.exec" as Object
 task jacocoMerge(type: JacocoMerge, group: 'verification') {
     destinationFile = file(allTestCoverageFile)
     executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
 }
 
+//Sonar Config
 sonarqube {
     properties {
         property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
@@ -78,9 +79,4 @@ dependencies {
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
-}
-
-// Make it executable every time we execute tests
-plugins.withType(JacocoPlugin) {
-    tasks["test"].finalizedBy 'jacocoTestReport'
 }
