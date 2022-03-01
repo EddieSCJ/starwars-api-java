@@ -22,10 +22,6 @@ task jacocoMerge(type: JacocoMerge, group: 'verification') {
     executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
 }
 
-jacoco {
-    toolVersion = '0.8.7-SNAPSHOT'
-}
-
 sonarqube {
     properties {
         property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
@@ -33,20 +29,6 @@ sonarqube {
         property "sonar.jacoco.reportPaths", allTestCoverageFile
     }
 }
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'jacoco'
-
-    sonarqube {
-        properties {
-            property "sonar.jacoco.reportPaths", allTestCoverageFile
-        }
-    }
-
-    test.finalizedBy(jacocoMerge)
-}
-
 
 configurations {
     compileOnly {
