@@ -14,6 +14,7 @@ jacocoTestReport {
     reports {
         xml.enabled true
     }
+    onlyIf = { true }
 }
 
 def allTestCoverageFile = "${rootProject.buildDir}/jacoco/allTestCoverage.exec" as Object
@@ -94,6 +95,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 // Make it executable every time we execute tests
