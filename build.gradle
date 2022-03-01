@@ -2,8 +2,11 @@ plugins {
     id 'org.springframework.boot' version '2.6.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.sonarqube" version "3.3"
+    id "jacoco"
     id 'java'
 }
+
+compileJava.options.encoding = 'UTF-8'
 
 sonarqube {
     properties {
@@ -13,7 +16,12 @@ sonarqube {
     }
 }
 
-compileJava.options.encoding = 'UTF-8'
+// Configuration to produce xml
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
 
 configurations {
     compileOnly {
@@ -59,12 +67,11 @@ dependencies {
 
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
 test {
     useJUnitPlatform()
+}
+
+// Make it executable every time we execute tests
+plugins.withType(JacocoPlugin) {
+    tasks["test"].finalizedBy 'jacocoTestReport'
 }
