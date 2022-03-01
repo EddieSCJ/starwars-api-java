@@ -11,8 +11,7 @@ build:
   script: gradle build
   allow_failure: false
   only:
-    - main
-    - merge_requests
+    - always
 
 test:
   stage: test
@@ -20,8 +19,7 @@ test:
   script: gradle test
   allow_failure: false
   only:
-    - main
-    - merge_requests
+    - always
 
 sonarqube-check:
   stage: sonarqube
