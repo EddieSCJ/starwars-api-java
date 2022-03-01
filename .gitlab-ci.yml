@@ -16,9 +16,7 @@ sonarqube:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
-  script:
-    - gradle jacocoTestReport --daemon
-    - gradle sonarqube --stacktrace --daemon
+  script: gradle jacocoTestReport sonarqube --stacktrace --daemon
   only:
     - main
     - merge_requests

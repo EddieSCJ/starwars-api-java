@@ -8,21 +8,7 @@ plugins {
 
 compileJava.options.encoding = 'UTF-8'
 
-// Getting Jacoco Test Report executable
-def allTestCoverageFile = "${rootProject.buildDir}/jacoco/allTestCoverage.exec" as Object
-task jacocoMerge(type: JacocoMerge, group: 'verification') {
-    destinationFile = file(allTestCoverageFile)
-    executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
-}
-
-//Sonar Config
-sonarqube {
-    properties {
-        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
-        property "sonar.qualitygate.wait", true
-        property "sonar.jacoco.reportPaths", allTestCoverageFile
-    }
-}
+// =============================== Commons App Config =====================================
 
 configurations {
     compileOnly {
@@ -68,6 +54,25 @@ dependencies {
 
 }
 
+// ========================== Jacoco and Sonarqube config ================================
+
+// Getting Jacoco Test Report executable
+def allTestCoverageFile = "${rootProject.buildDir}/jacoco/allTestCoverage.exec" as Object
+task jacocoMerge(type: JacocoMerge, group: 'verification') {
+    destinationFile = file(allTestCoverageFile)
+    executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
+}
+
+//Sonar Config
+sonarqube {
+    properties {
+        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
+        property "sonar.qualitygate.wait", true
+        property "sonar.jacoco.reportPaths", allTestCoverageFile
+    }
+}
+
+// ================================ Tests ================================
 // Configuration to jacoco produce xml
 jacocoTestReport {
     reports {
@@ -80,6 +85,7 @@ test {
     finalizedBy jacocoTestReport
 }
 
+// ============================== Build Optimization ==============================
 tasks.register('copyFiles', Copy) {
     into(layout.buildDirectory.dir('output'))
     from(configurations.compileClasspath)
