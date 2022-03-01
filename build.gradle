@@ -8,13 +8,6 @@ plugins {
 
 compileJava.options.encoding = 'UTF-8'
 
-// Configuration to produce xml
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
 // Getting Jacoco Test Report executable
 def allTestCoverageFile = "${rootProject.buildDir}/jacoco/allTestCoverage.exec" as Object
 task jacocoMerge(type: JacocoMerge, group: 'verification') {
@@ -38,7 +31,6 @@ configurations {
 }
 
 repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     mavenCentral()
 }
 
@@ -74,6 +66,13 @@ dependencies {
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'org.mockito:mockito-inline:3.8.0'
 
+}
+
+// Configuration to jacoco produce xml
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
 }
 
 test {
