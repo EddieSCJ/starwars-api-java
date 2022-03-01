@@ -1,8 +1,10 @@
-stages:
-  - sonarqube
-
 include:
   local: .base-gitlab-ci.yml
+
+stages:
+  - build
+  - test
+  - sonarqube
 
 sonarqube-check:
   stage: sonarqube
