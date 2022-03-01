@@ -41,7 +41,7 @@ sonarqube-check:
       - .sonar/cache
   script:
     - gradle jacocoTestReport
-    - sonarqube --stacktrace
+    - gradle sonarqube --stacktrace
   only:
     - main
     - merge_requests
