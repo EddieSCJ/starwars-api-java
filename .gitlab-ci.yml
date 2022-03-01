@@ -6,7 +6,7 @@ stages:
   - test
   - sonarqube
 
-sonarqube-check:
+sonarqube:
   stage: sonarqube
   when: always
   needs:
@@ -17,8 +17,8 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script:
-    - gradle jacocoTestReport
-    - gradle sonarqube --stacktrace
+    - gradle jacocoTestReport --daemon
+    - gradle sonarqube --stacktrace --daemon
   only:
     - main
     - merge_requests

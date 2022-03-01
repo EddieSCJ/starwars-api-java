@@ -8,7 +8,7 @@ build:
   stage: build
   when: always
   allow_failure: false
-  script: gradle build
+  script: gradle build --daemon
   only:
     - main
     - merge_requests
@@ -19,7 +19,7 @@ test:
   allow_failure: false
   needs:
     - build
-  script: gradle test
+  script: gradle test --daemon
   only:
     - main
     - merge_requests

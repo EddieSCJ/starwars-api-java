@@ -79,3 +79,22 @@ test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
+
+tasks.register('copyFiles', Copy) {
+    into(layout.buildDirectory.dir('output'))
+    from(configurations.compileClasspath)
+    doFirst {
+        println ">> Compilation deps: ${configurations.compileClasspath.files}"
+    }
+}
+
+tasks.withType(Test).configureEach {
+    forkEvery = 100
+    reports.html.required = false
+    reports.junitXml.required = false
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.fork = true
+    options.incremental = true
+}
