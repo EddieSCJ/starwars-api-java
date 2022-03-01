@@ -1,0 +1,14 @@
+image: gradle:7.4.0-jdk17
+
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+
+build:
+  stage: build
+  when: always
+  script: gradle build
+  allow_failure: false
+  only:
+    - main
+    - merge_requests
