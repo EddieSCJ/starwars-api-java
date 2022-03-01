@@ -12,7 +12,7 @@ import org.mockito.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.StringUtils;
-import utils.Domain;
+import utils.DomainUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
-import static utils.Domain.FAKE_ID;
+import static utils.DomainUtils.FAKE_ID;
 
 public class PlanetRepositoryTest {
 
@@ -41,7 +41,6 @@ public class PlanetRepositoryTest {
     }
 
     @Nested
-    @DisplayName("Contar documentos.")
     class Count {
         @Test
         @DisplayName("Deve retornar a quantidade de documentos na colecao")
@@ -55,13 +54,12 @@ public class PlanetRepositoryTest {
     }
 
     @Nested
-    @DisplayName("Buscar por Id.")
     class FindById {
         @Test
         @DisplayName("Deve retornar um Optional nao vazio de MongoPlanet da database.")
         public void successful() {
             Criteria criteria = where(FIELD_ID).is(FAKE_ID);
-            when(mongoTemplate.findOne(eq(query(criteria)), eq(MongoPlanet.class))).thenReturn(Domain.getRandomMongoPlanet());
+            when(mongoTemplate.findOne(eq(query(criteria)), eq(MongoPlanet.class))).thenReturn(DomainUtils.getRandomMongoPlanet());
 
             planetRepository.findById(FAKE_ID);
             verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
@@ -81,14 +79,13 @@ public class PlanetRepositoryTest {
     }
 
     @Nested
-    @DisplayName("Buscar por nome.")
     class FindByName {
         @Test
         @DisplayName("Deve retornar um Optional nao vazio")
         public void successful() {
             final String FAKE_NAME = "fake_name";
             Criteria criteria = getFindByNameCriteria(FAKE_NAME);
-            when(mongoTemplate.findOne(query(criteria), MongoPlanet.class)).thenReturn(Domain.getRandomMongoPlanet());
+            when(mongoTemplate.findOne(query(criteria), MongoPlanet.class)).thenReturn(DomainUtils.getRandomMongoPlanet());
 
             planetRepository.findByName(FAKE_NAME);
             verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
@@ -109,7 +106,6 @@ public class PlanetRepositoryTest {
     }
 
     @Nested
-    @DisplayName("Salvar.")
     class Save {
         @Test
         @DisplayName("Deve salvar com sucesso um MongoPlanet")
@@ -119,7 +115,7 @@ public class PlanetRepositoryTest {
             try (MockedStatic<LocalDateTime> mock = Mockito.mockStatic(LocalDateTime.class)) {
                 mock.when(LocalDateTime::now).thenReturn(dateTime);
 
-                Planet planet = Domain.getRandomPlanet();
+                Planet planet = DomainUtils.getRandomPlanet();
                 planetRepository.save(planet);
 
                 verify(mongoTemplate, times(1)).save(eq(MongoPlanet.fromDomain(planet)));
@@ -128,7 +124,6 @@ public class PlanetRepositoryTest {
     }
 
     @Nested
-    @DisplayName("Deletar por Id.")
     class DeleteById {
 
         @Test

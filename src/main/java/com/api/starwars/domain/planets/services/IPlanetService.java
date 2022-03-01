@@ -15,9 +15,9 @@ public interface IPlanetService {
 
     Planet findByName(String name, Long cacheInDays) throws IOException, InterruptedException;
 
-    Planet save(Planet planet);
-
     Planet updateById(String id, Planet planet);
+
+    Planet save(Planet planet);
 
     List<Planet> saveAll(List<Planet> planets);
 

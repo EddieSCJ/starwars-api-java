@@ -31,15 +31,17 @@ public class PlanetService implements IPlanetService {
     private final IStarWarsApiClient starWarsApiClient;
     private final IPlanetMongoRepository planetMongoRepository;
     private final IPlanetRepository planetRepository;
-    private final PlanetValidator planetValidator = new PlanetValidator();
+    private final PlanetValidator planetValidator;
 
     @Autowired
     public PlanetService(IStarWarsApiClient starWarsApiMapper,
                          IPlanetMongoRepository planetMongoRepository,
-                         IPlanetRepository planetRepository) {
+                         IPlanetRepository planetRepository,
+                         PlanetValidator planetValidator) {
         this.starWarsApiClient = starWarsApiMapper;
         this.planetMongoRepository = planetMongoRepository;
         this.planetRepository = planetRepository;
+        this.planetValidator = planetValidator;
     }
 
     @Override
@@ -102,18 +104,6 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet save(Planet planet) throws HttpBadRequestException {
-        List<String> errorMessages = planetValidator.validate(planet);
-        if (!errorMessages.isEmpty()) {
-            log.warn("Erro ao salvar planeta. name: {}.", planet.name());
-            throw new HttpBadRequestException(errorMessages);
-        }
-
-        MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
-        return planetRepository.save(mongoPlanet.toDomain()).toDomain();
-    }
-
-    @Override
     public Planet updateById(String id, Planet planet) {
         List<String> errorMessages = planetValidator.validate(planet);
         if (!errorMessages.isEmpty()) {
@@ -136,6 +126,18 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
+    public Planet save(Planet planet) throws HttpBadRequestException {
+        List<String> errorMessages = planetValidator.validate(planet);
+        if (!errorMessages.isEmpty()) {
+            log.warn("Erro ao salvar planeta. name: {}.", planet.name());
+            throw new HttpBadRequestException(errorMessages);
+        }
+
+        MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
+        return planetRepository.save(mongoPlanet.toDomain()).toDomain();
+    }
+
+    @Override
     public List<Planet> saveAll(List<Planet> planets) {
         List<MongoPlanet> mongoPlanets = planets.parallelStream().map(MongoPlanet::fromDomain).toList();
         return planetMongoRepository.saveAll(mongoPlanets)
@@ -149,7 +151,7 @@ public class PlanetService implements IPlanetService {
         planetRepository.deleteById(id);
     }
 
-    public Planet findFromStarWarsApiBy(String name, String id) throws IOException, InterruptedException {
+    private Planet findFromStarWarsApiBy(String name, String id) throws IOException, InterruptedException {
         PlanetResponseJson planetResponseJson = starWarsApiClient.getPlanetBy(name);
         List<MPlanetJson> results = planetResponseJson.getResults();
 

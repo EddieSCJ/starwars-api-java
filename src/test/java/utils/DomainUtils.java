@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Domain {
+public class DomainUtils {
 
     public static final String FAKE_ID = "fake_id";
 
@@ -37,6 +37,18 @@ public class Domain {
         }
 
         return planets;
+    }
+
+
+    public static Planet getInvalidPlanet() {
+        return new Planet(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     public static MongoPlanet getRandomMongoPlanet() {
