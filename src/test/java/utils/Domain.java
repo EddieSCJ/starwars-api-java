@@ -52,7 +52,7 @@ public class Domain {
         return mongoPlanets;
     }
 
-    public static PlanetResponseJson getPlanetResponseJson() {
+    public static PlanetResponseJson getRandomPlanetResponseJson() {
         List<String> films = List.of(FAKER.rickAndMorty().location(), FAKER.rickAndMorty().location());
         String weathers = FAKER.weather().description()
                 .concat(",")
@@ -79,7 +79,7 @@ public class Domain {
     }
 
     public static PlanetResponseJson getEmptyPlanetResponseJson() {
-        PlanetResponseJson planetResponseJson = getPlanetResponseJson();
+        PlanetResponseJson planetResponseJson = getRandomPlanetResponseJson();
         planetResponseJson.setResults(new ArrayList<>());
         planetResponseJson.setCount(0);
 
