@@ -2,7 +2,7 @@ stages:
   - sonarqube
 
 include:
-  template: base-gitlab-cy.yml
+  template: base-gitlab-ci.yml
 
 sonarqube-check:
   stage: sonarqube
@@ -14,7 +14,7 @@ sonarqube-check:
     paths: .sonar/cache
   script:
     - gradle jacocoTestReport
-    - sonarqube --stacktrace
+    - gradle sonarqube --stacktrace
   only:
     - main
     - merge_requests
