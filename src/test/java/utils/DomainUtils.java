@@ -4,6 +4,7 @@ import com.api.starwars.domain.planets.clients.view.MPlanetJson;
 import com.api.starwars.domain.planets.clients.view.PlanetResponseJson;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
+import com.api.starwars.domain.planets.model.view.PlanetJson;
 import com.github.javafaker.Faker;
 
 import java.util.ArrayList;
@@ -98,4 +99,17 @@ public class DomainUtils {
         return planetResponseJson;
     }
 
+    public static PlanetJson getRandomPlanetJson() {
+        String[] weathers = new String[]{FAKER.weather().description(), FAKER.weather().description()};
+        String[] terrain = new String[]{FAKER.country().name(), FAKER.country().name()};
+
+        return new PlanetJson(
+          FAKER.idNumber().toString(),
+          FAKER.pokemon().name(),
+          weathers,
+          terrain,
+          RANDOM.nextLong(),
+          RANDOM.nextInt()
+        );
+    }
 }
