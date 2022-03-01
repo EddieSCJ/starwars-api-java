@@ -11,7 +11,7 @@ build:
   script: gradle build
   allow_failure: false
   only:
-    - always
+    - pipelines
 
 test:
   stage: test
@@ -19,7 +19,7 @@ test:
   script: gradle test
   allow_failure: false
   only:
-    - always
+    - pipelines
 
 sonarqube-check:
   stage: sonarqube
