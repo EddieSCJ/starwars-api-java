@@ -21,7 +21,7 @@ sonarqube-check:
   stage: sonarqube
   when: always
   needs:
-    - test
+    - build
   allow_failure: false
   cache:
     key: "${CI_JOB_NAME}"
