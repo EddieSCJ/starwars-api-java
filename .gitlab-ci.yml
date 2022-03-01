@@ -10,12 +10,18 @@ build:
   when: manual
   script: gradle build
   allow_failure: false
+  only:
+    - main
+    - merge_requests
 
 test:
   stage: test
   when: manual
   script: gradle test
   allow_failure: false
+  only:
+    - main
+    - merge_requests
 
 sonarqube-check:
   stage: sonarqube
