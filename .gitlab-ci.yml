@@ -18,17 +18,6 @@ build:
     - main
     - merge_requests
 
-test:
-  stage: test
-  when: always
-  needs:
-    - build
-  script: gradle test
-  allow_failure: false
-  only:
-    - main
-    - merge_requests
-
 sonarqube-check:
   stage: sonarqube
   when: always
@@ -40,8 +29,7 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script:
-    - gradle jacocoTestReport
-    - gradle sonarqube --stacktrace
+    - gradle test jacocoTestReport sonarqube --stacktrace
   only:
     - main
     - merge_requests
