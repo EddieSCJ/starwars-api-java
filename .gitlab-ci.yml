@@ -12,8 +12,8 @@ stages:
 build:
   stage: build
   when: always
+  script: gradle build
   allow_failure: false
-  script: gradle build --daemon
   only:
     - main
     - merge_requests
@@ -21,15 +21,15 @@ build:
 test:
   stage: test
   when: always
-  allow_failure: false
   needs:
     - build
-  script: gradle test --daemon
+  script: gradle test
+  allow_failure: false
   only:
     - main
     - merge_requests
 
-sonarqube:
+sonarqube-check:
   stage: sonarqube
   when: always
   needs:
@@ -39,7 +39,9 @@ sonarqube:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
-  script: gradle jacocoTestReport sonarqube --stacktrace --daemon
+  script:
+    - gradle jacocoTestReport
+    - sonarqube --stacktrace
   only:
     - main
     - merge_requests
