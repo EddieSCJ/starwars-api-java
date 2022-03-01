@@ -1,44 +1,17 @@
-image: gradle:7.4.0-jdk17
-
-variables:
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-
 stages:
-  - build
-  - test
   - sonarqube
 
-build:
-  stage: build
-  when: always
-  script: gradle build
-  allow_failure: false
-  only:
-    - main
-    - merge_requests
-
-test:
-  stage: test
-  when: always
-  needs:
-    - build
-  script: gradle test
-  allow_failure: false
-  only:
-    - main
-    - merge_requests
+include:
+  template: base-gitlab-cy.yml
 
 sonarqube-check:
   stage: sonarqube
   when: always
-  needs:
-    - test
+  needs: [ test ]
   allow_failure: false
   cache:
     key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
+    paths: .sonar/cache
   script:
     - gradle jacocoTestReport
     - sonarqube --stacktrace
