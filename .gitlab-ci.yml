@@ -7,7 +7,8 @@ include:
 sonarqube-check:
   stage: sonarqube
   when: always
-  needs: [ test ]
+  needs:
+    - test
   allow_failure: false
   cache:
     key: "${CI_JOB_NAME}"
