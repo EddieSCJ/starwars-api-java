@@ -1,0 +1,11 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username:
+      database: starwars
+      password:
+      authSource: admin
