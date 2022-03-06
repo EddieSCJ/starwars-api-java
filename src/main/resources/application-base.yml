@@ -20,9 +20,9 @@ feign:
 spring:
   data:
     mongodb:
-      host: ${dbHost}
-      port: ${dbPort}
-      username: ${dbUsername}
-      database: ${dbName}
-      password: ${dbPwd}
-      authSource: ${dbAuthSource}
+      host: ${DB_HOST}
+      port: ${DB_PORT}
+      username: ${DB_USERNAME}
+      database: ${DB_NAME}
+      password: ${DB_PASSWORD}
+      authSource: ${DB_AUTH_SOURCE}

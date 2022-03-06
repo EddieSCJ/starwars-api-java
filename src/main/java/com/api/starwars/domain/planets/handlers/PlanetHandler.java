@@ -33,7 +33,7 @@ public class PlanetHandler {
     }
 
     @GetMapping
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PageResponse.class)))
     public ResponseEntity<PageResponse<PlanetJson>> getAll(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "order", defaultValue = "name") String order,

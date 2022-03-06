@@ -1,4 +1,4 @@
-package utils;
+package commons.utils;
 
 import com.api.starwars.domain.planets.clients.view.MPlanetJson;
 import com.api.starwars.domain.planets.clients.view.PlanetResponseJson;

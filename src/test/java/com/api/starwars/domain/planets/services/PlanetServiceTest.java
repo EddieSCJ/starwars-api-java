@@ -9,6 +9,7 @@ import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
 import com.api.starwars.domain.planets.repositories.IPlanetMongoRepository;
 import com.api.starwars.domain.planets.repositories.IPlanetRepository;
 import com.api.starwars.domain.planets.validations.PlanetValidator;
+import commons.utils.DomainUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import utils.DomainUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static commons.utils.DomainUtils.FAKE_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static utils.DomainUtils.FAKE_ID;
 
 public class PlanetServiceTest {
 

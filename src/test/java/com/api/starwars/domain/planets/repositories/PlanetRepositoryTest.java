@@ -4,6 +4,7 @@ import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import com.api.starwars.domain.planets.model.mongo.MongoPlanet;
 import com.mongodb.client.result.DeleteResult;
+import commons.utils.DomainUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,20 +13,19 @@ import org.mockito.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.StringUtils;
-import utils.DomainUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.api.starwars.domain.planets.model.mongo.Constants.FIELD_ID;
 import static com.api.starwars.domain.planets.model.mongo.Constants.FIELD_NAME;
+import static commons.utils.DomainUtils.FAKE_ID;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
-import static utils.DomainUtils.FAKE_ID;
 
 public class PlanetRepositoryTest {
 

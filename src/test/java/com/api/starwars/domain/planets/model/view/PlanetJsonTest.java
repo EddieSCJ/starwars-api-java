@@ -1,9 +1,9 @@
 package com.api.starwars.domain.planets.model.view;
 
 import com.api.starwars.domain.planets.model.domain.Planet;
+import commons.utils.DomainUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.DomainUtils;
 
 import java.util.Objects;
 

@@ -1,11 +1,11 @@
 package com.api.starwars.domain.planets.model.mongo;
 
 import com.api.starwars.domain.planets.model.domain.Planet;
+import commons.utils.DomainUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import utils.DomainUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
