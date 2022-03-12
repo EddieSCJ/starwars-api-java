@@ -12,6 +12,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
+import static java.text.MessageFormat.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,7 +45,7 @@ public class PlanetHandlerTest extends AbstractIntegrationTest {
 
         @Test
         @DisplayName("Deve retornar 10 planetas buscados na API de star wars com sucesso devido a base estar vazia.")
-        public void find_in_star_wars_api_successful() throws Exception {
+        void find_in_star_wars_api_successful() throws Exception {
             mockMvc.perform(get(ENDPOINT))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.page").value(0))
@@ -51,7 +56,7 @@ public class PlanetHandlerTest extends AbstractIntegrationTest {
 
         @Test
         @DisplayName("Deve retornar 1 planeta buscado na base de dados com sucesso.")
-        public void find_in_database_successfully() throws Exception {
+        void find_in_database_successfully() throws Exception {
             PlanetJson planet = PlanetJson.fromDomain(saveMongoPlanet().toDomain());
             mockMvc.perform(get(ENDPOINT))
                     .andExpect(status().isOk())
@@ -67,10 +72,74 @@ public class PlanetHandlerTest extends AbstractIntegrationTest {
 
         @Test
         @DisplayName("Deve retornar apenas o tamanho definido no size com sucesso.")
-        public void find_with_parameter() throws Exception {
+        void find_with_parameter() throws Exception {
             mockMvc.perform(get(ENDPOINT).queryParam("size", "5"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.size").value(5));
         }
     }
+
+    @Nested
+    class getById {
+
+        private static final String ENDPOINT = "/planets/";
+
+        @Test
+        @DisplayName("Deve retornar um planeta buscado na base de dados com sucesso.")
+        void find_in_database_successful() throws Exception {
+            MongoPlanet mongoPlanet = saveMongoPlanet();
+            mockMvc.perform(get(ENDPOINT + mongoPlanet.getId()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
+                    .andExpect(jsonPath("$.name").value(mongoPlanet.getName()))
+                    .andExpect(jsonPath("$.cacheInDays").value(0L))
+                    .andExpect(jsonPath("$.movieAppearances").value(mongoPlanet.getMovieAppearances()));
+        }
+
+        @Test
+        @DisplayName("Deve buscar com sucesso um planeta na API de star wars quando o cache for invalido.")
+        void find_in_star_wars_api_successful() throws Exception {
+            MongoPlanet mongoPlanet = saveMongoPlanet();
+            MongoPlanet newMongoPlanet = MongoPlanet.builder()
+                    .id(mongoPlanet.getId())
+                    .name("Tatooine")
+                    .climate(mongoPlanet.getClimate())
+                    .terrain(mongoPlanet.getTerrain())
+                    .movieAppearances(mongoPlanet.getMovieAppearances())
+                    .build();
+
+            mockMvc.perform(get(ENDPOINT + mongoPlanet.getId())
+                            .queryParam("cacheInDays", "0"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
+                    .andExpect(jsonPath("$.name").value(mongoPlanet.getName()))
+                    .andExpect(jsonPath("$.cacheInDays").value(0L));
+        }
+
+        @Test
+        @DisplayName("Deve estourar 404 quando nao encontrar um planeta por id na base de dados.")
+        void throw_not_found() throws Exception {
+            final String id = UUID.randomUUID().toString();
+            mockMvc.perform(get(ENDPOINT + id))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message").value(format("Nenhum planeta com id {0} foi encontrado.", id)));
+
+        }
+
+        @Test
+        @DisplayName("Deve estourar 404 quando nao encontrar um planeta na API de star wars.")
+        void throw_not_found_when_not_found_in_starwars_api() throws Exception {
+            MongoPlanet mongoPlanet = saveMongoPlanet();
+            mongoPlanet.setCreationDate(LocalDateTime.now().minus(3, ChronoUnit.DAYS));
+
+            MongoPlanet invalidCacheMongoPlanet = planetMongoRepository.save(mongoPlanet);
+
+            mockMvc.perform(get(ENDPOINT + invalidCacheMongoPlanet.getId())
+                            .queryParam("cacheInDays", "0"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message").value(format("Planeta com nome {0} não encontrado.", invalidCacheMongoPlanet.getName())));
+        }
+
+    }
+
 }

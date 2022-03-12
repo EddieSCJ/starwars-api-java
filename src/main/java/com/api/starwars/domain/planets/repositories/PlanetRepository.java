@@ -48,7 +48,7 @@ public class PlanetRepository implements IPlanetRepository {
         Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
         if (planet.isEmpty()) {
             log.info("Busca de planeta no banco pelo id concluída com sucesso. id: {}. Planeta nao encontrado.", id);
-            throw new HttpNotFoundException(format("Nenhum Planeta com id {0} foi encontrado", id));
+            throw new HttpNotFoundException(format("Nenhum planeta com id {0} foi encontrado.", id));
         }
         log.info("Busca de planeta no banco pelo id concluida com sucesso. id: {}.", id);
         return planet;
