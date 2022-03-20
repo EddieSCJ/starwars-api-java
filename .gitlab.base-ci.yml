@@ -1,6 +1,11 @@
 image: gradle:7.4.0-jdk17
 
+services:
+  - docker:dind
+
 variables:
+  DOCKER_HOST: "tcp://docker:2375" # Instruct Testcontainers to use the daemon of DinD.
+  DOCKER_DRIVER: overlay2 # Improve performance with overlays.
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
