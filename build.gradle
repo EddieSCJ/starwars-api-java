@@ -9,7 +9,6 @@ plugins {
 compileJava.options.encoding = 'UTF-8'
 
 // =============================== Commons App Config =====================================
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
