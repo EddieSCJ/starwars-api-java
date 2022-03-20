@@ -68,7 +68,9 @@ task jacocoMerge(type: JacocoMerge, group: 'verification') {
 //Sonar Config
 sonarqube {
     properties {
-        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
+        property "sonar.projectKey", "starwars-api"
+        property "sonar.organization", "personal-ed-projects"
+        property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.qualitygate.wait", true
         property "sonar.jacoco.reportPaths", allTestCoverageFile
     }
