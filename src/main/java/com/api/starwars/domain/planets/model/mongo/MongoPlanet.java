@@ -23,7 +23,7 @@ public class MongoPlanet {
     private final String id;
 
     @Indexed(unique = true)
-    private final String name;
+    private String name;
     private final String[] climate;
     private final String[] terrain;
     private final Integer movieAppearances;

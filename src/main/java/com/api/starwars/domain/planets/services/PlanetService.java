@@ -34,11 +34,11 @@ public class PlanetService implements IPlanetService {
     private final PlanetValidator planetValidator;
 
     @Autowired
-    public PlanetService(IStarWarsApiClient starWarsApiMapper,
+    public PlanetService(IStarWarsApiClient starWarsApi,
                          IPlanetMongoRepository planetMongoRepository,
                          IPlanetRepository planetRepository,
                          PlanetValidator planetValidator) {
-        this.starWarsApiClient = starWarsApiMapper;
+        this.starWarsApiClient = starWarsApi;
         this.planetMongoRepository = planetMongoRepository;
         this.planetRepository = planetRepository;
         this.planetValidator = planetValidator;
@@ -157,7 +157,7 @@ public class PlanetService implements IPlanetService {
 
         if (results.isEmpty()) {
             log.info("Busca de planetas na api do star wars nao retornou nenhum resultado. id: {}. name: {}.", id, name);
-            throw new HttpNotFoundException(format("Planeta com nome {0} não encontrado.", name));
+            throw new HttpNotFoundException(format("Nenhum planeta com nome {0} foi encontrado.", name));
         }
 
         MPlanetJson mPlanetJson = results.get(0);

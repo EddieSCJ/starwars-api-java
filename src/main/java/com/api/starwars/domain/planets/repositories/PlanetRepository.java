@@ -66,7 +66,7 @@ public class PlanetRepository implements IPlanetRepository {
 
         if (planet.isEmpty()) {
             log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}. Planeta nao encontrado.", name);
-            throw new HttpNotFoundException(format("Planeta com nome {0} nao encontrado", name));
+            throw new HttpNotFoundException(format("Nenhum planeta com nome {0} foi encontrado.", name));
         }
 
         log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}.", name);

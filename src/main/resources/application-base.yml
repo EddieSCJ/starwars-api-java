@@ -15,7 +15,7 @@ feign:
     config:
       starwars:
         connectTimeout: 1000
-        readTimeout: 1000
+        readTimeout: 5000
 
 spring:
   data:
