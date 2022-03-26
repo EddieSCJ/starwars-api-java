@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 
+import static com.api.starwars.domain.planets.handlers.Constants.PLANETS_ENDPOINT;
+
 @FeignClient(name = "${clients.starwars.name}", url = "${clients.starwars.url}")
 public interface IStarWarsApiClient {
 
-    @GetMapping(value = "/planets/")
+    @GetMapping(value = PLANETS_ENDPOINT + "/")
     PlanetResponseJson getPlanetBy(@RequestParam("search") String name) throws IOException, InterruptedException;
 
-    @GetMapping(value = "/planets")
+    @GetMapping(value = PLANETS_ENDPOINT)
     PlanetResponseJson getPlanets();
 }

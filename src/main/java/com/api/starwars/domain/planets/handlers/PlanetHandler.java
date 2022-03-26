@@ -1,5 +1,6 @@
 package com.api.starwars.domain.planets.handlers;
 
+import com.api.starwars.commons.log.LoggerUtils;
 import com.api.starwars.commons.response.PageResponse;
 import com.api.starwars.domain.planets.model.domain.Planet;
 import com.api.starwars.domain.planets.model.view.PlanetJson;
@@ -19,9 +20,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 
+import static com.api.starwars.domain.planets.enums.OperationsEnum.*;
+import static com.api.starwars.domain.planets.handlers.Constants.PLANETS_ENDPOINT;
+
 @Slf4j
 @RestController
-@RequestMapping(value = "/planets")
+@RequestMapping(value = PLANETS_ENDPOINT)
 @Tag(name = "Planets")
 public class PlanetHandler {
 
@@ -41,6 +45,8 @@ public class PlanetHandler {
             @RequestParam(name = "size", defaultValue = "15") Integer size
     ) {
         log.info("Iniciando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
+        LoggerUtils.setOperationInfoIntoMDC(GET_PLANETS_PAGE);
+
         Page<Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
 
@@ -55,6 +61,8 @@ public class PlanetHandler {
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays
     ) throws IOException, InterruptedException {
         log.info("Iniciando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
+        LoggerUtils.setOperationInfoIntoMDC(id, GET_PLANET_BY_ID);
+
         Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
@@ -69,6 +77,8 @@ public class PlanetHandler {
             @RequestParam(defaultValue = "0") Long cacheInDays
     ) throws IOException, InterruptedException {
         log.info("Iniciando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
+        LoggerUtils.setOperationInfoIntoMDC(name, GET_PLANET_BY_NAME);
+
         Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
 
@@ -79,11 +89,12 @@ public class PlanetHandler {
     @PutMapping
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
     public ResponseEntity<PlanetJson> updateById(@RequestBody PlanetJson planetJson) {
-        String id = planetJson.getId();
-        log.info("Iniciando atualizacao de planeta pelo id. id: {}", id);
-        Planet planet = planetService.updateById(id, planetJson.toDomain());
+        log.info("Iniciando atualizacao de planeta pelo id. id: {}", planetJson.getId());
+        LoggerUtils.setOperationInfoIntoMDC(planetJson.getId(), UPDATE_PLANET);
 
-        log.info("Planeta atualizado pelo id com sucesso. id: {}", id);
+        Planet planet = planetService.updateById(planetJson.getId(), planetJson.toDomain());
+
+        log.info("Planeta atualizado pelo id com sucesso. id: {}", planetJson.getId());
         return ResponseEntity.ok(PlanetJson.fromDomain(planet));
     }
 
@@ -91,6 +102,7 @@ public class PlanetHandler {
     @ApiResponse(responseCode = "201", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PlanetJson.class)))
     public ResponseEntity<PlanetJson> post(@Valid @RequestBody PlanetJson planet) {
         log.info("Iniciando cadastro de planeta por nome. name: {}.", planet.getName());
+        LoggerUtils.setOperationInfoIntoMDC(planet.getId(), DELETE_PLANET);
 
         Planet domainPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(domainPlanet);
@@ -103,6 +115,8 @@ public class PlanetHandler {
     @ApiResponse(responseCode = "204", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     public ResponseEntity<?> delete(@PathVariable String id) {
         log.info("Iniciando exclusao de planeta pelo id: {}.", id);
+        LoggerUtils.setOperationInfoIntoMDC(id, DELETE_PLANET);
+
         planetService.deleteById(id);
 
         log.info("Exclusao de planeta pelo id concluida: {}.", id);
