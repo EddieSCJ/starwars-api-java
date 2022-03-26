@@ -44,7 +44,7 @@ public class PlanetRepositoryTest {
     class Count {
         @Test
         @DisplayName("Deve retornar a quantidade de documentos na colecao")
-        public void count() {
+        void count() {
             Criteria criteria = where(FIELD_ID).exists(true);
 
             planetRepository.count();
@@ -57,7 +57,7 @@ public class PlanetRepositoryTest {
     class FindById {
         @Test
         @DisplayName("Deve retornar um Optional nao vazio de MongoPlanet da database.")
-        public void successful() {
+        void successful() {
             Criteria criteria = where(FIELD_ID).is(FAKE_ID);
             when(mongoTemplate.findOne(eq(query(criteria)), eq(MongoPlanet.class))).thenReturn(DomainUtils.getRandomMongoPlanet());
 
@@ -67,7 +67,7 @@ public class PlanetRepositoryTest {
 
         @Test
         @DisplayName("Deve estourar 404 quando nao encontrar nenhum planeta com o id passado na database.")
-        public void when_not_found() {
+        void when_not_found() {
             Criteria criteria = where(FIELD_ID).is(FAKE_ID);
             when(mongoTemplate.findOne(query(criteria), eq(any()))).thenReturn(Optional.empty());
 
@@ -82,7 +82,7 @@ public class PlanetRepositoryTest {
     class FindByName {
         @Test
         @DisplayName("Deve retornar um Optional nao vazio")
-        public void successful() {
+        void successful() {
             final String FAKE_NAME = "fake_name";
             Criteria criteria = getFindByNameCriteria(FAKE_NAME);
             when(mongoTemplate.findOne(query(criteria), MongoPlanet.class)).thenReturn(DomainUtils.getRandomMongoPlanet());
@@ -93,7 +93,7 @@ public class PlanetRepositoryTest {
 
         @Test
         @DisplayName("Deve estourar 404 quando nao encontrar nenhum planeta na database com o nome passado.")
-        public void fail_when_not_found() {
+        void fail_when_not_found() {
             final String FAKE_NAME = "fake_name";
             Criteria criteria = getFindByNameCriteria(FAKE_NAME);
 
@@ -109,7 +109,7 @@ public class PlanetRepositoryTest {
     class Save {
         @Test
         @DisplayName("Deve salvar com sucesso um MongoPlanet")
-        public void successful() {
+        void successful() {
             LocalDateTime dateTime = LocalDateTime.now();
 
             try (MockedStatic<LocalDateTime> mock = Mockito.mockStatic(LocalDateTime.class)) {
@@ -128,20 +128,20 @@ public class PlanetRepositoryTest {
 
         @Test
         @DisplayName("Deve buscar por id, encontrar e deletar com sucesso o MongoPlanet.")
-        public void successful() {
+        void successful() {
             Criteria criteria = where(FIELD_ID).is(FAKE_ID);
 
-            when(mongoTemplate.remove(criteria)).thenReturn(DeleteResult.acknowledged(1L));
+            when(mongoTemplate.remove(query(criteria), MongoPlanet.class)).thenReturn(DeleteResult.acknowledged(1L));
 
             planetRepository.deleteById(FAKE_ID);
-            verify(mongoTemplate, times(1)).remove(criteria);
+            verify(mongoTemplate, times(1)).remove(query(criteria), MongoPlanet.class);
         }
 
         @Test
         @DisplayName("Deve estourar um 404 ao tentar deletar pois nao existe documento com o id passado.")
-        public void fail_when_not_found() {
+        void fail_when_not_found() {
             Criteria criteria = where(FIELD_ID).is(FAKE_ID);
-            when(mongoTemplate.remove(criteria)).thenReturn(DeleteResult.acknowledged(0L));
+            when(mongoTemplate.remove(query(criteria), MongoPlanet.class)).thenReturn(DeleteResult.acknowledged(0L));
 
             assertThrows(HttpNotFoundException.class, () -> planetRepository.deleteById(FAKE_ID));
         }

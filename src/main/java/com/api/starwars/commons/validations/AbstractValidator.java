@@ -2,7 +2,6 @@ package com.api.starwars.commons.validations;
 
 import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
 import com.api.starwars.commons.helpers.MessageSourceHelper;
-import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -12,10 +11,11 @@ import static java.text.MessageFormat.format;
 
 public abstract class AbstractValidator {
 
-    protected final List<String> validationMessages = new ArrayList<>();
+    protected List<String> validationMessages;
 
     public List<String> validate(Object generic) {
         Field[] declaredFields = generic.getClass().getDeclaredFields();
+        validationMessages = new ArrayList<>();
 
         try {
             for (Field field : declaredFields) {
@@ -32,8 +32,8 @@ public abstract class AbstractValidator {
     protected void callGenericValidators(Field field, Object generic) throws IllegalAccessException {
         Object value = field.get(generic);
 
-        isBlank(field, value);
         isNull(field, value);
+        isBlank(field, value);
         isEmptyList(field, value);
         isEmptyArray(field,value);
     }
@@ -43,13 +43,13 @@ public abstract class AbstractValidator {
     }
 
     private void isBlank(Field field, Object value) {
-        if (field.getType().equals(String.class) && StringUtils.isEmpty((String) value)) {
+        if (field.getType().equals(String.class) && value != null && value.equals("")) {
             String errorMessage = MessageSourceHelper.getFieldErrorMessage("blank");
             addFieldErrorMessage(field.getName(), errorMessage);
         }
     }
 
-    private void isNull(Field field, Object value) {
+    protected void isNull(Field field, Object value) {
         if (value == null) {
             String errorMessage = MessageSourceHelper.getFieldErrorMessage("null");
             addFieldErrorMessage(field.getName(), errorMessage);

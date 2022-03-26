@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 public class MongoPlanet {
 
     @Id
+    @Field("_id")
     @Indexed(unique = true)
     private final String id;
 

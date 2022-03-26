@@ -11,13 +11,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.shaded.com.github.dockerjava.core.MediaType;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,7 +87,7 @@ public class PlanetHandlerTest extends AbstractIntegrationTest {
     }
 
     @Nested
-    class getById {
+    class GetById {
 
         private static final String ENDPOINT = "/planets/";
 
@@ -148,7 +152,7 @@ public class PlanetHandlerTest extends AbstractIntegrationTest {
     }
 
     @Nested
-    class getByName {
+    class GetByName {
 
         private static final String ENDPOINT = "/planets/search?name=";
 
@@ -212,4 +216,140 @@ public class PlanetHandlerTest extends AbstractIntegrationTest {
         }
     }
 
+    @Nested
+    class UpdateById  {
+
+        private static final String ENDPOINT = "/planets";
+
+        private static final ObjectMapper mapper = new ObjectMapper();
+
+        @Test
+        @DisplayName("Deve atualizar um planeta encontrado na base de dados com sucesso.")
+        void update_successful() throws Exception {
+            MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
+            PlanetJson updatePlanet = DomainUtils.getRandomPlanetJson();
+            updatePlanet.setId(mongoPlanet.getId());
+
+            mockMvc.perform(put(ENDPOINT)
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType())
+                            .content(mapper.writeValueAsString(PlanetJson.fromDomain(updatePlanet.toDomain()))))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
+                    .andExpect(jsonPath("$.name").value(updatePlanet.getName()))
+                    .andExpect(jsonPath("$.climate", hasSize(updatePlanet.getClimate().length)))
+                    .andExpect(jsonPath("$.cacheInDays").value(0L));
+        }
+
+        @Test
+        @DisplayName("Deve estourar 404 quando nao encontrar um planeta na base de dados.")
+        void throw_not_found() throws Exception {
+            PlanetJson planetJson = DomainUtils.getRandomPlanetJson();
+            planetJson.setId(UUID.randomUUID().toString());
+
+            mockMvc.perform(put(ENDPOINT)
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType())
+                            .content(mapper.writeValueAsString(planetJson)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message").value(format("Nenhum planeta com id {0} foi encontrado.", planetJson.getId())));
+        }
+
+        @Test
+        @DisplayName("Deve estourar 400 quando o planeta tiver campos invalidos.")
+        void throw_bad_request() throws Exception {
+            PlanetJson planetJson = DomainUtils.getInvalidPlanetJson();
+            planetJson.setId(UUID.randomUUID().toString());
+
+            mockMvc.perform(put(ENDPOINT)
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType())
+                            .content(mapper.writeValueAsString(planetJson)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errors[0]").value("Campo name nao pode ser nulo."))
+                    .andExpect(jsonPath("$.errors[1]").value("Campo climate nao pode ser nulo."))
+                    .andExpect(jsonPath("$.errors[2]").value("Campo terrain nao pode ser nulo."))
+                    .andExpect(jsonPath("$.errors[3]").value("Campo movieAppearances nao pode ser nulo."));
+        }
+
+        @Test
+        @DisplayName("Deve estourar 400 quando o planeta tiver id invalido.")
+        void throw_bad_request_id() throws Exception {
+            PlanetJson planetJson = DomainUtils.getRandomPlanetJson();
+            planetJson.setId(null);
+
+            mockMvc.perform(put(ENDPOINT)
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType())
+                            .content(mapper.writeValueAsString(planetJson)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errors[0]").value("Campo id nao pode ser nulo."));
+        }
+    }
+
+    @Nested
+    class Save  {
+
+        private static final String ENDPOINT = "/planets";
+
+        private static final ObjectMapper mapper = new ObjectMapper();
+
+        @Test
+        @DisplayName("Deve salvar um planeta na base de dados com sucesso.")
+        void save_successful() throws Exception {
+            PlanetJson planetJson = DomainUtils.getRandomPlanetJson();
+            planetJson.setId(null);
+
+            mockMvc.perform(post(ENDPOINT)
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType())
+                            .content(mapper.writeValueAsString(PlanetJson.fromDomain(planetJson.toDomain()))))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.id", notNullValue()))
+                    .andExpect(jsonPath("$.name").value(planetJson.getName()))
+                    .andExpect(jsonPath("$.climate", hasSize(planetJson.getClimate().length)))
+                    .andExpect(jsonPath("$.cacheInDays").value(0L));
+        }
+
+        @Test
+        @DisplayName("Deve estourar 400 quando o planeta tiver campos invalidos.")
+        void throw_bad_request() throws Exception {
+            PlanetJson planetJson = DomainUtils.getInvalidPlanetJson();
+
+            mockMvc.perform(post(ENDPOINT)
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType())
+                            .content(mapper.writeValueAsString(planetJson)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errors[0]").value("Campo name nao pode ser nulo."))
+                    .andExpect(jsonPath("$.errors[1]").value("Campo climate nao pode ser nulo."))
+                    .andExpect(jsonPath("$.errors[2]").value("Campo terrain nao pode ser nulo."))
+                    .andExpect(jsonPath("$.errors[3]").value("Campo movieAppearances nao pode ser nulo."));
+        }
+
+    }
+
+    @Nested
+    class Delete  {
+
+        private static final String ENDPOINT = "/planets/";
+
+        private static final ObjectMapper mapper = new ObjectMapper();
+
+        @Test
+        @DisplayName("Deve deletar um planeta da base de dados pelo id com sucesso.")
+        void delete_successful() throws Exception {
+            MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
+
+            mockMvc.perform(delete(ENDPOINT + mongoPlanet.getId())
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType()))
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        @DisplayName("Deve estourar 404 quando nao encontrar um planeta na base de dados pelo id.")
+        void throw_not_found() throws Exception {
+            final String id = "some-id";
+
+            mockMvc.perform(delete(ENDPOINT + id)
+                            .contentType(MediaType.APPLICATION_JSON.getMediaType()))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message").value(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id)));
+        }
+
+    }
 }

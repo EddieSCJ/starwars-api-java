@@ -86,7 +86,7 @@ public class PlanetRepository implements IPlanetRepository {
     public void deleteById(String id) {
         log.info("Iniciando exclusao de planeta no banco pelo id. id: {}.", id);
         Criteria criteria = where(FIELD_ID).is(id);
-        DeleteResult deleteResult = mongoTemplate.remove(criteria);
+        DeleteResult deleteResult = mongoTemplate.remove(query(criteria), MongoPlanet.class);
         if (deleteResult.getDeletedCount() == 0) {
             log.info("Nenhum planeta foi deletado por id. id: {}.", id);
             throw new HttpNotFoundException(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id));

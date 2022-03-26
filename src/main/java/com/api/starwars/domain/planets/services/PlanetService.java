@@ -106,13 +106,19 @@ public class PlanetService implements IPlanetService {
     @Override
     public Planet updateById(String id, Planet planet) {
         List<String> errorMessages = planetValidator.validate(planet);
+        if (id == null) {
+            log.warn("Erro ao atualizar planeta. id {}. name: {}.", planet.id(), planet.name());
+            errorMessages.add("Campo id nao pode ser nulo.");
+            throw new HttpBadRequestException(errorMessages);
+        }
+
         if (!errorMessages.isEmpty()) {
             log.warn("Erro ao atualizar planeta. id {}. name: {}.", planet.id(), planet.name());
             throw new HttpBadRequestException(errorMessages);
         }
 
         Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
-        if (mongoPlanet.isEmpty()) {throwNotFound(id);}
+        if (mongoPlanet.isEmpty()) throwNotFound(id);
 
         Planet newPlanet = new Planet(
                 id,
@@ -120,7 +126,7 @@ public class PlanetService implements IPlanetService {
                 planet.climate(),
                 planet.terrain(),
                 planet.movieAppearances(),
-                planet.cacheInDays()
+                null
         );
         return planetRepository.save(newPlanet).toDomain();
     }

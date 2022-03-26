@@ -112,4 +112,16 @@ public class DomainUtils {
           RANDOM.nextInt()
         );
     }
+
+    public static PlanetJson getInvalidPlanetJson() {
+        return new PlanetJson(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
 }
