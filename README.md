@@ -17,7 +17,7 @@ Please, read the content below to know how to use this api and if is there any d
 #### <p align="center">  Using Cloud Tools </p>
 
 * Snyk
-    * Just click in the link above and search for starwars-api-go, so you will be able to see the security problems.
+    * Just click in the link above and search for starwars-api-java, so you will be able to see the security problems.
 * SonarCloud
     * Clicking the link above you will be redirected to the quality analysis of this project.
 * CodeCov
