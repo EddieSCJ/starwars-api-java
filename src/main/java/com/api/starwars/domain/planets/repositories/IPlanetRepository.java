@@ -12,7 +12,7 @@ public interface IPlanetRepository  {
 
     Optional<MongoPlanet> findByName(String name);
 
-    Optional<MongoPlanet> findbyId(String id);
+    Optional<MongoPlanet> findById(String id);
 
     MongoPlanet save(Planet planet);
 

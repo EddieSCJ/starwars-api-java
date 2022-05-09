@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PlanetJson {
-    private final String id;
+    private String id;
     private final String name;
     private final String[] climate;
     private final String[] terrain;

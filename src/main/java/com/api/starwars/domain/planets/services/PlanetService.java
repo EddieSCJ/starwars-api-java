@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
 
@@ -32,15 +31,17 @@ public class PlanetService implements IPlanetService {
     private final IStarWarsApiClient starWarsApiClient;
     private final IPlanetMongoRepository planetMongoRepository;
     private final IPlanetRepository planetRepository;
-    private final PlanetValidator planetValidator = new PlanetValidator();
+    private final PlanetValidator planetValidator;
 
     @Autowired
-    public PlanetService(IStarWarsApiClient starWarsApiMapper,
+    public PlanetService(IStarWarsApiClient starWarsApi,
                          IPlanetMongoRepository planetMongoRepository,
-                         IPlanetRepository planetRepository) {
-        this.starWarsApiClient = starWarsApiMapper;
+                         IPlanetRepository planetRepository,
+                         PlanetValidator planetValidator) {
+        this.starWarsApiClient = starWarsApi;
         this.planetMongoRepository = planetMongoRepository;
         this.planetRepository = planetRepository;
+        this.planetValidator = planetValidator;
     }
 
     @Override
@@ -67,7 +68,7 @@ public class PlanetService implements IPlanetService {
 
     @Override
     public Planet findById(String id, Long cacheInDays) throws IOException, InterruptedException {
-        Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
+        Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
         if (mongoPlanet.isEmpty()) {throwNotFound(id);}
 
         Planet domainPlanet = mongoPlanet.get().toDomain();
@@ -103,6 +104,34 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
+    public Planet updateById(String id, Planet planet) {
+        List<String> errorMessages = planetValidator.validate(planet);
+        if (id == null) {
+            log.warn("Erro ao atualizar planeta. id {}. name: {}.", planet.id(), planet.name());
+            errorMessages.add("Campo id nao pode ser nulo.");
+            throw new HttpBadRequestException(errorMessages);
+        }
+
+        if (!errorMessages.isEmpty()) {
+            log.warn("Erro ao atualizar planeta. id {}. name: {}.", planet.id(), planet.name());
+            throw new HttpBadRequestException(errorMessages);
+        }
+
+        Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
+        if (mongoPlanet.isEmpty()) throwNotFound(id);
+
+        Planet newPlanet = new Planet(
+                id,
+                planet.name(),
+                planet.climate(),
+                planet.terrain(),
+                planet.movieAppearances(),
+                null
+        );
+        return planetRepository.save(newPlanet).toDomain();
+    }
+
+    @Override
     public Planet save(Planet planet) throws HttpBadRequestException {
         List<String> errorMessages = planetValidator.validate(planet);
         if (!errorMessages.isEmpty()) {
@@ -115,34 +144,12 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet updateById(String id, Planet planet) {
-        List<String> errorMessages = planetValidator.validate(planet);
-        if (!errorMessages.isEmpty()) {
-            log.warn("Erro ao atualizar planeta. id {}. name: {}.", planet.id(), planet.name());
-            throw new HttpBadRequestException(errorMessages);
-        }
-
-        Optional<MongoPlanet> mongoPlanet = planetRepository.findbyId(id);
-        if (mongoPlanet.isEmpty()) {throwNotFound(id);}
-
-        Planet newPlanet = new Planet(
-                id,
-                planet.name(),
-                planet.climate(),
-                planet.terrain(),
-                planet.movieAppearances(),
-                planet.cacheInDays()
-        );
-        return planetRepository.save(newPlanet).toDomain();
-    }
-
-    @Override
     public List<Planet> saveAll(List<Planet> planets) {
-        List<MongoPlanet> mongoPlanets = planets.parallelStream().map(MongoPlanet::fromDomain).collect(Collectors.toList());
+        List<MongoPlanet> mongoPlanets = planets.parallelStream().map(MongoPlanet::fromDomain).toList();
         return planetMongoRepository.saveAll(mongoPlanets)
                 .parallelStream()
                 .map(MongoPlanet::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -150,13 +157,13 @@ public class PlanetService implements IPlanetService {
         planetRepository.deleteById(id);
     }
 
-    public Planet findFromStarWarsApiBy(String name, String id) throws IOException, InterruptedException {
+    private Planet findFromStarWarsApiBy(String name, String id) throws IOException, InterruptedException {
         PlanetResponseJson planetResponseJson = starWarsApiClient.getPlanetBy(name);
         List<MPlanetJson> results = planetResponseJson.getResults();
 
         if (results.isEmpty()) {
             log.info("Busca de planetas na api do star wars nao retornou nenhum resultado. id: {}. name: {}.", id, name);
-            throw new HttpNotFoundException(format("Planeta com nome {0} não encontrado.", name));
+            throw new HttpNotFoundException(format("Nenhum planeta com nome {0} foi encontrado.", name));
         }
 
         MPlanetJson mPlanetJson = results.get(0);
@@ -164,8 +171,7 @@ public class PlanetService implements IPlanetService {
 
     }
 
-    @Override
-    public List<Planet> findAllFromStarWarsApi() {
+    private List<Planet> findAllFromStarWarsApi() {
         PlanetResponseJson planetResponseJson = starWarsApiClient.getPlanets();
         List<MPlanetJson> results = planetResponseJson.getResults();
 
@@ -177,7 +183,7 @@ public class PlanetService implements IPlanetService {
         return results
                 .parallelStream()
                 .map(planet -> planet.toDomain(null))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void throwNotFound(String id) {

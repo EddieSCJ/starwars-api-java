@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     @ApiResponse(responseCode = "500", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
-    public ResponseEntity<BaseExceptionResponseJson> handleGenericException() {
+    public ResponseEntity<BaseExceptionResponseJson> handleGenericException(Exception ex) {
         BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), getApiErrorMessage("internal_server_error"));
 
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);

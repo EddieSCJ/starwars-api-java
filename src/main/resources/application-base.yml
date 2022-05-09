@@ -15,4 +15,14 @@ feign:
     config:
       starwars:
         connectTimeout: 1000
-        readTimeout: 1000
+        readTimeout: 10000
+
+spring:
+  data:
+    mongodb:
+      host: ${DB_HOST}
+      port: ${DB_PORT}
+      username: ${DB_USERNAME}
+      database: ${DB_NAME}
+      password: ${DB_PASSWORD}
+      authSource: ${DB_AUTH_SOURCE}

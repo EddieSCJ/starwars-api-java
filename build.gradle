@@ -1,19 +1,14 @@
 plugins {
     id 'org.springframework.boot' version '2.6.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id "org.sonarqube" version "3.3"
+    id 'org.sonarqube' version "3.3"
+    id 'jacoco'
     id 'java'
-}
-
-sonarqube {
-    properties {
-        property "sonar.projectKey", "EddieSCJ1_starwars-api-java_AX8QPRG7C8anaB0EMiVx"
-        property "sonar.qualitygate.wait", true
-    }
 }
 
 compileJava.options.encoding = 'UTF-8'
 
+// =============================== Commons App Config =====================================
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -53,8 +48,62 @@ dependencies {
     /* Testing */
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.3.1'
+    testImplementation "org.testcontainers:testcontainers:1.16.3"
+    testImplementation "org.testcontainers:junit-jupiter:1.16.3"
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'org.mockito:mockito-inline:3.8.0'
+
+}
+
+// ========================== Jacoco and Sonarqube config ================================
+
+// Getting Jacoco Test Report executable
+def allTestCoverageFile = "${rootProject.buildDir}/jacoco/allTestCoverage.exec" as Object
+task jacocoMerge(type: JacocoMerge, group: 'verification') {
+    destinationFile = file(allTestCoverageFile)
+    executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
+}
+
+//Sonar Config
+sonarqube {
+    properties {
+        property "sonar.projectKey", "starwars-api"
+        property "sonar.organization", "personal-ed-projects"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.qualitygate.wait", true
+        property "sonar.jacoco.reportPaths", allTestCoverageFile
+    }
+}
+
+// ================================ Tests ================================
+// Configuration to jacoco produce xml
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+// ============================== Build Optimization ==============================
+tasks.register('copyFiles', Copy) {
+    into(layout.buildDirectory.dir('output'))
+    from(configurations.compileClasspath)
+    doFirst {
+        println ">> Compilation deps: ${configurations.compileClasspath.files}"
+    }
+}
+
+tasks.withType(Test).configureEach {
+    forkEvery = 100
+    reports.html.required = false
+    reports.junitXml.required = false
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.fork = true
+    options.incremental = true
 }
