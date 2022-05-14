@@ -62,7 +62,7 @@ class PlanetRepositoryTest {
             when(mongoTemplate.findOne(eq(query(criteria)), eq(MongoPlanet.class))).thenReturn(DomainUtils.getRandomMongoPlanet());
 
             planetRepository.findById(FAKE_ID);
-            verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
+            verify(mongoTemplate, times(1)).findOne(query(criteria), eq(MongoPlanet.class));
         }
 
         @Test
@@ -72,7 +72,7 @@ class PlanetRepositoryTest {
             when(mongoTemplate.findOne(query(criteria), eq(any()))).thenReturn(Optional.empty());
 
             assertThrows(HttpNotFoundException.class, () -> planetRepository.findById(FAKE_ID));
-            verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
+            verify(mongoTemplate, times(1)).findOne(query(criteria), eq(MongoPlanet.class));
 
         }
 
@@ -88,7 +88,7 @@ class PlanetRepositoryTest {
             when(mongoTemplate.findOne(query(criteria), MongoPlanet.class)).thenReturn(DomainUtils.getRandomMongoPlanet());
 
             planetRepository.findByName(FAKE_NAME);
-            verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
+            verify(mongoTemplate, times(1)).findOne(query(criteria), eq(MongoPlanet.class));
         }
 
         @Test
@@ -97,10 +97,10 @@ class PlanetRepositoryTest {
             final String FAKE_NAME = "fake_name";
             Criteria criteria = getFindByNameCriteria(FAKE_NAME);
 
-            when(mongoTemplate.findOne(query(criteria), eq(any()))).thenReturn(Optional.empty());
+            when(mongoTemplate.findOne(query(criteria), any())).thenReturn(Optional.empty());
 
             assertThrows(HttpNotFoundException.class, () -> planetRepository.findByName(FAKE_NAME));
-            verify(mongoTemplate, times(1)).findOne(eq(query(criteria)), eq(MongoPlanet.class));
+            verify(mongoTemplate, times(1)).findOne(query(criteria), eq(MongoPlanet.class));
         }
 
     }
