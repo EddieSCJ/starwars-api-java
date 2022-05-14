@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-public class PlanetRepositoryTest {
+class PlanetRepositoryTest {
 
     @Mock
     private MongoTemplate mongoTemplate;
@@ -36,7 +36,7 @@ public class PlanetRepositoryTest {
     private PlanetRepository planetRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PlanetHandlerTest extends AbstractIntegrationTest {
+class PlanetHandlerTest extends AbstractIntegrationTest {
 
     @Autowired
     IPlanetRepository planetRepository;
@@ -35,7 +35,7 @@ public class PlanetHandlerTest extends AbstractIntegrationTest {
     IPlanetMongoRepository planetMongoRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         this.planetMongoRepository.deleteAll();
     }
 

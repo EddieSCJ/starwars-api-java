@@ -9,11 +9,11 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PlanetJsonTest {
+class PlanetJsonTest {
 
     @Test
     @DisplayName("Deve fazer a conversao para o dominio corretamente.")
-    public void toDomainSuccessfully() {
+    void toDomainSuccessfully() {
         PlanetJson planetJson = DomainUtils.getRandomPlanetJson();
         Planet expectedPlanet = new Planet(
                 planetJson.getId(),
@@ -29,7 +29,7 @@ public class PlanetJsonTest {
 
     @Test
     @DisplayName("Deve fazer a conversao a partir do dominio com sucesso.")
-    public void fromDomainSuccessfully() {
+    void fromDomainSuccessfully() {
         Planet planet = DomainUtils.getRandomPlanet();
         PlanetJson expectedPlanetJson = new PlanetJson(
                 planet.id(),

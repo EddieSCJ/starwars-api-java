@@ -18,8 +18,8 @@ public class MPlanetJson {
         return new Planet(
                 id,
                 this.name,
-                this.climate.replaceAll(" ", "").split(","),
-                this.terrain.replaceAll(" ", "").split(","),
+                this.climate.replace(" ", "").split(","),
+                this.terrain.replace(" ", "").split(","),
                 this.films.size(),
                 0L
         );

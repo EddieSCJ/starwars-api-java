@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class PlanetServiceTest {
+class PlanetServiceTest {
 
     @Mock
     IPlanetMongoRepository planetMongoRepository;
@@ -52,7 +52,7 @@ public class PlanetServiceTest {
     PlanetService planetService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -61,7 +61,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve retornar uma lista nao vazia quando execetuar um findAll na base de dados.")
-        public void successfully_from_database() {
+        void successfully_from_database() {
             Page<MongoPlanet> originalPage = new PageImpl<>(DomainUtils.getRandomMongoPlanetList());
             when(planetRepository.count()).thenReturn(3L);
             when(planetMongoRepository.findAll(any(PageRequest.class))).thenReturn(originalPage);
@@ -76,7 +76,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve retornar uma lista vazia da database e executar com sucesso um find na api do star wars.")
-        public void successfully_from_star_wars_api_client() {
+        void successfully_from_star_wars_api_client() {
             PlanetResponseJson planetResponseJson = DomainUtils.getRandomPlanetResponseJson();
             List<MongoPlanet> mongoPlanets = planetResponseJson.getResults().stream()
                     .map(mPlanetJson -> mPlanetJson.toDomain(null))
@@ -98,7 +98,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve estourar 404 quando nao encontrar nada na api de star wars e a base de dados estiver vazia.")
-        public void fail_when_not_found_from_star_wars_api_client() {
+        void fail_when_not_found_from_star_wars_api_client() {
             PlanetResponseJson planetResponseJson = DomainUtils.getEmptyPlanetResponseJson();
 
             when(planetRepository.count()).thenReturn(0L);
@@ -113,7 +113,7 @@ public class PlanetServiceTest {
     class FindById {
         @Test
         @DisplayName("Deve retornar planeta com sucesso.")
-        public void successful() throws IOException, InterruptedException {
+        void successful() throws IOException, InterruptedException {
             MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
             when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.of(mongoPlanet));
 
@@ -124,14 +124,14 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve estourar 404 quando nao encontrar nenhum planeta na base de dados.")
-        public void fail_when_not_found() {
+        void fail_when_not_found() {
             when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.empty());
             assertThrows(HttpNotFoundException.class, () -> planetService.findById(FAKE_ID, 0L));
         }
 
         @Test
         @DisplayName("Deve buscar e retornar um planeta da api de star wars quando o cache do planeta encontrado na base for invalido.")
-        public void successful_from_star_wars_api_client() throws IOException, InterruptedException {
+        void successful_from_star_wars_api_client() throws IOException, InterruptedException {
             MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
             mongoPlanet.setCreationDate(LocalDateTime.of(2001, 12, 12, 12, 12));
 
@@ -151,7 +151,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve buscar e estourar 404 quando nao encontrar na api de star wars e o cache do planeta na base for invalido.")
-        public void fail_when_not_found_from_star_wars_api() throws IOException, InterruptedException {
+        void fail_when_not_found_from_star_wars_api() throws IOException, InterruptedException {
             MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
             mongoPlanet.setCreationDate(LocalDateTime.of(2001, 12, 12, 12, 12));
 
@@ -168,7 +168,7 @@ public class PlanetServiceTest {
     class FindByName {
         @Test
         @DisplayName("Deve retornar planeta com sucesso.")
-        public void successful() throws IOException, InterruptedException {
+        void successful() throws IOException, InterruptedException {
             MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
 
             when(planetRepository.findByName(mongoPlanet.getName())).thenReturn(Optional.of(mongoPlanet));
@@ -180,7 +180,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve retornar planeta com sucesso quando receber um Optional vazio da database e um resultado nao vazio da api de star wars.")
-        public void successful_from_star_wars_api() throws IOException, InterruptedException {
+        void successful_from_star_wars_api() throws IOException, InterruptedException {
             PlanetResponseJson planetResponseJson = DomainUtils.getRandomPlanetResponseJson();
             MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planetResponseJson.getResults().get(0).toDomain(FAKE_ID));
             mongoPlanet.setCreationDate(LocalDateTime.of(2021, 12, 12, 12, 12));
@@ -196,7 +196,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve estourar 404 quando retornar um optional vazio da database e uma lista vazia da api de star wars")
-        public void fail_when_not_found() throws IOException, InterruptedException {
+        void fail_when_not_found() throws IOException, InterruptedException {
             final String FAKE_NAME = "fake_name";
             PlanetResponseJson planetResponseJson = DomainUtils.getEmptyPlanetResponseJson();
 
@@ -212,7 +212,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve atualizar planeta por id com sucesso.")
-        public void successful() {
+        void successful() {
             MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
             MongoPlanet newMongoPlanet = DomainUtils.getRandomMongoPlanet();
 
@@ -227,7 +227,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve estourar 400 ao validar planeta")
-        public void fail_when_invalid_fields() {
+        void fail_when_invalid_fields() {
             Planet invalidPlanet = DomainUtils.getInvalidPlanet();
 
             when(planetValidator.validate(any(Planet.class))).thenReturn(List.of("Campo X nao pode ser nulo."));
@@ -237,7 +237,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve estourar 404 quando nao encontrar planeta para ser atualizado por id.")
-        public void fail_when_not_found() {
+        void fail_when_not_found() {
             when(planetValidator.validate(any(Planet.class))).thenReturn(Collections.emptyList());
             when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.empty());
 
@@ -250,7 +250,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve salvar planeta com sucesso")
-        public void successful() {
+        void successful() {
             MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
             when(planetValidator.validate(any(Planet.class))).thenReturn(Collections.emptyList());
             when(planetRepository.save(any(Planet.class))).thenReturn(mongoPlanet);
@@ -261,7 +261,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve estourar 400 ao validar planeta.")
-        public void fail_when_invalid_fields() {
+        void fail_when_invalid_fields() {
             when(planetValidator.validate(any(Planet.class))).thenReturn(List.of("Campo X nao deve ser vazio"));
 
             assertThrows(HttpBadRequestException.class, () -> planetService.save(DomainUtils.getInvalidPlanet()));
@@ -269,7 +269,7 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve salvar todos os planetas enviados com sucesso.")
-        public void successful_save_all() {
+        void successful_save_all() {
             List<MongoPlanet> mongoPlanets = DomainUtils.getRandomMongoPlanetList();
             List<Planet> planets = mongoPlanets.parallelStream().map(MongoPlanet::toDomain).toList();
 
@@ -285,14 +285,14 @@ public class PlanetServiceTest {
 
         @Test
         @DisplayName("Deve deletar com sucesso por id.")
-        public void successful() {
+        void successful() {
             assertDoesNotThrow(() -> planetService.deleteById(FAKE_ID));
             verify(planetRepository, times(1)).deleteById(anyString());
         }
 
         @Test
         @DisplayName("Deve replicar excecao do metodo delete do repository.")
-        public void fail() {
+        void fail() {
             doThrow(HttpNotFoundException.class).when(planetRepository).deleteById(anyString());
 
             assertThrows(HttpNotFoundException.class, () -> planetService.deleteById(FAKE_ID));

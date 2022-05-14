@@ -13,11 +13,11 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MongoPlanetTest {
+class MongoPlanetTest {
 
     @Test
     @DisplayName("Deve fazer a conversao para o dominio corretamente.")
-    public void toDomainSuccessfully() {
+    void toDomainSuccessfully() {
         MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
         Planet expectedDomain = new Planet(
                 mongoPlanet.getId(),
@@ -33,7 +33,7 @@ public class MongoPlanetTest {
 
     @Test
     @DisplayName("Deve fazer a conversao a partir do dominio corretamente.")
-    public void fromDomainSuccessfully() {
+    void fromDomainSuccessfully() {
         LocalDateTime dateTime = LocalDateTime.now();
 
         try (MockedStatic<LocalDateTime> mock = Mockito.mockStatic(LocalDateTime.class)) {
