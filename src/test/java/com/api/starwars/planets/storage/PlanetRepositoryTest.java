@@ -28,7 +28,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 public class PlanetRepositoryTest {
-
     @Mock
     private MongoTemplate mongoTemplate;
 
