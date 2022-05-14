@@ -1,6 +1,6 @@
 package com.api.starwars.commons.log;
 
-import com.api.starwars.domain.planets.enums.OperationsEnum;
+import com.api.starwars.planets.enums.OperationsEnum;
 import org.slf4j.MDC;
 
 import java.util.UUID;
