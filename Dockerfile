@@ -1,5 +1,5 @@
 # First stage (build)
-FROM openjdk:16-jdk-slim AS BUILD_IMAGE
+FROM openjdk:18.0-jdk AS BUILD_IMAGE
 
 # Creating package where will be our application
 ENV APP_HOME=/root/dev/myapp/
@@ -20,7 +20,7 @@ RUN ./gradlew build
 
 # Second stage (run)
 # Using jdk (necessary to run the build jar)
-FROM openjdk:16-jdk-slim AS RUN_IMAGE
+FROM openjdk:18.0-jdk AS RUN_IMAGE
 WORKDIR /root/
 
 #Copying our jar from the first stage
