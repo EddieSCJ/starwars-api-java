@@ -20,4 +20,16 @@ public record Planet(String id, String name, String[] climate, String[] terrain,
         result = 31 * result + Arrays.hashCode(terrain);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Planet{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", climate=" + Arrays.toString(climate) +
+                ", terrain=" + Arrays.toString(terrain) +
+                ", movieAppearances=" + movieAppearances +
+                ", cacheInDays=" + cacheInDays +
+                '}';
+    }
 }
