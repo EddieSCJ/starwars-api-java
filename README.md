@@ -12,6 +12,8 @@ This api is a simple wrapper for the [Star Wars API](https://swapi.dev/) where y
 planets, starships, vehicles, species, films, and more with a few extra features where you can handle this data however you 
 need.
 
+The api also is documented with [OpenAPI Swagger](https://swagger.io/specification/), so if you have any doubt, just open in your browser the follow url: `http://domain-you-are-using/api/v0/swagger-ui/index.html`
+
 Please, read the content below to know how to use this api and if is there any doubt, please, contact me.
 
 #### <p align="center">  Using Cloud Tools </p>
