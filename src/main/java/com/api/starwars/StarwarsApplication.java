@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @SpringBootApplication
 @EnableMongoAuditing
 @EnableFeignClients
-@EnableMongoRepositories("com.api.starwars.domain")
+@EnableMongoRepositories("com.api.starwars")
 @OpenAPIDefinition(info = @Info(
         title = "StarWars API",
         description = "API responsible for gateway between StarWars API and other services",

@@ -14,11 +14,11 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PageResponseTest {
+class PageResponseTest {
 
     @Test
     @DisplayName("Deve fazer a conversao a partir de uma pagina")
-    public void fromPageSuccessfully() {
+    void fromPageSuccessfully() {
         Page page = new PageImpl<>(
                 List.of(DomainUtils.getRandomPlanetJson()),
                 PageRequest.of(1, 15, Sort.by("name").ascending()),
