@@ -1,13 +1,13 @@
-package com.api.starwars.planets.clients;
+package com.api.starwars.planets.client;
 
-import com.api.starwars.planets.clients.view.PlanetResponseJson;
+import com.api.starwars.planets.model.client.PlanetResponseJson;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 
-import static com.api.starwars.planets.handlers.Constants.PLANETS_ENDPOINT;
+import static com.api.starwars.planets.handler.Constants.PLANETS_ENDPOINT;
 
 @FeignClient(name = "${clients.starwars.name}", url = "${clients.starwars.url}")
 public interface IStarWarsApiClient {

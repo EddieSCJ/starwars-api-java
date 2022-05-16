@@ -1,7 +1,7 @@
 package commons.utils;
 
-import com.api.starwars.planets.clients.view.MPlanetJson;
-import com.api.starwars.planets.clients.view.PlanetResponseJson;
+import com.api.starwars.planets.model.client.MPlanetJson;
+import com.api.starwars.planets.model.client.PlanetResponseJson;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.model.view.PlanetJson;

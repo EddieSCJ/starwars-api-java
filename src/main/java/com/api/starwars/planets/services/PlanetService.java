@@ -2,10 +2,10 @@ package com.api.starwars.planets.services;
 
 import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
-import com.api.starwars.planets.clients.IStarWarsApiClient;
-import com.api.starwars.planets.clients.view.MPlanetJson;
-import com.api.starwars.planets.clients.view.PlanetResponseJson;
-import com.api.starwars.planets.handlers.interfaces.IPlanetService;
+import com.api.starwars.planets.client.IStarWarsApiClient;
+import com.api.starwars.planets.handler.interfaces.IPlanetService;
+import com.api.starwars.planets.model.client.MPlanetJson;
+import com.api.starwars.planets.model.client.PlanetResponseJson;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.services.interfaces.IPlanetMongoRepository;

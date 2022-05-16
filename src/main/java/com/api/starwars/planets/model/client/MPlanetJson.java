@@ -1,4 +1,4 @@
-package com.api.starwars.planets.clients.view;
+package com.api.starwars.planets.model.client;
 
 import com.api.starwars.planets.model.domain.Planet;
 import lombok.AllArgsConstructor;

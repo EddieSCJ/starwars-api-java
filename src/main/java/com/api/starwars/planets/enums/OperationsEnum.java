@@ -1,6 +1,6 @@
 package com.api.starwars.planets.enums;
 
-import com.api.starwars.planets.handlers.Constants;
+import com.api.starwars.planets.handler.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpMethod;

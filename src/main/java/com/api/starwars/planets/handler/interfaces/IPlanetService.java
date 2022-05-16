@@ -1,4 +1,4 @@
-package com.api.starwars.planets.handlers.interfaces;
+package com.api.starwars.planets.handler.interfaces;
 
 
 import com.api.starwars.planets.model.domain.Planet;

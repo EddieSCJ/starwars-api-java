@@ -1,4 +1,4 @@
-package com.api.starwars.planets.clients.view;
+package com.api.starwars.planets.model.client;
 
 import lombok.Data;
 

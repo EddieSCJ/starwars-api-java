@@ -1,4 +1,4 @@
-package com.api.starwars.planets.handlers;
+package com.api.starwars.planets.handler;
 
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.model.view.PlanetJson;

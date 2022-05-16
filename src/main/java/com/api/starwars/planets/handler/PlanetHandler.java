@@ -1,8 +1,8 @@
-package com.api.starwars.planets.handlers;
+package com.api.starwars.planets.handler;
 
 import com.api.starwars.commons.log.LoggerUtils;
 import com.api.starwars.commons.response.PageResponse;
-import com.api.starwars.planets.handlers.interfaces.IPlanetService;
+import com.api.starwars.planets.handler.interfaces.IPlanetService;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.view.PlanetJson;
 import io.swagger.v3.oas.annotations.media.Content;
