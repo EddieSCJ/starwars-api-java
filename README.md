@@ -86,6 +86,7 @@ curl --location --request GET 'http://localhost:8080/api/v0/planets' \
 #### <p align="center"> Running </p>
 
 You'll see some run configurations below
+
 Enviroment Variables to be set
 
 ```
@@ -98,8 +99,20 @@ AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#
 
 * Only Testing
 
+Enviroment Variables to be set
+
+```
+AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+```
+
 ![Screenshot from 2022-05-13 23-12-27](https://user-images.githubusercontent.com/47372251/168407052-cfc39577-0234-4c80-9f16-0b3310437593.png)
 
 * Sonar Coverage Analysis
+
+Enviroment Variables to be set
+
+```
+AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+```
 
 ![Screenshot from 2022-05-13 23-13-28](https://user-images.githubusercontent.com/47372251/168407069-87d8b8d8-e751-4953-862a-12c09e24f73c.png)
