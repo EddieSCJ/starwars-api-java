@@ -89,6 +89,7 @@ jacocoTestReport {
 }
 
 test {
+    environment "AUTHORIZATION_SECRET", "TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU\$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS"
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
