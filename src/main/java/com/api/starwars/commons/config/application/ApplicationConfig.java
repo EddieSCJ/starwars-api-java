@@ -4,17 +4,11 @@ import com.api.starwars.commons.helpers.MessageSourceHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class ApplicationConfig {
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Bean
     public MessageSourceHelper messageSourceHelper() {
         return new MessageSourceHelper(reloadableResourceBundleMessageSource());

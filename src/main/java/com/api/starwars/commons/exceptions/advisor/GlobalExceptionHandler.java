@@ -2,7 +2,6 @@ package com.api.starwars.commons.exceptions.advisor;
 
 import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
-import com.api.starwars.commons.exceptions.http.HttpUnauthorizedException;
 import com.api.starwars.commons.exceptions.view.BadRequestExceptionResponseJson;
 import com.api.starwars.commons.exceptions.view.BaseExceptionResponseJson;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +12,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -63,14 +61,6 @@ public class GlobalExceptionHandler {
     @ApiResponse(responseCode = "405", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
     public ResponseEntity<BaseExceptionResponseJson> handleMethodNotAllowedException() {
         BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.METHOD_NOT_ALLOWED.value(), getApiErrorMessage("method_not_allowed"));
-
-        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
-    }
-
-    @ExceptionHandler({HttpUnauthorizedException.class, AccessDeniedException.class})
-    @ApiResponse(responseCode = "401", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
-    public ResponseEntity<BaseExceptionResponseJson> handleUnauthorizedException(Exception ex) {
-        BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
 
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }

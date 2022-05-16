@@ -1,6 +1,5 @@
 package com.api.starwars.planets.handler;
 
-import com.api.starwars.commons.auth.jwt.service.interfaces.ApplicationUserRepository;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.model.view.PlanetJson;
 import com.api.starwars.planets.services.interfaces.IPlanetMongoRepository;
@@ -35,14 +34,9 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
     @Autowired
     IPlanetMongoRepository planetMongoRepository;
 
-    @Autowired
-    ApplicationUserRepository applicationUserRepository;
-
     @BeforeEach
     void setup() {
-        this.applicationUserRepository.deleteAll();
         this.planetMongoRepository.deleteAll();
-        this.applicationUserRepository.save(APPLICATION_USER);
     }
 
     private MongoPlanet saveMongoPlanet(MongoPlanet mongoPlanet) {
@@ -58,7 +52,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         @Test
         @DisplayName("Deve retornar 10 planetas buscados na API de star wars com sucesso devido a base estar vazia.")
         void find_in_star_wars_api_successful() throws Exception {
-            mockMvc.perform(MockMvcRequestBuilders.get(Constants.PLANETS_ENDPOINT).header("Authorization", TOKEN))
+            mockMvc.perform(MockMvcRequestBuilders.get(Constants.PLANETS_ENDPOINT))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.page").value(0))
                     .andExpect(jsonPath("$.size").value(15))
@@ -71,7 +65,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         void find_in_database_successfully() throws Exception {
             MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
             PlanetJson planet = PlanetJson.fromDomain(mongoPlanet.toDomain());
-            mockMvc.perform(MockMvcRequestBuilders.get(Constants.PLANETS_ENDPOINT).header("Authorization", TOKEN))
+            mockMvc.perform(MockMvcRequestBuilders.get(Constants.PLANETS_ENDPOINT))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.page").value(0))
                     .andExpect(jsonPath("$.size").value(15))
@@ -86,8 +80,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         @Test
         @DisplayName("Deve retornar apenas o tamanho definido no size com sucesso.")
         void find_with_parameter() throws Exception {
-            mockMvc.perform(MockMvcRequestBuilders.get(Constants.PLANETS_ENDPOINT).header("Authorization", TOKEN)
-                            .queryParam("size", "5"))
+            mockMvc.perform(MockMvcRequestBuilders.get(Constants.PLANETS_ENDPOINT).queryParam("size", "5"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.size").value(5));
         }
@@ -101,8 +94,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         @DisplayName("Deve retornar um planeta buscado na base de dados com sucesso.")
         void find_in_database_successful() throws Exception {
             MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
-            mockMvc.perform(get(format("{0}/{1}", Constants.PLANETS_ENDPOINT, mongoPlanet.getId()))
-                            .header("Authorization", TOKEN))
+            mockMvc.perform(get(format("{0}/{1}", Constants.PLANETS_ENDPOINT, mongoPlanet.getId())))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
                     .andExpect(jsonPath("$.name").value(mongoPlanet.getName()))
@@ -126,7 +118,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             saveMongoPlanet(newMongoPlanet);
 
             mockMvc.perform(get(format("{0}/{1}", Constants.PLANETS_ENDPOINT, mongoPlanet.getId()))
-                            .header("Authorization", TOKEN)
                             .queryParam("cacheInDays", "0"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(newMongoPlanet.getId()))
@@ -138,8 +129,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         @DisplayName("Deve estourar 404 quando nao encontrar um planeta por id na base de dados.")
         void throw_not_found() throws Exception {
             final String id = UUID.randomUUID().toString();
-            mockMvc.perform(get(format("{0}/{1}", Constants.PLANETS_ENDPOINT, id))
-                            .header("Authorization", TOKEN))
+            mockMvc.perform(get(format("{0}/{1}", Constants.PLANETS_ENDPOINT, id)))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.message").value(format("Nenhum planeta com id {0} foi encontrado.", id)));
 
@@ -154,7 +144,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             MongoPlanet invalidCacheMongoPlanet = planetMongoRepository.save(mongoPlanet);
 
             mockMvc.perform(get(format("{0}/{1}", Constants.PLANETS_ENDPOINT, mongoPlanet.getId()))
-                            .header("Authorization", TOKEN)
                             .queryParam("cacheInDays", "0"))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.message").value(format("Nenhum planeta com nome {0} foi encontrado.", invalidCacheMongoPlanet.getName())));
@@ -170,7 +159,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         @DisplayName("Deve retornar um planeta buscado na base de dados com sucesso.")
         void find_in_database_successful() throws Exception {
             MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
-            mockMvc.perform(get(ENDPOINT + mongoPlanet.getName()).header("Authorization", TOKEN))
+            mockMvc.perform(get(ENDPOINT + mongoPlanet.getName()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
                     .andExpect(jsonPath("$.name").value(mongoPlanet.getName()))
@@ -194,7 +183,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             saveMongoPlanet(newMongoPlanet);
 
             mockMvc.perform(get(ENDPOINT + newMongoPlanet.getName())
-                            .header("Authorization", TOKEN)
                             .queryParam("cacheInDays", "0"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(newMongoPlanet.getId()))
@@ -206,7 +194,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         @DisplayName("Deve estourar 404 quando nao encontrar um planeta por nome na base de dados e na api de star wars.")
         void throw_not_found() throws Exception {
             final String name = "SomeName";
-            mockMvc.perform(get(ENDPOINT + name).header("Authorization", TOKEN))
+            mockMvc.perform(get(ENDPOINT + name))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.message").value(format("Nenhum planeta com nome {0} foi encontrado.", name)));
 
@@ -221,7 +209,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             saveMongoPlanet(mongoPlanet);
 
             mockMvc.perform(get(ENDPOINT + mongoPlanet.getName())
-                            .header("Authorization", TOKEN)
                             .queryParam("cacheInDays", "0"))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.message").value(format("Nenhum planeta com nome {0} foi encontrado.", mongoPlanet.getName())));
@@ -243,7 +230,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             updatePlanet.setId(mongoPlanet.getId());
 
             mockMvc.perform(put(ENDPOINT)
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType())
                             .content(mapper.writeValueAsString(PlanetJson.fromDomain(updatePlanet.toDomain()))))
                     .andExpect(status().isOk())
@@ -260,7 +246,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             planetJson.setId(UUID.randomUUID().toString());
 
             mockMvc.perform(put(ENDPOINT)
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType())
                             .content(mapper.writeValueAsString(planetJson)))
                     .andExpect(status().isNotFound())
@@ -274,7 +259,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             planetJson.setId(UUID.randomUUID().toString());
 
             mockMvc.perform(put(ENDPOINT)
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType())
                             .content(mapper.writeValueAsString(planetJson)))
                     .andExpect(status().isBadRequest())
@@ -291,7 +275,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             planetJson.setId(null);
 
             mockMvc.perform(put(ENDPOINT)
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType())
                             .content(mapper.writeValueAsString(planetJson)))
                     .andExpect(status().isBadRequest())
@@ -312,7 +295,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             planetJson.setId(null);
 
             mockMvc.perform(MockMvcRequestBuilders.post(Constants.PLANETS_ENDPOINT)
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType())
                             .content(mapper.writeValueAsString(PlanetJson.fromDomain(planetJson.toDomain()))))
                     .andExpect(status().isCreated())
@@ -328,7 +310,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             PlanetJson planetJson = DomainUtils.getInvalidPlanetJson();
 
             mockMvc.perform(MockMvcRequestBuilders.post(Constants.PLANETS_ENDPOINT)
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType())
                             .content(mapper.writeValueAsString(planetJson)))
                     .andExpect(status().isBadRequest())
@@ -349,7 +330,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
 
             mockMvc.perform(delete(format("{0}/{1}", Constants.PLANETS_ENDPOINT, mongoPlanet.getId()))
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType()))
                     .andExpect(status().isNoContent());
         }
@@ -360,7 +340,6 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             final String id = "some-id";
 
             mockMvc.perform(delete(format("{0}/{1}", Constants.PLANETS_ENDPOINT, id))
-                            .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType()))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.message").value(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id)));
