@@ -22,13 +22,17 @@ repositories {
 dependencies {
 
     /* Spring Boot */
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
-    implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.7'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.2'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.7'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.7'
 
     /* Spring Cloud */
     implementation('org.springframework.cloud:spring-cloud-context:3.1.2')
+
+    /* Security */
+    implementation 'com.auth0:java-jwt:3.10.3'
 
     /* Database */
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.6.7'
@@ -48,6 +52,7 @@ dependencies {
     /* Testing */
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.5'
+    implementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:testcontainers:1.17.1'
     testImplementation 'org.testcontainers:junit-jupiter:1.17.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
