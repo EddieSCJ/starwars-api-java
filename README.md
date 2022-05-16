@@ -32,25 +32,87 @@ One exception is snyk, which sometimes have some problems that can't be solved n
 #### <p align="center">  Using Cloud Tools </p>
 
 * Snyk
-    * Just click in the link above and search for starwars-api-java, so you will be able to see the security problems.
+  * Just click in the link above and search for starwars-api-java, so you will be able to see the security problems.
 * SonarCloud
-    * Clicking the link above you will be redirected to the quality analysis of this project.
+  * Clicking the link above you will be redirected to the quality analysis of this project.
 * CodeCov
-    * You can click the link above and see the code coverage details by commit or any type of data or just see the summary in your PR.
+  * You can click the link above and see the code coverage details by commit or any type of data or just see the summary
+    in your PR.
 
+#### <p align="center"> Pre Configurations </p>
+
+Execute the following script in your mongo database
+
+```mongodb-json-query
+use starwars
+db.createCollection("user")
+
+db.getCollection('user').insert({
+  "_id": ObjectId(
+  "6281f179344601ef2e98dcd3"
+  ),
+  "username": "another_application_who_consumes_this_api",
+  "password": "$2a$10$W1NqIc3gvpLNwQska2iAFOQ1FOpUDQ1a5FF.ffAF2eUNuaLrr3FKm",
+  "authorities": [
+    "PLANET_LIST",
+    "PLANET_CREATE",
+    "PLANET_UPDATE",
+    "PLANET_DELETE"
+  ]
+})
+```
+
+#### <p align="center">  Making Requests </p>
+
+Being authenticated:
+
+```bash
+curl --location --request POST 'http://localhost:8080/api/v0/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "username":"another_application_who_consumes_this_api",
+    "password": "12"
+}'
+```
+
+Using Authorization to get planets
+
+```bash
+curl --location --request GET 'http://localhost:8080/api/v0/planets' \
+--header 'Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbm90aGVyX2FwcGxpY2F0aW9uX3dob19jb25zdW1lc190aGlzX2FwaSJ9.jnSWQTkg6dQ18tAPl8RS2JrdEdmtxBvx40Tq7WqYFighnziLKzUi2BLJ4S__dOlQDuJl0Lw3NYFS5IbGgd-XnQ' \
+--header 'Content-Type: application/json'
+```
 
 #### <p align="center"> Running </p>
+
 You'll see some run configurations below
 
-![Screenshot from 2022-05-13 22-59-57](https://user-images.githubusercontent.com/47372251/168406781-09afe345-eb57-4f42-8516-8ce0d7a58439.png)
+Enviroment Variables to be set
 
+```
+AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+```
+
+![Screenshot from 2022-05-13 22-59-57](https://user-images.githubusercontent.com/47372251/168406781-09afe345-eb57-4f42-8516-8ce0d7a58439.png)
 
 #### <p align="center">  Testing </p>
 
 * Only Testing
 
+Enviroment Variables to be set
+
+```
+AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+```
+
 ![Screenshot from 2022-05-13 23-12-27](https://user-images.githubusercontent.com/47372251/168407052-cfc39577-0234-4c80-9f16-0b3310437593.png)
 
 * Sonar Coverage Analysis
+
+Enviroment Variables to be set
+
+```
+AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+```
 
 ![Screenshot from 2022-05-13 23-13-28](https://user-images.githubusercontent.com/47372251/168407069-87d8b8d8-e751-4953-862a-12c09e24f73c.png)
