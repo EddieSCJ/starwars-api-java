@@ -36,13 +36,13 @@ public class AuthenticationTest extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void insertData() {
+    void insertData() {
         applicationUserRepository.deleteAll();
         applicationUserRepository.save(APPLICATION_USER);
     }
 
     @Test
-    public void shouldAuthenticate() throws Exception {
+    void shouldAuthenticate() throws Exception {
         String userJSON = GSON.toJson(new ApplicationUser("another_application_who_consumes_this_api", "12", Collections.emptyList())); // I am using the GSON lib provided by google to
 
         MvcResult mvcResult = mockMvc.perform(post("/login").content(userJSON)).andReturn();
@@ -51,7 +51,7 @@ public class AuthenticationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void shouldNotAuthenticate() throws Exception {
+    void shouldNotAuthenticate() throws Exception {
         String userJSON = GSON.toJson(new ApplicationUser("another_application_who_consumes_this_api", "123", Collections.emptyList())); // I am using the GSON lib provided by google to
 
         MvcResult mvcResult = mockMvc.perform(post("/login").content(userJSON)).andReturn();

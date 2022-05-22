@@ -2,12 +2,12 @@ package com.api.starwars.planets.model.view;
 
 import com.api.starwars.planets.model.domain.Planet;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 public class PlanetJson extends RepresentationModel<PlanetJson> {
     private String id;
