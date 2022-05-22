@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-public class AuthenticationTest extends AbstractIntegrationTest {
+class AuthenticationTest extends AbstractIntegrationTest {
 
     private static final MongoUser APPLICATION_USER = new MongoUser(
             "another_application_who_consumes_this_api",
