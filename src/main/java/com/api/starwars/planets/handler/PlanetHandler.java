@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 
 import static com.api.starwars.planets.enums.OperationsEnum.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
@@ -51,6 +52,9 @@ public class PlanetHandler {
 
         Page<Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
+        pageResponse = pageResponse
+                .map(planet -> planet.add(linkTo(methodOn(PlanetHandler.class).getByID(planet.getId(), 0L, null)).withSelfRel()))
+                .map(planet -> planet.add(linkTo(methodOn(PlanetHandler.class).getByName(planet.getName(), 0L, null)).withSelfRel()));
 
         log.info("Busca por todos os planetas concluida com sucesso. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
         return ResponseEntity.ok(PageResponse.fromPage(pageResponse));
@@ -63,12 +67,14 @@ public class PlanetHandler {
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays,
             HttpServletRequest request
-    ) throws IOException, InterruptedException {
+    ) {
         log.info("Iniciando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
         LoggerUtils.setOperationInfoIntoMDC(id, GET_PLANET_BY_ID, request);
 
         Planet planet = planetService.findById(id, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getAll(0, "name", "ASC", 15, null)).withSelfRel());
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getByName(planet.name(), 0L, null)).withSelfRel());
 
         log.info("Busca de planeta por id concluida por sucesso. id: {}. cacheInDays: {}.", id, cacheInDays);
         return ResponseEntity.ok(planetJson);
@@ -81,12 +87,14 @@ public class PlanetHandler {
             @RequestParam String name,
             @RequestParam(defaultValue = "0") Long cacheInDays,
             HttpServletRequest request
-    ) throws IOException, InterruptedException {
+    ) {
         log.info("Iniciando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
         LoggerUtils.setOperationInfoIntoMDC(name, GET_PLANET_BY_NAME, request);
 
         Planet planet = planetService.findByName(name, cacheInDays);
         PlanetJson planetJson = PlanetJson.fromDomain(planet);
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getAll(0, "name", "ASC", 15, null)).withSelfRel());
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getByID(planet.id(), 0L, null)).withSelfRel());
 
         log.info("Busca de planeta pelo nome concluida com sucesso. name: {}. cacheInDays: {}.", name, cacheInDays);
         return ResponseEntity.ok(planetJson);
@@ -100,6 +108,8 @@ public class PlanetHandler {
         LoggerUtils.setOperationInfoIntoMDC(planetJson.getId(), UPDATE_PLANET, request);
 
         Planet planet = planetService.updateById(planetJson.getId(), planetJson.toDomain());
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getByID(planet.id(), 0L, null)).withSelfRel());
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getByName(planet.name(), 0L, null)).withSelfRel());
 
         log.info("Planeta atualizado pelo id com sucesso. id: {}", planetJson.getId());
         return ResponseEntity.ok(PlanetJson.fromDomain(planet));
@@ -114,6 +124,8 @@ public class PlanetHandler {
 
         Planet domainPlanet = planetService.save(planet.toDomain());
         PlanetJson planetJson = PlanetJson.fromDomain(domainPlanet);
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getByID(domainPlanet.id(), 0L, null)).withSelfRel());
+        planetJson.add(linkTo(methodOn(PlanetHandler.class).getByName(domainPlanet.name(), 0L, null)).withSelfRel());
 
         log.info("Cadastro de planeta por nome concluido. id {}. name: {}.", planetJson.getId(), planet.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(planetJson);
