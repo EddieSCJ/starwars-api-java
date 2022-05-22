@@ -5,11 +5,10 @@ import com.api.starwars.commons.auth.jwt.model.mongo.MongoUser;
 import com.api.starwars.commons.auth.jwt.service.interfaces.ApplicationUserRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.junit.Test;
+import commons.base.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,9 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class AuthenticationTest {
+public class AuthenticationTest extends AbstractIntegrationTest {
 
     private static final MongoUser APPLICATION_USER = new MongoUser(
             "another_application_who_consumes_this_api",
@@ -40,12 +37,13 @@ public class AuthenticationTest {
 
     @BeforeEach
     public void insertData() {
+        applicationUserRepository.deleteAll();
         applicationUserRepository.save(APPLICATION_USER);
     }
 
     @Test
     public void shouldAuthenticate() throws Exception {
-        String userJSON = GSON.toJson(new ApplicationUser("eddie", "12", Collections.emptyList())); // I am using the GSON lib provided by google to
+        String userJSON = GSON.toJson(new ApplicationUser("another_application_who_consumes_this_api", "12", Collections.emptyList())); // I am using the GSON lib provided by google to
 
         MvcResult mvcResult = mockMvc.perform(post("/login").content(userJSON)).andReturn();
         String token = mvcResult.getResponse().getContentAsString();
@@ -54,11 +52,11 @@ public class AuthenticationTest {
 
     @Test
     public void shouldNotAuthenticate() throws Exception {
-        String userJSON = GSON.toJson(new ApplicationUser("eddie", "123", Collections.emptyList())); // I am using the GSON lib provided by google to
+        String userJSON = GSON.toJson(new ApplicationUser("another_application_who_consumes_this_api", "123", Collections.emptyList())); // I am using the GSON lib provided by google to
 
         MvcResult mvcResult = mockMvc.perform(post("/login").content(userJSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
-        assertEquals(HttpStatus.FORBIDDEN.value(), status);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), status);
     }
 
 }

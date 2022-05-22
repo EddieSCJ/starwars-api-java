@@ -1,6 +1,6 @@
 package com.api.starwars.commons.auth.jwt.filters;
 
-import com.api.starwars.commons.auth.jwt.model.domain.ApplicationUser;
+import com.api.starwars.commons.auth.jwt.model.view.UserJson;
 import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
 import com.api.starwars.commons.exceptions.http.HttpUnauthorizedException;
 import com.auth0.jwt.JWT;
@@ -29,14 +29,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
         try {
-            ApplicationUser credentials = new ObjectMapper()
-                    .readValue(req.getInputStream(), ApplicationUser.class);
+            UserJson credentials = new ObjectMapper()
+                    .readValue(req.getInputStream(), UserJson.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             credentials.getUsername(),
                             credentials.getPassword(),
-                            credentials.getAuthorities())
+                            null)
             );
 
         } catch (IOException e) {
