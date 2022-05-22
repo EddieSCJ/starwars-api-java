@@ -67,7 +67,7 @@ db.getCollection('user').insert({
 Being authenticated:
 
 ```bash
-curl --location --request POST 'http://localhost:8080/api/v0/login' \
+curl --location -w --request POST 'http://localhost:8080/api/v0/login' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "username":"another_application_who_consumes_this_api",
