@@ -67,7 +67,7 @@ db.getCollection('user').insert({
 Being authenticated:
 
 ```bash
-curl --location -w --request POST 'http://localhost:8080/api/v0/login' \
+curl -o token.json --location --request POST 'http://localhost:8080/api/v0/login' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "username":"another_application_who_consumes_this_api",
@@ -78,9 +78,9 @@ curl --location -w --request POST 'http://localhost:8080/api/v0/login' \
 Using Authorization to get planets
 
 ```bash
-curl --location --request GET 'http://localhost:8080/api/v0/planets' \
+curl -o result.json --location --request GET 'http://localhost:8080/api/v0/planets' \
 --header 'Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbm90aGVyX2FwcGxpY2F0aW9uX3dob19jb25zdW1lc190aGlzX2FwaSJ9.jnSWQTkg6dQ18tAPl8RS2JrdEdmtxBvx40Tq7WqYFighnziLKzUi2BLJ4S__dOlQDuJl0Lw3NYFS5IbGgd-XnQ' \
---header 'Content-Type: application/json'
+--header 'Content-Type: application/json' | json_pp
 ```
 
 #### <p align="center"> Running </p>
