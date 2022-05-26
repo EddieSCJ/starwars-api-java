@@ -35,7 +35,7 @@ class UserDetailsServiceImplTest {
 
         UserDetails user = userDetailsService.loadUserByUsername(username);
         assertEquals(username, user.getUsername());
-        assertEquals(user.getPassword(), "123");
+        assertEquals("123", user.getPassword() );
         assertTrue(user.getAuthorities().size() > 0);
     }
 }
