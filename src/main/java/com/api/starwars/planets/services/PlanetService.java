@@ -1,5 +1,6 @@
 package com.api.starwars.planets.services;
 
+import com.api.starwars.commons.exceptions.http.HttpBadGatewayException;
 import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
 import com.api.starwars.planets.client.IStarWarsApiClient;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,9 +70,11 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet findById(String id, Long cacheInDays) throws IOException, InterruptedException {
+    public Planet findById(String id, Long cacheInDays) {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
-        if (mongoPlanet.isEmpty()) {throwNotFound(id);}
+        if (mongoPlanet.isEmpty()) {
+            throwNotFound(id);
+        }
 
         Planet domainPlanet = mongoPlanet.get().toDomain();
         if (domainPlanet.cacheInDays() > cacheInDays) {
@@ -84,7 +88,7 @@ public class PlanetService implements IPlanetService {
     }
 
     @Override
-    public Planet findByName(String name, Long cacheInDays) throws IOException, InterruptedException {
+    public Planet findByName(String name, Long cacheInDays) {
         Optional<MongoPlanet> mongoPlanet = planetRepository.findByName(name);
 
         if (mongoPlanet.isEmpty()) {
@@ -158,8 +162,14 @@ public class PlanetService implements IPlanetService {
         planetRepository.deleteById(id);
     }
 
-    private Planet findFromStarWarsApiBy(String name, String id) throws IOException, InterruptedException {
-        PlanetResponseJson planetResponseJson = starWarsApiClient.getPlanetBy(name);
+    private Planet findFromStarWarsApiBy(String name, String id) {
+        PlanetResponseJson planetResponseJson;
+        try {
+            planetResponseJson = starWarsApiClient.getPlanetBy(name);
+        } catch (IOException | InterruptedException e) {
+            throw new HttpBadGatewayException(new ArrayList<>(List.of("swapi server thrown an exception")));
+        }
+
         List<MPlanetJson> results = planetResponseJson.getResults();
 
         if (results.isEmpty()) {

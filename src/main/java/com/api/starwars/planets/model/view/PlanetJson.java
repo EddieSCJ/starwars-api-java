@@ -3,10 +3,13 @@ package com.api.starwars.planets.model.view;
 import com.api.starwars.planets.model.domain.Planet;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
-public class PlanetJson {
+public class PlanetJson extends RepresentationModel<PlanetJson> {
     private String id;
     private final String name;
     private final String[] climate;
