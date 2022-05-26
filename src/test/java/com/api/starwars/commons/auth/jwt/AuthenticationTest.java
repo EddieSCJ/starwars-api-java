@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import commons.base.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ class AuthenticationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve autenticar com sucesso")
     void shouldAuthenticate() throws Exception {
         String userJSON = GSON.toJson(new ApplicationUser("another_application_who_consumes_this_api", "12", Collections.emptyList())); // I am using the GSON lib provided by google to
 
@@ -51,6 +53,7 @@ class AuthenticationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao autenticar em razão de senha incorreta")
     void shouldNotAuthenticate() throws Exception {
         String userJSON = GSON.toJson(new ApplicationUser("another_application_who_consumes_this_api", "123", Collections.emptyList())); // I am using the GSON lib provided by google to
 

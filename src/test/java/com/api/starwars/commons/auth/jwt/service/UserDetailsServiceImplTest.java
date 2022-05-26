@@ -3,6 +3,7 @@ package com.api.starwars.commons.auth.jwt.service;
 import com.api.starwars.commons.auth.jwt.model.mongo.MongoUser;
 import com.api.starwars.commons.auth.jwt.service.interfaces.ApplicationUserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,6 +30,7 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
+    @DisplayName("Deve carregar por username corretamente")
     void test_load_by_username() {
         String username = "user";
         when(applicationUserRepository.findByUsername(username)).thenReturn(new MongoUser(username, "123", List.of("PLANET_CREATE", "PLANET_DELETE")));
