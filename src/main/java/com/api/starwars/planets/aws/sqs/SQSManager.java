@@ -59,10 +59,13 @@ public class SQSManager implements ISQSManager {
     @Scheduled(fixedDelay = 60000 * 60 * 24)
     public void processDeleteEventMessages() {
         log.info("Start reading planet delete event messages");
-        List<Message> messages = this.amazonSQS.receiveMessage(planetDeleteQueueURL).getMessages();
-        for (Message m : messages) {
-            log.info(format("SQS Planet Delete Message. messageId: {0}. messageBody: {1} ", m.getMessageId(), m.getBody()));
-            this.amazonSQS.deleteMessage(planetDeleteQueueURL, m.getReceiptHandle());
+        while(true) {
+            List<Message> messages = this.amazonSQS.receiveMessage(planetDeleteQueueURL).getMessages();
+            for (Message m : messages) {
+                log.info(format("SQS Planet Delete Message. messageId: {0}. messageBody: {1} ", m.getMessageId(), m.getBody()));
+                this.amazonSQS.deleteMessage(planetDeleteQueueURL, m.getReceiptHandle());
+            }
+            if (messages.size() == 0) break;
         }
     }
 }
