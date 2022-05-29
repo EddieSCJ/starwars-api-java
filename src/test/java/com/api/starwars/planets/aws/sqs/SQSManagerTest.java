@@ -14,7 +14,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SQSManagerTest {
+class SQSManagerTest {
 
     private QueueMessagingTemplate queueMessagingTemplate;
     private SQSManager sqsManager;
