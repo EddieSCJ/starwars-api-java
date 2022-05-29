@@ -26,3 +26,13 @@ spring:
       database: ${DB_NAME}
       password: ${DB_PASSWORD}
       authSource: ${DB_AUTH_SOURCE}
+
+aws:
+  sqs:
+    access:
+      key: ${SQS_ACCESS_KEY}
+    secret:
+      key: ${SQS_SECRET_KEY}
+    planet:
+      delete:
+        url: ${SQS_PLANET_DELETE_URL}
