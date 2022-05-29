@@ -1,4 +1,4 @@
-package com.api.starwars.commons.auth.jwt.model.domain;
+package com.api.starwars.auth.jwt.model.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

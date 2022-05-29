@@ -1,8 +1,9 @@
-package com.api.starwars.commons.auth.jwt.filters;
+package com.api.starwars.auth.jwt.filters;
 
 import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final UserDetailsService userDetailsService;
@@ -47,8 +49,10 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         String secret = System.getenv("AUTHORIZATION_SECRET");
-        if (StringUtils.isBlank(secret))
+        if (StringUtils.isBlank(secret)){
+            log.error("Incapaz de autenticar em razao de nao encontrar authorizaion secret");
             throw new HttpInternalServerErrorException("Authorization secret not found");
+        }
 
         if (token != null) {
             String user = JWT.require(Algorithm.HMAC512(secret.getBytes()))

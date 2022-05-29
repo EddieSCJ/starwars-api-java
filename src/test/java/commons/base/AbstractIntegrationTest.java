@@ -1,7 +1,7 @@
 package commons.base;
 
 import com.api.starwars.StarwarsApplication;
-import com.api.starwars.commons.auth.jwt.model.mongo.MongoUser;
+import com.api.starwars.auth.jwt.model.mongo.MongoUser;
 import commons.config.MongoDBContainerTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

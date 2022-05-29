@@ -1,4 +1,4 @@
-package com.api.starwars.commons.auth.jwt;
+package com.api.starwars.auth.jwt;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

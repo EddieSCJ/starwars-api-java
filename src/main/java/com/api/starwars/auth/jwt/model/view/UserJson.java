@@ -1,4 +1,4 @@
-package com.api.starwars.commons.auth.jwt.model.view;
+package com.api.starwars.auth.jwt.model.view;
 
 import lombok.Data;
 

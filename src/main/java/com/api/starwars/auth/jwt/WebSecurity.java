@@ -1,7 +1,7 @@
-package com.api.starwars.commons.auth.jwt;
+package com.api.starwars.auth.jwt;
 
-import com.api.starwars.commons.auth.jwt.filters.JWTAuthenticationFilter;
-import com.api.starwars.commons.auth.jwt.filters.JWTAuthorizationFilter;
+import com.api.starwars.auth.jwt.filters.JWTAuthenticationFilter;
+import com.api.starwars.auth.jwt.filters.JWTAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

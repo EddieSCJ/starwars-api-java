@@ -1,7 +1,7 @@
-package com.api.starwars.commons.auth.jwt.service;
+package com.api.starwars.auth.jwt.service;
 
-import com.api.starwars.commons.auth.jwt.model.mongo.MongoUser;
-import com.api.starwars.commons.auth.jwt.service.interfaces.ApplicationUserRepository;
+import com.api.starwars.auth.jwt.model.mongo.MongoUser;
+import com.api.starwars.auth.jwt.service.interfaces.ApplicationUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

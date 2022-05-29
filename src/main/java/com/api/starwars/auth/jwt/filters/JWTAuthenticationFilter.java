@@ -1,10 +1,11 @@
-package com.api.starwars.commons.auth.jwt.filters;
+package com.api.starwars.auth.jwt.filters;
 
-import com.api.starwars.commons.auth.jwt.model.view.UserJson;
+import com.api.starwars.auth.jwt.model.view.UserJson;
 import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
 import com.api.starwars.commons.exceptions.http.HttpUnauthorizedException;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
+@Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
@@ -40,6 +42,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             );
 
         } catch (IOException e) {
+            logger.warn("Usuario nao possui as credenciais corretas");
             throw new HttpUnauthorizedException("Invalid credentials");
         }
     }
@@ -51,8 +54,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication auth) throws IOException {
 
         String secret = System.getenv("AUTHORIZATION_SECRET");
-        if (StringUtils.isBlank(secret))
+        if (StringUtils.isBlank(secret)){
+            log.error("Incapaz de autenticar em razao de nao encontrar authorizaion secret");
             throw new HttpInternalServerErrorException("Authorization secret not found");
+        }
 
         String token = JWT.create()
                 .withSubject(((User) auth.getPrincipal()).getUsername())
