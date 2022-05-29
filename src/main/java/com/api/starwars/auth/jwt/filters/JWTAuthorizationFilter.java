@@ -49,7 +49,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         String secret = System.getenv("AUTHORIZATION_SECRET");
-        if (StringUtils.isBlank(secret)){
+        if (StringUtils.isEmpty(secret)){
             log.error("Incapaz de autenticar em razao de nao encontrar authorizaion secret");
             throw new HttpInternalServerErrorException("Authorization secret not found");
         }

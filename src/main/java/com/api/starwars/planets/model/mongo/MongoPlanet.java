@@ -3,7 +3,9 @@ package com.api.starwars.planets.model.mongo;
 import com.api.starwars.planets.model.domain.Planet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,7 +15,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Document(collection = "planets")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class MongoPlanet {
@@ -21,7 +24,7 @@ public class MongoPlanet {
     @Id
     @Field("_id")
     @Indexed(unique = true)
-    private final String id;
+    private final ObjectId id;
 
     @Indexed(unique = true)
     private String name;
@@ -33,8 +36,9 @@ public class MongoPlanet {
     private LocalDateTime creationDate;
 
     public static MongoPlanet fromDomain(Planet planet) {
+        ObjectId id = planet.id() != null ? new ObjectId(planet.id()) : null;
         return new MongoPlanet(
-                planet.id(),
+                id,
                 planet.name(),
                 planet.climate(),
                 planet.terrain(),
@@ -51,8 +55,9 @@ public class MongoPlanet {
 
         long daysBetween = Duration.between(creationDate, now).toDays();
 
+        String id = this.id != null ? this.id.toString() : null;
         return new Planet(
-                this.id,
+                id,
                 this.name,
                 this.climate,
                 this.terrain,
@@ -60,6 +65,5 @@ public class MongoPlanet {
                 daysBetween
         );
     }
-
 
 }

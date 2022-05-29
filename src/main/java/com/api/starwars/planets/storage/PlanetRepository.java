@@ -1,6 +1,8 @@
 package com.api.starwars.planets.storage;
 
+import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
+import com.api.starwars.planets.handler.interfaces.ISQSManager;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.services.interfaces.IPlanetRepository;
@@ -27,10 +29,12 @@ public class PlanetRepository implements IPlanetRepository {
 
     @Qualifier("mongoTemplate")
     private final MongoTemplate mongoTemplate;
+    private final ISQSManager sqsManager;
 
     @Autowired
-    public PlanetRepository(MongoTemplate mongoTemplate) {
+    public PlanetRepository(MongoTemplate mongoTemplate, ISQSManager sqsManager) {
         this.mongoTemplate = mongoTemplate;
+        this.sqsManager = sqsManager;
     }
 
     public Long count() {
@@ -43,20 +47,22 @@ public class PlanetRepository implements IPlanetRepository {
     }
 
     @Override
-    public Optional<MongoPlanet> findById(String id) {
+    public Optional<Planet> findById(String id) {
         log.info("Iniciando busca de planeta no banco pelo id. id: {}.", id);
         Criteria criteria = where(FIELD_ID).is(id);
-        Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
+        Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findById(id, MongoPlanet.class));
+
         if (planet.isEmpty()) {
             log.info("Busca de planeta no banco pelo id concluída com sucesso. id: {}. Planeta nao encontrado.", id);
             throw new HttpNotFoundException(format("Nenhum planeta com id {0} foi encontrado.", id));
         }
+
         log.info("Busca de planeta no banco pelo id concluida com sucesso. id: {}.", id);
-        return planet;
+        return planet.map(MongoPlanet::toDomain);
     }
 
     @Override
-    public Optional<MongoPlanet> findByName(String name) {
+    public Optional<Planet> findByName(String name) {
         log.info("Iniciando busca de planeta no banco pelo nome. name: {}.", name);
         Criteria lowercase = where(FIELD_NAME).is(name.toLowerCase());
         Criteria uppercase = where(FIELD_NAME).is(name.toUpperCase());
@@ -71,27 +77,35 @@ public class PlanetRepository implements IPlanetRepository {
         }
 
         log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}.", name);
-        return planet;
+        return planet.map(MongoPlanet::toDomain);
     }
 
     @Override
-    public MongoPlanet save(Planet planet) {
+    public Planet save(Planet planet) {
         log.info("Iniciando criacao planeta no banco. name: {}.", planet.name());
         MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
         MongoPlanet savedMongoPlanet = mongoTemplate.save(mongoPlanet);
 
         log.info("Criacao planeta no banco concluida com sucesso. id: {}. name: {}.", planet.id(), planet.name());
-        return savedMongoPlanet;
+        return savedMongoPlanet.toDomain();
     }
 
     public void deleteById(String id) {
         log.info("Iniciando exclusao de planeta no banco pelo id. id: {}.", id);
+        Optional<MongoPlanet> mongoPlanet = Optional.ofNullable(mongoTemplate.findById(id, MongoPlanet.class));
+        if(mongoPlanet.isEmpty()) {
+            log.info("Nenhum planeta foi deletado por id. id: {}.", id);
+            throw new HttpNotFoundException(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id));
+        }
+
         Criteria criteria = where(FIELD_ID).is(id);
         DeleteResult deleteResult = mongoTemplate.remove(query(criteria), MongoPlanet.class);
         if (deleteResult.getDeletedCount() == 0) {
             log.info("Nenhum planeta foi deletado por id. id: {}.", id);
-            throw new HttpNotFoundException(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id));
+            throw new HttpInternalServerErrorException(format("Nenhum planeta deletado pelo id: {0}.", id));
         }
+
+        sqsManager.sendDeleteEvent(mongoPlanet.get().getName());
         log.info("Exclusao de planeta no banco pelo id concluida com sucesso. id: {}.", id);
     }
 

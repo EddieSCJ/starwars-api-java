@@ -71,17 +71,17 @@ public class PlanetService implements IPlanetService {
 
     @Override
     public Planet findById(String id, Long cacheInDays) {
-        Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
-        if (mongoPlanet.isEmpty()) {
+        Optional<Planet> storedPlanet = planetRepository.findById(id);
+        if (storedPlanet.isEmpty()) {
             throwNotFound(id);
         }
 
-        Planet domainPlanet = mongoPlanet.get().toDomain();
+        Planet domainPlanet = storedPlanet.get();
         if (domainPlanet.cacheInDays() > cacheInDays) {
             log.info("Busca de planetas no banco por id retornou um resultado com cache expirado. id: {}. cacheInDays: {}.", id, cacheInDays);
 
             Planet updatedPlanet = findFromStarWarsApiBy(domainPlanet.name(), domainPlanet.id());
-            return planetRepository.save(updatedPlanet).toDomain();
+            return planetRepository.save(updatedPlanet);
         }
 
         return domainPlanet;
@@ -89,23 +89,23 @@ public class PlanetService implements IPlanetService {
 
     @Override
     public Planet findByName(String name, Long cacheInDays) {
-        Optional<MongoPlanet> mongoPlanet = planetRepository.findByName(name);
+        Optional<Planet> storedPlanet = planetRepository.findByName(name);
 
-        if (mongoPlanet.isEmpty()) {
+        if (storedPlanet.isEmpty()) {
             log.info("Busca de planetas por nome nao retornou nenhum resultado. name: {}.", name);
             Planet planet = findFromStarWarsApiBy(name, null);
-            return planetRepository.save(planet).toDomain();
+            return planetRepository.save(planet);
         }
 
-        Planet domainPlanet = mongoPlanet.get().toDomain();
+        Planet domainPlanet = storedPlanet.get();
         if (domainPlanet.cacheInDays() > cacheInDays) {
             log.info("Busca de planetas no banco por id retornou um resultado com cache expirado. name: {}. cacheInDays: {}.", name, cacheInDays);
             Planet planet = findFromStarWarsApiBy(name, domainPlanet.id());
 
-            return planetRepository.save(planet).toDomain();
+            return planetRepository.save(planet);
         }
 
-        return mongoPlanet.get().toDomain();
+        return storedPlanet.get();
     }
 
     @Override
@@ -122,8 +122,8 @@ public class PlanetService implements IPlanetService {
             throw new HttpBadRequestException(errorMessages);
         }
 
-        Optional<MongoPlanet> mongoPlanet = planetRepository.findById(id);
-        if (mongoPlanet.isEmpty()) throwNotFound(id);
+        Optional<Planet> storedPlanet = planetRepository.findById(id);
+        if (storedPlanet.isEmpty()) throwNotFound(id);
 
         Planet newPlanet = new Planet(
                 id,
@@ -133,7 +133,7 @@ public class PlanetService implements IPlanetService {
                 planet.movieAppearances(),
                 null
         );
-        return planetRepository.save(newPlanet).toDomain();
+        return planetRepository.save(newPlanet);
     }
 
     @Override
@@ -144,17 +144,13 @@ public class PlanetService implements IPlanetService {
             throw new HttpBadRequestException(errorMessages);
         }
 
-        MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
-        return planetRepository.save(mongoPlanet.toDomain()).toDomain();
+        return planetRepository.save(planet);
     }
 
     @Override
     public List<Planet> saveAll(List<Planet> planets) {
         List<MongoPlanet> mongoPlanets = planets.parallelStream().map(MongoPlanet::fromDomain).toList();
-        return planetMongoRepository.saveAll(mongoPlanets)
-                .parallelStream()
-                .map(MongoPlanet::toDomain)
-                .toList();
+        return planetMongoRepository.saveAll(mongoPlanets).stream().map(MongoPlanet::toDomain).toList();
     }
 
     @Override

@@ -54,7 +54,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication auth) throws IOException {
 
         String secret = System.getenv("AUTHORIZATION_SECRET");
-        if (StringUtils.isBlank(secret)){
+        if (StringUtils.isEmpty(secret)){
             log.error("Incapaz de autenticar em razao de nao encontrar authorizaion secret");
             throw new HttpInternalServerErrorException("Authorization secret not found");
         }

@@ -113,13 +113,13 @@ class PlanetServiceTest {
     class FindById {
         @Test
         @DisplayName("Deve retornar planeta com sucesso.")
-        void successful() throws IOException, InterruptedException {
-            MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
-            when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.of(mongoPlanet));
+        void successful() {
+            Planet storedPlanet = DomainUtils.getRandomPlanet();
+            when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.of(storedPlanet));
 
             Planet planet = planetService.findById(FAKE_ID, 0L);
 
-            assertTrue(Objects.deepEquals(mongoPlanet.toDomain(), planet));
+            assertTrue(Objects.deepEquals(storedPlanet, planet));
         }
 
         @Test
@@ -138,11 +138,11 @@ class PlanetServiceTest {
             PlanetResponseJson planetResponseJson = DomainUtils.getRandomPlanetResponseJson();
             planetResponseJson.getResults().get(0).setName(mongoPlanet.getName());
 
-            Planet apiClientPlanet = planetResponseJson.getResults().get(0).toDomain(mongoPlanet.getId());
+            Planet apiClientPlanet = planetResponseJson.getResults().get(0).toDomain(mongoPlanet.getId().toString());
             MongoPlanet savedPlanet = MongoPlanet.fromDomain(apiClientPlanet);
 
-            when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.of(mongoPlanet));
-            when(planetRepository.save(any(Planet.class))).thenReturn(savedPlanet);
+            when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.of(mongoPlanet.toDomain()));
+            when(planetRepository.save(any(Planet.class))).thenReturn(savedPlanet.toDomain());
             when(starWarsApiClient.getPlanetBy(mongoPlanet.getName())).thenReturn(planetResponseJson);
 
             Planet planet = planetService.findById(FAKE_ID, 0L);
@@ -157,7 +157,7 @@ class PlanetServiceTest {
 
             PlanetResponseJson planetResponseJson = DomainUtils.getEmptyPlanetResponseJson();
 
-            when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.of(mongoPlanet));
+            when(planetRepository.findById(FAKE_ID)).thenReturn(Optional.of(mongoPlanet.toDomain()));
             when(starWarsApiClient.getPlanetBy(mongoPlanet.getName())).thenReturn(planetResponseJson);
 
             assertThrows(HttpNotFoundException.class, () -> planetService.findById(FAKE_ID, 0L));
@@ -168,14 +168,14 @@ class PlanetServiceTest {
     class FindByName {
         @Test
         @DisplayName("Deve retornar planeta com sucesso.")
-        void successful() throws IOException, InterruptedException {
-            MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
+        void successful() {
+            Planet mongoPlanet = DomainUtils.getRandomPlanet();
 
-            when(planetRepository.findByName(mongoPlanet.getName())).thenReturn(Optional.of(mongoPlanet));
+            when(planetRepository.findByName(mongoPlanet.name())).thenReturn(Optional.of(mongoPlanet));
 
-            Planet planet = planetService.findByName(mongoPlanet.getName(), 0L);
+            Planet planet = planetService.findByName(mongoPlanet.name(), 0L);
 
-            assertTrue(Objects.deepEquals(mongoPlanet.toDomain(), planet));
+            assertTrue(Objects.deepEquals(mongoPlanet, planet));
         }
 
         @Test
@@ -185,9 +185,9 @@ class PlanetServiceTest {
             MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planetResponseJson.getResults().get(0).toDomain(FAKE_ID));
             mongoPlanet.setCreationDate(LocalDateTime.of(2021, 12, 12, 12, 12));
 
-            when(planetRepository.findByName(mongoPlanet.getName())).thenReturn(Optional.of(mongoPlanet));
+            when(planetRepository.findByName(mongoPlanet.getName())).thenReturn(Optional.of(mongoPlanet.toDomain()));
             when(starWarsApiClient.getPlanetBy(mongoPlanet.getName())).thenReturn(planetResponseJson);
-            when(planetRepository.save(any(Planet.class))).thenReturn(mongoPlanet);
+            when(planetRepository.save(any(Planet.class))).thenReturn(mongoPlanet.toDomain());
 
             Planet planet = planetService.findByName(mongoPlanet.getName(), 0L);
 
@@ -213,16 +213,16 @@ class PlanetServiceTest {
         @Test
         @DisplayName("Deve atualizar planeta por id com sucesso.")
         void successful() {
-            MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
-            MongoPlanet newMongoPlanet = DomainUtils.getRandomMongoPlanet();
+            Planet oldPlanet = DomainUtils.getRandomPlanet();
+            Planet newPlanet = DomainUtils.getRandomPlanet();
 
             when(planetValidator.validate(any(Planet.class))).thenReturn(Collections.emptyList());
-            when(planetRepository.findById(newMongoPlanet.getId())).thenReturn(Optional.of(mongoPlanet));
-            when(planetRepository.save(any(Planet.class))).thenReturn(newMongoPlanet);
+            when(planetRepository.findById(newPlanet.id())).thenReturn(Optional.of(oldPlanet));
+            when(planetRepository.save(any(Planet.class))).thenReturn(newPlanet);
 
-            Planet planet = planetService.updateById(newMongoPlanet.getId(), newMongoPlanet.toDomain());
+            Planet planet = planetService.updateById(newPlanet.id(), newPlanet);
 
-            assertTrue(Objects.deepEquals(newMongoPlanet.toDomain(), planet));
+            assertTrue(Objects.deepEquals(newPlanet, planet));
         }
 
         @Test
@@ -251,12 +251,12 @@ class PlanetServiceTest {
         @Test
         @DisplayName("Deve salvar planeta com sucesso")
         void successful() {
-            MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
+            Planet storedPlanet = DomainUtils.getRandomPlanet();
             when(planetValidator.validate(any(Planet.class))).thenReturn(Collections.emptyList());
-            when(planetRepository.save(any(Planet.class))).thenReturn(mongoPlanet);
+            when(planetRepository.save(any(Planet.class))).thenReturn(storedPlanet);
 
-            Planet planet = planetService.save(mongoPlanet.toDomain());
-            assertTrue(Objects.deepEquals(mongoPlanet.toDomain(), planet));
+            Planet planet = planetService.save(storedPlanet);
+            assertTrue(Objects.deepEquals(storedPlanet, planet));
         }
 
         @Test

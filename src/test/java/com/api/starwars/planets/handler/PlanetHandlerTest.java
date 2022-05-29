@@ -1,6 +1,6 @@
 package com.api.starwars.planets.handler;
 
-import com.api.starwars.commons.auth.jwt.service.interfaces.ApplicationUserRepository;
+import com.api.starwars.auth.jwt.service.interfaces.ApplicationUserRepository;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.model.view.PlanetJson;
 import com.api.starwars.planets.services.interfaces.IPlanetMongoRepository;
@@ -104,7 +104,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             mockMvc.perform(get(format("{0}/{1}", Constants.PLANETS_ENDPOINT, mongoPlanet.getId()))
                             .header("Authorization", TOKEN))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
+                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId().toString()))
                     .andExpect(jsonPath("$.name").value(mongoPlanet.getName()))
                     .andExpect(jsonPath("$.cacheInDays").value(0L))
                     .andExpect(jsonPath("$.movieAppearances").value(mongoPlanet.getMovieAppearances()));
@@ -129,7 +129,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
                             .header("Authorization", TOKEN)
                             .queryParam("cacheInDays", "0"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(newMongoPlanet.getId()))
+                    .andExpect(jsonPath("$.id").value(newMongoPlanet.getId().toString()))
                     .andExpect(jsonPath("$.name").value(newMongoPlanet.getName()))
                     .andExpect(jsonPath("$.cacheInDays").value(0L));
         }
@@ -172,7 +172,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
             MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
             mockMvc.perform(get(ENDPOINT + mongoPlanet.getName()).header("Authorization", TOKEN))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
+                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId().toString()))
                     .andExpect(jsonPath("$.name").value(mongoPlanet.getName()))
                     .andExpect(jsonPath("$.cacheInDays").value(0L))
                     .andExpect(jsonPath("$.movieAppearances").value(mongoPlanet.getMovieAppearances()));
@@ -197,7 +197,7 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
                             .header("Authorization", TOKEN)
                             .queryParam("cacheInDays", "0"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(newMongoPlanet.getId()))
+                    .andExpect(jsonPath("$.id").value(newMongoPlanet.getId().toString()))
                     .andExpect(jsonPath("$.name").value(newMongoPlanet.getName()))
                     .andExpect(jsonPath("$.cacheInDays").value(0L));
         }
@@ -240,14 +240,14 @@ class PlanetHandlerTest extends AbstractIntegrationTest {
         void update_successful() throws Exception {
             MongoPlanet mongoPlanet = saveMongoPlanet(DomainUtils.getRandomMongoPlanet());
             PlanetJson updatePlanet = DomainUtils.getRandomPlanetJson();
-            updatePlanet.setId(mongoPlanet.getId());
+            updatePlanet.setId(mongoPlanet.getId().toString());
 
             mockMvc.perform(put(ENDPOINT)
                             .header("Authorization", TOKEN)
                             .contentType(MediaType.APPLICATION_JSON.getMediaType())
                             .content(mapper.writeValueAsString(PlanetJson.fromDomain(updatePlanet.toDomain()))))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId()))
+                    .andExpect(jsonPath("$.id").value(mongoPlanet.getId().toString()))
                     .andExpect(jsonPath("$.name").value(updatePlanet.getName()))
                     .andExpect(jsonPath("$.climate", hasSize(updatePlanet.getClimate().length)))
                     .andExpect(jsonPath("$.cacheInDays").value(0L));

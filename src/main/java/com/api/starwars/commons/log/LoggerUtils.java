@@ -31,7 +31,7 @@ public abstract class LoggerUtils {
 
     public static void setTID(HttpServletRequest request) {
         String tid = request.getHeader("tid");
-        if (StringUtils.isNotBlank(tid)) {
+        if (StringUtils.isNotEmpty(tid)) {
             MDC.put("tid", tid);
             return;
         }

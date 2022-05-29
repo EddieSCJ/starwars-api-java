@@ -89,9 +89,21 @@ You'll see some run configurations below
 
 Enviroment Variables to be set
 
-```
-AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
-```
+| NAME                 | VALUE                                                                                                                 | OPTIONAL |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------|----------|
+| AUTHORIZATION_SECRET | TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS | NO       |
+| SQS_ACCESS_KEY       | your_sqs_access_key                                                                                                   | NO       |
+| SQS_SECRET_KEY       | your_sqs_secret_key                                                                                                   | NO       |
+| SQS_PLANET_DELETE_URL| your_sqs_url                                                                                                          | NO       |
+| MONGO_HOST           | localhost                                                                                                             | YES      |
+| MONGO_USER           |                                                                                                                       | YES      |
+| MONGO_PASSWORD       |                                                                                                                       | YES      |
+| MONGO_PORT           | 27017                                                                                                                 | YES      |
+| MONGO_DB             | development                                                                                                           | YES      |
+| MONGO_CONTAINER_NAME | mongoservice                                                                                                          | YES      |
+| SWAPI_URL            | https://swapi.dev/api                                                                                                 | YES      |
+| ENV                  | dev                                                                                                                   | YES      |
+| API_PORT             | 8080                                                                                                                  | YES      |
 
 ![Screenshot from 2022-05-13 22-59-57](https://user-images.githubusercontent.com/47372251/168406781-09afe345-eb57-4f42-8516-8ce0d7a58439.png)
 
@@ -101,9 +113,20 @@ AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#
 
 Enviroment Variables to be set
 
-```
-AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
-```
+| NAME                 | VALUE                                                                                                                 | OPTIONAL |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------|----------|
+| AUTHORIZATION_SECRET | TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS | NO       |
+| SQS_ACCESS_KEY       | your_sqs_access_key                                                                                                   | NO       |
+| SQS_SECRET_KEY       | your_sqs_secret_key                                                                                                   | NO       |
+| SQS_PLANET_DELETE_URL| your_sqs_url                                                                                                          | NO       |
+| MONGO_HOST           | your_host                                                                                                             | NO       |
+| MONGO_USER           | your_username                                                                                                         | NO       |
+| MONGO_PASSWORD       | your_password                                                                                                         | NO       |
+| MONGO_PORT           | your_port                                                                                                             | NO       |
+| MONGO_DB             | your_database                                                                                                         | NO       |
+| SWAPI_URL            | https://swapi.dev/api                                                                                                 | NO       |
+| ENV                  | prod                                                                                                                  | NO       |
+| API_PORT             | your_port                                                                                                             | NO       |
 
 ![Screenshot from 2022-05-13 23-12-27](https://user-images.githubusercontent.com/47372251/168407052-cfc39577-0234-4c80-9f16-0b3310437593.png)
 
@@ -113,6 +136,9 @@ Enviroment Variables to be set
 
 ```
 AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+SQS_ACCESS_KEY=your_sqs_access_key;
+SQS_SECRET_KEY=your_sqs_secret_key;
+SQS_PLANET_DELETE_URL=your_sqs_queue_url
 ```
 
 ![Screenshot from 2022-05-13 23-13-28](https://user-images.githubusercontent.com/47372251/168407069-87d8b8d8-e751-4953-862a-12c09e24f73c.png)

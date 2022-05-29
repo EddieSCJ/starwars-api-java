@@ -2,6 +2,7 @@ package com.api.starwars.planets.model.mongo;
 
 import com.api.starwars.planets.model.domain.Planet;
 import commons.utils.DomainUtils;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -11,6 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MongoPlanetTest {
@@ -20,7 +22,7 @@ class MongoPlanetTest {
     void toDomainSuccessfully() {
         MongoPlanet mongoPlanet = DomainUtils.getRandomMongoPlanet();
         Planet expectedDomain = new Planet(
-                mongoPlanet.getId(),
+                mongoPlanet.getId().toString(),
                 mongoPlanet.getName(),
                 mongoPlanet.getClimate(),
                 mongoPlanet.getTerrain(),
@@ -41,7 +43,7 @@ class MongoPlanetTest {
 
             Planet planet = DomainUtils.getRandomPlanet();
             MongoPlanet expectedMongoPlanet = new MongoPlanet(
-                    planet.id(),
+                    new ObjectId(planet.id()),
                     planet.name(),
                     planet.climate(),
                     planet.terrain(),
@@ -49,7 +51,13 @@ class MongoPlanetTest {
                     LocalDateTime.now()
                     );
 
-            assertTrue(Objects.deepEquals(expectedMongoPlanet, MongoPlanet.fromDomain(planet)));
+            MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
+            assertEquals(expectedMongoPlanet.getId(), mongoPlanet.getId());
+            assertEquals(expectedMongoPlanet.getCreationDate(), mongoPlanet.getCreationDate());
+            assertEquals(expectedMongoPlanet.getName(), mongoPlanet.getName());
+            assertEquals(expectedMongoPlanet.getMovieAppearances(), mongoPlanet.getMovieAppearances());
+            assertEquals(expectedMongoPlanet.getClimate().length, mongoPlanet.getClimate().length);
+            assertEquals(expectedMongoPlanet.getTerrain().length, mongoPlanet.getTerrain().length);
         }
     }
 

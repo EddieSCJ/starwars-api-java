@@ -6,6 +6,7 @@ import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.model.view.PlanetJson;
 import com.github.javafaker.Faker;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Random;
 
 public class DomainUtils {
 
-    public static final String FAKE_ID = "fake_id";
+    public static final String FAKE_ID = ObjectId.get().toHexString();
 
     private static final Faker FAKER = new Faker();
     private static final Random RANDOM = new Random();
@@ -22,12 +23,12 @@ public class DomainUtils {
         String[] weathers = new String[]{FAKER.weather().description(), FAKER.weather().description()};
         String[] terrain = new String[]{FAKER.country().name(), FAKER.country().name()};
         return new Planet(
-                FAKER.idNumber().toString(),
+                ObjectId.get().toString(),
                 FAKER.pokemon().name(),
                 weathers,
                 terrain,
                 RANDOM.nextInt(),
-                RANDOM.nextLong()
+                0L
         );
     }
 
