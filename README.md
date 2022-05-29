@@ -3,7 +3,7 @@
 #### <p align="center">  Project Tooling </p>
 <div align="center"> 
     <a href="https://app.snyk.io/org/eddiescj/projects" target"_blank">:wolf: Snyk </a>
-    <a href="https://sonarcloud.io/project/overview?id=EddieSCJ_starwars-api-java" target"_blank">:detective: SonarCloud </a>
+    <a href="https://sonarcloud.io/summary/new_code?id=EddieSCJ_starwars-api-java2" target"_blank">:detective: SonarCloud </a>
     <a href="https://app.codecov.io/gh/EddieSCJ/starwars-api-java/" target"_blank">:open_umbrella: CodeCov </a>
 </div>
 
