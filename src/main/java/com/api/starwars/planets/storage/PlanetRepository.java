@@ -105,7 +105,7 @@ public class PlanetRepository implements IPlanetRepository {
             throw new HttpInternalServerErrorException(format("Nenhum planeta deletado pelo id: {0}.", id));
         }
 
-        sqsManager.sendDeleteEvent(mongoPlanet.get().getName());
+        sqsManager.sendDeleteMessage(mongoPlanet.get().getName());
         log.info("Exclusao de planeta no banco pelo id concluida com sucesso. id: {}.", id);
     }
 

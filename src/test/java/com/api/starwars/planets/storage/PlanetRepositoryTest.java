@@ -142,7 +142,7 @@ public class PlanetRepositoryTest {
 
             when(mongoTemplate.findById(FAKE_ID, MongoPlanet.class)).thenReturn(DomainUtils.getRandomMongoPlanet());
             when(mongoTemplate.remove(query(criteria), MongoPlanet.class)).thenReturn(DeleteResult.acknowledged(1L));
-            when(sqsManager.sendDeleteEvent(anyString())).thenReturn(UUID.randomUUID().toString());
+            when(sqsManager.sendDeleteMessage(anyString())).thenReturn(UUID.randomUUID().toString());
 
             planetRepository.deleteById(FAKE_ID);
             verify(mongoTemplate, times(1)).remove(query(criteria), MongoPlanet.class);
