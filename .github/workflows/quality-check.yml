@@ -47,6 +47,7 @@ jobs:
   snyk:
     name: Security Check
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
