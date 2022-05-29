@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.api.starwars.planets.model.mongo.Constants.FIELD_ID;
 import static com.api.starwars.planets.model.mongo.Constants.FIELD_NAME;
@@ -142,10 +141,10 @@ public class PlanetRepositoryTest {
 
             when(mongoTemplate.findById(FAKE_ID, MongoPlanet.class)).thenReturn(DomainUtils.getRandomMongoPlanet());
             when(mongoTemplate.remove(query(criteria), MongoPlanet.class)).thenReturn(DeleteResult.acknowledged(1L));
-            when(sqsManager.sendDeleteMessage(anyString())).thenReturn(UUID.randomUUID().toString());
 
             planetRepository.deleteById(FAKE_ID);
             verify(mongoTemplate, times(1)).remove(query(criteria), MongoPlanet.class);
+            verify(sqsManager, times(1)).sendDeleteMessage(anyString());
         }
 
         @Test

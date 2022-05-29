@@ -2,6 +2,6 @@ package com.api.starwars.planets.handler.interfaces;
 
 public interface ISQSManager {
 
-    String sendDeleteMessage(String planetName);
+    void sendDeleteMessage(String planetName);
 
 }

@@ -18,6 +18,12 @@ feign:
         readTimeout: 10000
 
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration
   data:
     mongodb:
       host: ${DB_HOST}
@@ -27,12 +33,22 @@ spring:
       password: ${DB_PASSWORD}
       authSource: ${DB_AUTH_SOURCE}
 
-aws:
-  sqs:
-    access:
-      key: ${SQS_ACCESS_KEY}
-    secret:
-      key: ${SQS_SECRET_KEY}
-    planet:
-      delete:
-        url: ${SQS_PLANET_DELETE_URL}
+cloud:
+  aws:
+    region:
+      static: us-east-1
+      auto: false
+    credentials:
+      access-key: ${SQS_ACCESS_KEY}
+      secret-key: ${SQS_SECRET_KEY}
+    end-point:
+      uri: ${SQS_PLANET_DELETE_URL}
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+        internal:
+          InstanceMetadataServiceResourceFetcher: error

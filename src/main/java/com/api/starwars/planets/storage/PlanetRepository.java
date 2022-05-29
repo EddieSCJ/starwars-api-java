@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
@@ -90,6 +91,7 @@ public class PlanetRepository implements IPlanetRepository {
         return savedMongoPlanet.toDomain();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
         log.info("Iniciando exclusao de planeta no banco pelo id. id: {}.", id);
         Optional<MongoPlanet> mongoPlanet = Optional.ofNullable(mongoTemplate.findById(id, MongoPlanet.class));
