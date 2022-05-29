@@ -45,6 +45,7 @@ jobs:
         run: chmod 755 gradlew && ./gradlew build test jacocoTestReport sonarqube --stacktrace
 
   snyk:
+    if: "contains(github.event.commits[0].message, '[skip ci]')"
     name: Security Check
     runs-on: ubuntu-latest
     continue-on-error: true
