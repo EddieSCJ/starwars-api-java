@@ -3,15 +3,15 @@
 #### <p align="center"> Project Tooling </p>
 
 <div align="center"> 
-    <a href="https://app.snyk.io/org/eddiescj/projects" target"_blank">:wolf: Snyk </a>
-    <a href="https://sonarcloud.io/summary/new_code?id=EddieSCJ_starwars-api-java2" target"_blank">:detective: SonarCloud </a>
-    <a href="https://app.codecov.io/gh/EddieSCJ/starwars-api-java/" target"_blank">:open_umbrella: CodeCov </a>
+    <a href="https://app.snyk.io/org/eddiescj/projects" target="_blank">:wolf: Snyk </a>
+    <a href="https://sonarcloud.io/summary/new_code?id=EddieSCJ_starwars-api-java2" target="_blank">:detective: SonarCloud </a>
+    <a href="https://app.codecov.io/gh/EddieSCJ/starwars-api-java/" target="_blank">:open_umbrella: CodeCov </a>
 </div>
 
 #### <p align="center"> Requirements </p>
 
 <div align="center"> 
-    <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html" target"_blank">:coffee: Java 17 </a>
+    <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html" target="_blank">:coffee: Java 17 </a>
     <a href="https://docs.docker.com/get-docker/" target="_blank"> :whale: Docker </a>
     <a href="https://docs.docker.com/get-docker/" target="_blank"> <img width="13" src="https://raw.githubusercontent.com/davzoku/emoji.ico/master/devicon/mongodb-original.ico"> MongoDB </a>
 </div>
