@@ -1,9 +1,9 @@
 spring:
   data:
     mongodb:
-      host: localhost
+      host: mongodb
       port: 27017
-      username: starwars
+      username: admin
       database: starwars
-      password: starwars
+      password: password
       authSource: admin

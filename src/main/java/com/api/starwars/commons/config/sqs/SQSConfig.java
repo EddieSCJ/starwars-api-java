@@ -2,7 +2,8 @@ package com.api.starwars.commons.config.sqs;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.regions.Region;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,9 @@ public class SQSConfig {
     @Value("${cloud.aws.credentials.secret-key}")
     private String sqsSecretKey;
 
+    @Value("${cloud.aws.sqs.endpoint:defaultEndPoint}")
+    private String sqsEndPoint;
+
     @Bean
     public QueueMessagingTemplate queueMessagingTemplate() {
         return new QueueMessagingTemplate(amazonSQSAsync());
@@ -31,7 +35,17 @@ public class SQSConfig {
     @Bean
     @Primary
     public AmazonSQSAsync amazonSQSAsync() {
-        return AmazonSQSAsyncClientBuilder.standard().withRegion(Regions.US_EAST_1)
+        System.out.println("endpoint: " + sqsEndPoint);
+        if (sqsEndPoint.equals("defaultEndPoint")) {
+            return AmazonSQSAsyncClientBuilder.standard()
+                    .withCredentials(
+                            new AWSStaticCredentialsProvider(new BasicAWSCredentials(sqsAccessKey, sqsSecretKey)))
+                    .withRegion(region)
+                    .build();
+        }
+        return AmazonSQSAsyncClientBuilder.standard()
+                .withEndpointConfiguration(
+                        new AwsClientBuilder.EndpointConfiguration(sqsEndPoint, region))
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(sqsAccessKey, sqsSecretKey)))
                 .build();
     }
