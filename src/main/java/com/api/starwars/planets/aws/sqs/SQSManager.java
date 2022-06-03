@@ -32,7 +32,6 @@ public class SQSManager implements ISQSManager {
     @Value("${cloud.aws.end-point.uri}")
     private String planetDeleteQueueURL;
 
-
     @Autowired
     public SQSManager(QueueMessagingTemplate queueMessagingTemplate) {
         this.queueMessagingTemplate = queueMessagingTemplate;
@@ -51,7 +50,6 @@ public class SQSManager implements ISQSManager {
         queueMessagingTemplate.convertAndSend(planetDeleteQueueURL, bodyMessage.toJSONString(), headers);
         log.info(format("Planet delete event sent. planetName: {0}.", planetName));
     }
-
 
     @SqsListener(value = "planet-delete.fifo", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     public void processDeleteEventMessages(String message, @Header("SenderId") String senderId) {
