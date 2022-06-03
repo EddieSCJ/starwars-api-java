@@ -1,6 +1,11 @@
 # Compiled class file
 *.class
 
+# FIles for tests
+
+result.json
+token.json
+
 # Log file
 *.log
 

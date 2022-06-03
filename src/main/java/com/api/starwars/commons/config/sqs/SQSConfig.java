@@ -3,7 +3,6 @@ package com.api.starwars.commons.config.sqs;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Region;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,6 @@ public class SQSConfig {
     @Bean
     @Primary
     public AmazonSQSAsync amazonSQSAsync() {
-        System.out.println("endpoint: " + sqsEndPoint);
         if (sqsEndPoint.equals("defaultEndPoint")) {
             return AmazonSQSAsyncClientBuilder.standard()
                     .withCredentials(
