@@ -26,7 +26,7 @@ jobs:
       - name: Load Images
         if: steps.cache-docker.cache-hit != 'true'
         run: |
-          chmod + x ./scripts/load-environment.sh && ./scripts/load-environment.sh
+          chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
