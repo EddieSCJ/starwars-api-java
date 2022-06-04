@@ -91,7 +91,7 @@ jobs:
           java-version: 17
           distribution: adopt
       - name: Run coverage
-        run: chmod +x ./scripts/test-mode.sh && ./scripts/test-mode.sh
+        run: docker info && chmod +x ./scripts/test-mode.sh && ./scripts/test-mode.sh
       #####################################
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
