@@ -1,3 +1,5 @@
+Please be alert to our repository best practices in [Repository Best Practices](repo_best_practices.md)
+
 # Problem Description
 
 [Jira Issue](https://www.atlassian.com/br/software/jira)
