@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Run the app using local stack SQS and S3
 
-docker compose -f docker-compose.environment.yml up -d
+chmod +x ./scripts/mount-environment.sh
+
+./scripts/mount-environment.sh
 
 export MONGO_HOST=localhost
 export MONGO_USER=admin
