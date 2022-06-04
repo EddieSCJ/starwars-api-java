@@ -25,7 +25,7 @@ public class SQSManager implements ISQSManager {
     private final QueueMessagingTemplate queueMessagingTemplate;
 
     @Setter
-    @Value("${cloud.aws.end-point.uri}")
+    @Value("${cloud.aws.sqs.planet-delete-uri}")
     private String planetDeleteQueueURL;
 
     @Autowired

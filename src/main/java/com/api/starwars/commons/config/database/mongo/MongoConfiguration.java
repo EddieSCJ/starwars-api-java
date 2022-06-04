@@ -63,7 +63,7 @@ public class MongoConfiguration {
             completeUri = MessageFormat.format("mongodb://{0}:{1}/{2}?authSource={3}", host, port, databaseName,
                     authSource);
         } else {
-            completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}/{4}?authSource={5}", username, password, host,
+            completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}/{4}?authSource={5}&authMechanism=SCRAM-SHA-1", username, password, host,
                     port, databaseName, authSource);
         }
 

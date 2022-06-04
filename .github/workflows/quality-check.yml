@@ -35,13 +35,21 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       #####################################
+      - name: Prepare Environment
+        run: docker-compose --file docker-compose.environment.yml up -d
+      #####################################
       - name: Analysis
         env:
+          PROFILE: ${{ secrets.PROFILE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SQS_SECRET_KEY: ${{ secrets.SQS_SECRET_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          SNS_ENDPOINT: ${{ secrets.SNS_ENDPOINT }}
+          SQS_ENDPOINT: ${{ secrets.SQS_ENDPOINT }}
           SQS_PLANET_DELETE_URL: ${{ secrets.SQS_PLANET_DELETE_URL }}
-          SQS_ACCESS_KEY: ${{ secrets.SQS_ACCESS_KEY }}
+          AUTHORIZATION_SECRET: ${{ secrets.AUTHORIZATION_SECRET }}
         run: chmod 755 gradlew && ./gradlew build test jacocoTestReport sonarqube --stacktrace
 
   snyk:
@@ -70,12 +78,19 @@ jobs:
         with:
           java-version: 17
           distribution: adopt
+      - name: Prepare Environment
+        run: docker-compose --file docker-compose.environment.yml up -d
       #####################################
       - name: Run coverage
         env:
-          SQS_SECRET_KEY: ${{ secrets.SQS_SECRET_KEY }}
+          PROFILE: ${{ secrets.PROFILE }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          SNS_ENDPOINT: ${{ secrets.SNS_ENDPOINT }}
+          SQS_ENDPOINT: ${{ secrets.SQS_ENDPOINT }}
           SQS_PLANET_DELETE_URL: ${{ secrets.SQS_PLANET_DELETE_URL }}
-          SQS_ACCESS_KEY: ${{ secrets.SQS_ACCESS_KEY }}
+          AUTHORIZATION_SECRET: ${{ secrets.AUTHORIZATION_SECRET }}
         run: ./gradlew test jacocoTestReport
       #####################################
       - name: Upload coverage to Codecov

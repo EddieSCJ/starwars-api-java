@@ -13,8 +13,8 @@ services:
       - HOST_TMP_FOLDER=/tmp/localstack
       - DOCKER_HOST=unix:///var/run/docker.sock
       - SERVICES=sqs,sns
-      - AWS_ACCESS_KEY_ID=dummy
-      - AWS_SECRET_ACCESS_KEY=dummy
+      - AWS_ACCESS_KEY_ID=ACCESS
+      - AWS_SECRET_ACCESS_KEY=SECRET
       - HOSTNAME_EXTERNAL=localstack
     volumes:
       - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
@@ -47,11 +47,12 @@ services:
       - MONGO_AUTH_SOURCE=admin
       - MONGO_CONTAINER_NAME=mongoservice
       - AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
-      - SQS_PLANET_DELETE_URL=http://localstack:4566/queue/planet-delete.fifo
-      - SQS_SECRET_KEY=SECRET
-      - SQS_ACCESS_KEY=ACCESS
-      - SQS_REGION=us-east-1
+      - AWS_SECRET_KEY=SECRET
+      - AWS_ACCESS_KEY=ACCESS
+      - AWS_REGION=us-east-1
+      - SNS_ENDPOINT=http://localhost:4566
       - SQS_ENDPOINT=http://localstack:4566
+      - SQS_PLANET_DELETE_URL=http://localstack:4566/queue/planet-delete.fifo
       - SWAPI_URL=https://swapi.dev/api
       - ENV=ENV
       - PROFILE=container

@@ -1,14 +1,9 @@
 spring:
   data:
     mongodb:
-      host: mongodb
+      host: localhost
       port: 27017
-      username:
+      username: admin
       database: starwars
-      password:
+      password: password
       authSource: admin
-
-cloud:
-  aws:
-    sqs:
-      endpoint: defaultEndPoint

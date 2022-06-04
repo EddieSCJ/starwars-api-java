@@ -36,14 +36,15 @@ spring:
 cloud:
   aws:
     region:
-      static: ${SQS_REGION}
+      static: ${AWS_REGION}
       auto: false
     credentials:
-      access-key: ${SQS_ACCESS_KEY}
-      secret-key: ${SQS_SECRET_KEY}
-    end-point:
-      uri: ${SQS_PLANET_DELETE_URL}
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    sns:
+      endpoint: ${SNS_ENDPOINT}
     sqs:
+      planet-delete-uri: ${SQS_PLANET_DELETE_URL}
       endpoint: ${SQS_ENDPOINT}
 
 logging:

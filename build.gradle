@@ -63,8 +63,6 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter:1.17.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'org.mockito:mockito-inline:4.5.1'
-    testImplementation 'net.java.dev.jna:jna-platform:5.8.0'
-
 }
 
 // ========================== Jacoco and Sonarqube config ================================
