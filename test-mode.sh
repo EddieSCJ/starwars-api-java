@@ -22,6 +22,6 @@ export API_PORT=8080
 export PROFILE=test
 export MONGO_AUTH_SOURCE=admin
 
-java --version
 
-./gradlew test jacocoTestReport --scan
+
+./gradlew test jacocoTestReport $1 $2

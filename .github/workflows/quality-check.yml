@@ -40,17 +40,9 @@ jobs:
       #####################################
       - name: Analysis
         env:
-          PROFILE: ${{ secrets.PROFILE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          SNS_ENDPOINT: ${{ secrets.SNS_ENDPOINT }}
-          SQS_ENDPOINT: ${{ secrets.SQS_ENDPOINT }}
-          SQS_PLANET_DELETE_URL: ${{ secrets.SQS_PLANET_DELETE_URL }}
-          AUTHORIZATION_SECRET: ${{ secrets.AUTHORIZATION_SECRET }}
-        run: chmod 755 gradlew && ./gradlew build test jacocoTestReport sonarqube --stacktrace
+        run: chmod 755 gradlew && .chmod +x ./test-mode.sh && ./test-mode.sh sonarqube --stacktrace
 
   snyk:
     if: "contains(github.event.commits[0].message, '[skip ci]')"
