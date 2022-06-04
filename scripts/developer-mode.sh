@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the app using local stack SQS and S3
+# Run the app using local stack SQS and SNS
 
 chmod +x ./scripts/cache-docker/mount-environment.sh
 

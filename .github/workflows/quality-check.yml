@@ -5,6 +5,7 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   docker-cache:
     name: Docker Cache
@@ -43,6 +44,14 @@ jobs:
         with:
           java-version: 17
           distribution: adopt
+
+      - name: Recover Docker Cache
+        id: cache-docker
+        uses: actions/cache@v3
+        with:
+          path: /tmp/cache-docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
+          restore-keys: ${{ runner.os }}-docker-
 
       - name: Load Docker Images
         if: steps.cache-docker.outputs.cache-hit == 'true'
@@ -88,6 +97,14 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
+      - name: Recover Docker Cache
+        id: cache-docker
+        uses: actions/cache@v3
+        with:
+          path: /tmp/cache-docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
+          restore-keys: ${{ runner.os }}-docker-
+
       - name: Load Image
         if: steps.cache-docker.outputs.cache-hit == 'true'
         run: chmod +x ./scripts/cache-docker/load-environment.sh
@@ -97,8 +114,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: chmod 755 gradlew \
-              && chmod +x ./scripts/test-mode.sh \
+        run: chmod 755 gradlew
+              && chmod +x ./scripts/test-mode.sh
               && ./scripts/test-mode.sh sonarqube --stacktrace
 
   ############################# SNYK ###############################
