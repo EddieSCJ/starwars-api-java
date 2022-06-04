@@ -26,7 +26,7 @@ jobs:
       - name: Load Images
         if: steps.cache-docker.cache-hit != 'true'
         run: |
-          chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh && sudo cp -R /var/lib/docker /tmp/cache-docker
+          chmod +x ./scripts/save-environment.sh && ./scripts/save-environment.sh && ls /tmp/cache-docker
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
@@ -66,10 +66,10 @@ jobs:
           key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
           restore-keys: |
             ${{ runner.os }}-docker-
-      - name: Copy Cache
+      - name: Load Image
         if: steps.cache-docker.cache-hit == 'true'
         run: |
-          sudo cp -R  /tmp/cache-docker /var/lib/docker
+          chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh
       - name: Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -108,14 +108,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            /tmp-cache-docker
+            /tmp/cache-docker
           key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
           restore-keys: |
             ${{ runner.os }}-docker-
-      - name: Copy Cache
+      - name: Load Image
         if: steps.cache-docker.cache-hit == 'true'
         run: |
-          sudo cp -R  /tmp/cache-docker /var/lib/docker
+          chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh
       - name: Run coverage
         run: chmod +x ./scripts/test-mode.sh && ./scripts/test-mode.sh
       #####################################

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the app using local stack SQS and S3
 
-docker pull localstack/localstack
+docker load /tmp/cache-docker/localstack.tar
 
-docker pull mongo
+docker load /tmp/cache-docker/mongo.tar
