@@ -59,7 +59,7 @@ public class MongoConfiguration {
         log.info("host: " + host);
 
         String completeUri;
-        if (profile != null && username == null) {
+        if (!StringUtils.isBlank(profile) && StringUtils.isBlank(username)) {
             completeUri = MessageFormat.format("mongodb://{0}:{1}/{2}?authSource={3}", host, port, databaseName,
                     authSource);
         } else {

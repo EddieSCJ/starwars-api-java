@@ -1,4 +1,4 @@
-package com.api.starwars.commons.config.sqs;
+package com.api.starwars.commons.config.aws.sqs;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
