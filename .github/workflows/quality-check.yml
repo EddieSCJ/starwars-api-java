@@ -35,14 +35,11 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       #####################################
-      - name: Prepare Environment
-        run: docker-compose --file docker-compose.environment.yml up -d
-      #####################################
       - name: Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: chmod 755 gradlew && .chmod +x ./test-mode.sh && ./test-mode.sh sonarqube --stacktrace
+        run: chmod 755 gradlew && chmod +x ./test-mode.sh && ./test-mode.sh sonarqube --stacktrace
 
   snyk:
     if: "contains(github.event.commits[0].message, '[skip ci]')"
@@ -71,7 +68,7 @@ jobs:
           java-version: 17
           distribution: adopt
       - name: Run coverage
-        run: chmod +x ./test-mode/sh && ./test-mode/sh
+        run: chmod +x ./test-mode.sh && ./test-mode.sh
       #####################################
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
