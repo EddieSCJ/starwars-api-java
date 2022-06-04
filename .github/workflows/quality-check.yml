@@ -24,7 +24,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Load Images
-        if: steps.cache-docker.cache-hit != 'true'
+        if: steps.cache-docker.outputs.cache-hit != 'true'
         run: |
           chmod +x ./scripts/save-environment.sh && ./scripts/save-environment.sh && ls /tmp/cache-docker
   sonarcloud:
@@ -67,7 +67,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Load Image
-        if: steps.cache-docker.cache-hit == 'true'
+        if: steps.cache-docker.outputs.cache-hit == 'true'
         run: |
           chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh
       - name: Analysis
@@ -113,7 +113,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Load Image
-        if: steps.cache-docker.cache-hit == 'true'
+        if: steps.cache-docker.outputs.cache-hit == 'true'
         run: |
           chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh
       - name: Run coverage
