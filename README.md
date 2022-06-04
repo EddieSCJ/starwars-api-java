@@ -70,17 +70,17 @@ This application runs in development mode with [Localstack](https://localstack.c
 To run the application as a container run the following commands:
 
 ```
-chmod +x ./container-mode.sh
+chmod +x ./scripts/container-mode.sh
 
-./container-mode.sh
+./scripts/container-mode.sh
 ```
 
 To run the application using the Java environment of your computer, run the following commands:
 
 ```
-chmod +x ./developer-mode.sh
+chmod +x ./scripts/developer-mode.sh
 
-./developer-mode.sh
+./scripts/developer-mode.sh
 ```
 
 As both of ways use the same port (8080), They cannot run simultaneously.
@@ -89,9 +89,8 @@ As both of ways use the same port (8080), They cannot run simultaneously.
 
 To test, you must execute following commands:
 
-````
-chmod +x ./test-mode.sh
-
-./test-mode.sh
 ```
-````
+chmod +x ./scripts/test-mode.sh
+
+./scripts/test-mode.sh
+```
