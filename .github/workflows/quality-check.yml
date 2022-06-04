@@ -78,20 +78,8 @@ jobs:
         with:
           java-version: 17
           distribution: adopt
-      - name: Prepare Environment
-        run: docker-compose --file docker-compose.environment.yml up -d
-      #####################################
       - name: Run coverage
-        env:
-          PROFILE: ${{ secrets.PROFILE }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          SNS_ENDPOINT: ${{ secrets.SNS_ENDPOINT }}
-          SQS_ENDPOINT: ${{ secrets.SQS_ENDPOINT }}
-          SQS_PLANET_DELETE_URL: ${{ secrets.SQS_PLANET_DELETE_URL }}
-          AUTHORIZATION_SECRET: ${{ secrets.AUTHORIZATION_SECRET }}
-        run: ./gradlew test jacocoTestReport
+        run: chmod +x ./test-mode/sh && ./test-mode/sh
       #####################################
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
