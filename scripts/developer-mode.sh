@@ -3,7 +3,7 @@
 
 chmod +x ./scripts/mount-environment.sh
 
-./scripts/actions/mount-environment.sh
+./scripts/cache-docker/mount-environment.sh
 
 export MONGO_HOST=localhost
 export MONGO_USER=admin

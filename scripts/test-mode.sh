@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Run compose to up environment
-chmod +x ./scripts/actions/mount-environment.sh
-./scripts/actions/mount-environment.sh
+chmod +x ./scripts/cache-docker/mount-environment.sh
+./scripts/cache-docker/mount-environment.sh
 
 export MONGO_HOST=localhost
 export MONGO_USER=admin
