@@ -6,7 +6,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  docker-cache: 
+  docker-cache:
     name: Docker Cache
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +25,7 @@ jobs:
       - name: Load Images
         if: steps.cache-docker.outputs.cache-hit != 'true'
         run: |
-          echo ${{ steps.cache-docker.outputs.cache-hit }} && chmod +x ./scripts/save-environment.sh && ./scripts/save-environment.sh && ls /tmp/cache-docker
+          echo ${{ steps.cache-docker.outputs.cache-hit }} && chmod +x ./scripts/actions/save-environment.sh && ./scripts/actions/save-environment.sh && ls /tmp/cache-docker
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
@@ -56,7 +56,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       #####################################
-      - id: cache-docker
+      - name: Cache Docker Images
         uses: actions/cache@v3
         with:
           path: |
@@ -66,7 +66,7 @@ jobs:
             ${{ runner.os }}-docker-
       - if: steps.cache-docker.outputs.cache-hit == 'true'
         run: |
-          chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh
+          chmod +x ./scripts/actions/load-environment.sh && ./scripts/actions/load-environment.sh
       - name: Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -112,7 +112,7 @@ jobs:
       - name: Load Image
         if: steps.cache-docker.outputs.cache-hit == 'true'
         run: |
-          chmod +x ./scripts/load-environment.sh && ./scripts/load-environment.sh
+          chmod +x ./scripts/actions/load-environment.sh && ./scripts/actions/load-environment.sh
       - name: Run coverage
         run: chmod +x ./scripts/test-mode.sh && ./scripts/test-mode.sh
       #####################################

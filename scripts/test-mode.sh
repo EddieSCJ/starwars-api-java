@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# Run the app using local stack SQS and S3
 
+# Run compose to up environment
 chmod +x ./scripts/mount-environment.sh
-
 ./scripts/mount-environment.sh
 
 export MONGO_HOST=localhost
@@ -23,7 +22,5 @@ export ENV=ENV
 export API_PORT=8080
 export PROFILE=test
 export MONGO_AUTH_SOURCE=admin
-
-
 
 ./gradlew test jacocoTestReport $1 $2
