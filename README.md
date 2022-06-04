@@ -65,17 +65,20 @@ curl -o result.json --location --request GET 'http://localhost:8080/api/v0/plane
 
 #### <p align="center"> Running </p>
 
-This application runs in development mode with [Localstack](https://localstack.cloud) and [Mongo](https://www.mongodb.com) in docker containers. You also have the option to run the application as a container.
+You'll have two options to start the app, the first one you can run the app and environment together
+in a container.
 
-To run the application as a container run the following commands:
-
+#### 1. Run as a Container
+This application runs in development mode with [Localstack](https://localstack.cloud) and [Mongo](https://www.mongodb.com) in docker containers.
 ```
 chmod +x ./scripts/container-mode.sh
 
 ./scripts/container-mode.sh
 ```
 
-To run the application using the Java environment of your computer, run the following commands:
+#### 2. Run in console
+If you want just run the app in your java environment without setup any IDE or tool, just run the following
+from the app root.
 
 ```
 chmod +x ./scripts/developer-mode.sh
@@ -83,14 +86,84 @@ chmod +x ./scripts/developer-mode.sh
 ./scripts/developer-mode.sh
 ```
 
-As both of ways use the same port (8080), They cannot run simultaneously.
+#### 2. Run in your IDE or text editing tool
+Once you need debug and see some application logs, or want to use an IDE like Intellij, we strongly 
+recommend you to up the environment with localstack and mongodb and export the following variables to
+your IDE or any tool you are using.
+
+**Environment Variables**
+```bash
+MONGO_HOST=localhost;
+MONGO_USER=admin;
+MONGO_PASSWORD=password;
+MONGO_PORT=27017;
+MONGO_DB=starwars;
+MONGO_CONTAINER_NAME=mongoservice;
+AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS;
+AWS_SECRET_KEY=SECRET;
+AWS_ACCESS_KEY=ACCESS;
+AWS_REGION=us-east-1;
+SNS_ENDPOINT=http://localhost:4566;
+SQS_PLANET_DELETE_URL=http://localhost:4566/queue/planet-delete.fifo;
+SQS_ENDPOINT=http://localhost:4566;
+SWAPI_URL=https://swapi.dev/api;
+ENV=ENV;
+API_PORT=8080;
+PROFILE=dev;
+MONGO_AUTH_SOURCE=admin
+```
+
+Once you set it, just run the following command:
+
+```
+chmod +x ./scripts/cache-docker/mount-environment.sh
+
+./scripts/cache-docker/mount-environment.sh
+```
+
+After this, just start the app in your tool.
 
 #### <p align="center"> Testing </p>
 
-To test, you must execute following commands:
+#### 1. Run Tests in console
 
+Execute the following commands
 ```
 chmod +x ./scripts/test-mode.sh
 
 ./scripts/test-mode.sh
 ```
+
+#### 2. Run Tests in your IDE or text editing tool
+
+Export the following env vars to your tool:
+```bash
+MONGO_HOST=localhost
+MONGO_USER=admin
+MONGO_PASSWORD=password
+MONGO_PORT=27017
+MONGO_DB=starwars
+MONGO_CONTAINER_NAME=mongoservice
+AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+AWS_SECRET_KEY=SECRET
+AWS_ACCESS_KEY=ACCESS
+AWS_REGION=us-east-1
+SNS_ENDPOINT=http://localhost:4566
+SQS_ENDPOINT=http://localhost:4566
+SQS_PLANET_DELETE_URL=http://localhost:4566/queue/planet-delete.fifo
+SWAPI_URL=https://swapi.dev/api
+ENV=ENV
+API_PORT=8080
+PROFILE=test
+MONGO_AUTH_SOURCE=admin
+```
+
+Once you set it, just run the following command:
+
+```
+chmod +x ./scripts/cache-docker/mount-environment.sh
+
+./scripts/cache-docker/mount-environment.sh
+```
+
+After done it to your tool, just run the tests in your tool.
