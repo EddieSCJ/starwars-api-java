@@ -1,9 +1,10 @@
 package com.api.starwars.planets.storage;
 
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
-import com.api.starwars.planets.handler.interfaces.ISQSManager;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
+import com.api.starwars.planets.storage.interfaces.ISNSManager;
+import com.api.starwars.planets.storage.interfaces.ISQSManager;
 import com.mongodb.client.result.DeleteResult;
 import commons.utils.DomainUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,9 @@ public class PlanetRepositoryTest {
 
     @Mock
     private ISQSManager sqsManager;
+
+    @Mock
+    private ISNSManager snsManager;
 
     @InjectMocks
     private PlanetRepository planetRepository;
@@ -145,6 +149,7 @@ public class PlanetRepositoryTest {
             planetRepository.deleteById(FAKE_ID);
             verify(mongoTemplate, times(1)).remove(query(criteria), MongoPlanet.class);
             verify(sqsManager, times(1)).sendDeleteMessage(anyString());
+            verify(snsManager, times(1)).sendDeleteNotification(anyString());
         }
 
         @Test

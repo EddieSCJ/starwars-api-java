@@ -2,10 +2,11 @@ package com.api.starwars.planets.storage;
 
 import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
 import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
-import com.api.starwars.planets.handler.interfaces.ISQSManager;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.services.interfaces.IPlanetRepository;
+import com.api.starwars.planets.storage.interfaces.ISNSManager;
+import com.api.starwars.planets.storage.interfaces.ISQSManager;
 import com.mongodb.client.result.DeleteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,13 @@ public class PlanetRepository implements IPlanetRepository {
     @Qualifier("mongoTemplate")
     private final MongoTemplate mongoTemplate;
     private final ISQSManager sqsManager;
+    private final ISNSManager snsManager;
 
     @Autowired
-    public PlanetRepository(MongoTemplate mongoTemplate, ISQSManager sqsManager) {
+    public PlanetRepository(MongoTemplate mongoTemplate, ISQSManager sqsManager, ISNSManager snsManager) {
         this.mongoTemplate = mongoTemplate;
         this.sqsManager = sqsManager;
+        this.snsManager = snsManager;
     }
 
     public Long count() {
@@ -108,6 +111,7 @@ public class PlanetRepository implements IPlanetRepository {
         }
 
         sqsManager.sendDeleteMessage(mongoPlanet.get().getName());
+        snsManager.sendDeleteNotification(mongoPlanet.get().getName());
         log.info("Exclusao de planeta no banco pelo id concluida com sucesso. id: {}.", id);
     }
 
