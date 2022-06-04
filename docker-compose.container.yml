@@ -12,14 +12,14 @@ services:
       - DATA_DIR=/data/localstack
       - HOST_TMP_FOLDER=/tmp/localstack
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - SERVICES=sqs
+      - SERVICES=sqs,sns
       - AWS_ACCESS_KEY_ID=dummy
       - AWS_SECRET_ACCESS_KEY=dummy
       - HOSTNAME_EXTERNAL=localstack
     volumes:
       - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - ./configure-stacklocal:/docker-entrypoint-initaws.d:ro
+      - ./localstack:/docker-entrypoint-initaws.d:ro
   mongodb:
     image: mongo
     ports:
@@ -47,7 +47,7 @@ services:
       - MONGO_AUTH_SOURCE=admin
       - MONGO_CONTAINER_NAME=mongoservice
       - AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
-      - SQS_PLANET_DELETE_URL=http://localstack:4566/000000000000/planets-delete
+      - SQS_PLANET_DELETE_URL=http://localstack:4566/queue/planet-delete.fifo
       - SQS_SECRET_KEY=SECRET
       - SQS_ACCESS_KEY=ACCESS
       - SQS_REGION=us-east-1

@@ -12,14 +12,14 @@ services:
       - DATA_DIR=/data/localstack
       - HOST_TMP_FOLDER=/tmp/localstack
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - SERVICES=sqs
+      - SERVICES=sqs,sns
       - AWS_ACCESS_KEY_ID=dummy
       - AWS_SECRET_ACCESS_KEY=dummy
       - HOSTNAME_EXTERNAL=localstack
     volumes:
       - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - ./configure-stacklocal:/docker-entrypoint-initaws.d:ro
+      - ./localstack:/docker-entrypoint-initaws.d:ro
   mongodb:
     image: mongo
     ports:
