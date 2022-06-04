@@ -58,6 +58,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       #####################################
       - name: Analysis
+        uses: actions/cache@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -91,7 +92,8 @@ jobs:
           java-version: 17
           distribution: adopt
       - name: Run coverage
-        run: docker info && chmod +x ./scripts/test-mode.sh && ./scripts/test-mode.sh
+        uses: actions/cache@v3
+        run: docker info && ls /var/lib/docker && chmod +x ./scripts/test-mode.sh && ./scripts/test-mode.sh
       #####################################
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
