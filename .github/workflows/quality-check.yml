@@ -56,17 +56,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       #####################################
-      - id: cache-docker
-        uses: actions/cache@v3
-        with:
-          path: |
-            /tmp/cache-docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-          if: steps.cache-docker.outputs.cache-hit == 'true'
-          run: |
-            chmod +x ./scripts/actions/load-environment.sh && ./scripts/actions/load-environment.sh
+      - name: Load Image
+        if: steps.cache-docker.outputs.cache-hit == 'true'
+        run: |
+          chmod +x ./scripts/actions/load-environment.sh && ./scripts/actions/load-environment.sh
       - name: Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
