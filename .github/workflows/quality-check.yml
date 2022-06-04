@@ -20,7 +20,7 @@ jobs:
         with:
           path: |
             /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
+          key: ${{ runner.os }}-docker-
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Load Images
@@ -63,7 +63,7 @@ jobs:
         with:
           path: |
             /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
+          key: ${{ runner.os }}-docker-
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Analysis
@@ -105,7 +105,7 @@ jobs:
         with:
           path: |
             /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/docker-compose*') }}
+          key: ${{ runner.os }}-docker-
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Run coverage
