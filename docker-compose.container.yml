@@ -57,6 +57,9 @@ services:
       - ENV=ENV
       - PROFILE=container
       - API_PORT=8080
+    volumes:
+      - ./:/root/dev/myapp/
+      - /root/dev/myapp/build
 volumes:
   mongo-data:
     driver: local

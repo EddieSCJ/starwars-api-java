@@ -11,20 +11,12 @@ COPY gradle $APP_HOME/gradle
 
 # download dependencies
 RUN chmod +x gradlew
-RUN ./gradlew build -x :bootJar -x test --continue
+RUN ./gradlew build -x :bootJar -x test --continue --no-daemon
 
 # copying dependecies
 COPY . .
 RUN chmod +x gradlew
-RUN ./gradlew build -x test
-
-# Second stage (run)
-# Using jdk (necessary to run the build jar)
-FROM openjdk:17.0-jdk-slim-buster AS RUN_IMAGE
-WORKDIR /root/
-
-#Copying our jar from the first stage
-COPY --from=BUILD_IMAGE /root/dev/myapp/build/libs/*.jar .
+RUN ./gradlew :compileJava --no-daemon
 
 EXPOSE 8080
-CMD ["java","-jar","./starwars.jar"]
+CMD ["./gradlew", "bootJar", "-t", "--no-daemon", "&", "./gradlew","bootRun", "--no-daemon", "-x", ":compileJava", "&&", "fg"]

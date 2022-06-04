@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run the app using local stack SQS and S3
 
-chmod +x ./scripts/mount-environment.sh
+chmod +x ./scripts/cache-docker/mount-environment.sh
 
 ./scripts/cache-docker/mount-environment.sh
 
@@ -24,6 +24,6 @@ export API_PORT=8080
 export PROFILE=dev
 export MONGO_AUTH_SOURCE=admin
 
-./gradlew build -x test --info
+./gradlew bootJar -t & ./gradlew bootrun && fg
 
-java -jar ./build/libs/starwars.jar
+

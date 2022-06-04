@@ -45,18 +45,21 @@ public class PlanetHandler {
             @RequestParam(name = "order", defaultValue = "name") String order,
             @RequestParam(name = "direction", defaultValue = "ASC") String direction,
             @RequestParam(name = "size", defaultValue = "15") Integer size,
-            HttpServletRequest request
-    ) {
-        log.info("Iniciando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
+            HttpServletRequest request) {
+        log.info("Iniciando busca por todos os planetas. page: {}, order: {}, direction: {}, size: {}.", page, order,
+                direction, size);
         LoggerUtils.setOperationInfoIntoMDC(GET_PLANETS_PAGE, request);
 
         Page<Planet> planets = planetService.findAll(page, order, direction, size);
         Page<PlanetJson> pageResponse = planets.map(PlanetJson::fromDomain);
         pageResponse = pageResponse
-                .map(planet -> planet.add(linkTo(methodOn(PlanetHandler.class).getByID(planet.getId(), 0L, null)).withSelfRel()))
-                .map(planet -> planet.add(linkTo(methodOn(PlanetHandler.class).getByName(planet.getName(), 0L, null)).withSelfRel()));
+                .map(planet -> planet
+                        .add(linkTo(methodOn(PlanetHandler.class).getByID(planet.getId(), 0L, null)).withSelfRel()))
+                .map(planet -> planet.add(
+                        linkTo(methodOn(PlanetHandler.class).getByName(planet.getName(), 0L, null)).withSelfRel()));
 
-        log.info("Busca por todos os planetas concluida com sucesso. page: {}, order: {}, direction: {}, size: {}.", page, order, direction, size);
+        log.info("Busca por todos os planetas concluida com sucesso. page: {}, order: {}, direction: {}, size: {}.",
+                page, order, direction, size);
         return ResponseEntity.ok(PageResponse.fromPage(pageResponse));
     }
 
@@ -66,8 +69,7 @@ public class PlanetHandler {
     public ResponseEntity<PlanetJson> getByID(
             @PathVariable String id,
             @RequestParam(name = "cacheInDays", defaultValue = "0") Long cacheInDays,
-            HttpServletRequest request
-    ) {
+            HttpServletRequest request) {
         log.info("Iniciando busca de planeta por id. id: {}. cacheInDays: {}.", id, cacheInDays);
         LoggerUtils.setOperationInfoIntoMDC(id, GET_PLANET_BY_ID, request);
 
@@ -86,8 +88,7 @@ public class PlanetHandler {
     public ResponseEntity<PlanetJson> getByName(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") Long cacheInDays,
-            HttpServletRequest request
-    ) {
+            HttpServletRequest request) {
         log.info("Iniciando busca de planeta pelo nome. name: {}. cacheInDays: {}.", name, cacheInDays);
         LoggerUtils.setOperationInfoIntoMDC(name, GET_PLANET_BY_NAME, request);
 
