@@ -84,3 +84,14 @@ chmod +x ./developer-mode.sh
 ```
 
 As both of ways use the same port (8080), They cannot run simultaneously.
+
+#### <p align="center"> Testing </p>
+
+To test, you must execute following commands:
+
+````
+chmod +x ./test-mode.sh
+
+./test-mode.sh
+```
+````
