@@ -23,10 +23,9 @@ jobs:
           restore-keys: ${{ runner.os }}-docker-
       - name: Save Images
         if: steps.cache-docker.outputs.cache-hit != 'true'
-        run: |
-          echo ${{ steps.cache-docker.outputs.cache-hit }}
-            && chmod +x ./scripts/cache-docker/save-environment.sh
-            && ./scripts/cache-docker/save-environment.sh && ls /tmp/cache-docker
+        run: echo ${{ steps.cache-docker.outputs.cache-hit }}
+              && chmod +x ./scripts/cache-docker/save-environment.sh
+              && ./scripts/cache-docker/save-environment.sh && ls /tmp/cache-docker
 
   ###################################### CODECOV ###########################################
   codecov:
