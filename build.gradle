@@ -78,6 +78,7 @@ task jacocoMerge(type: JacocoMerge, group: 'verification') {
     executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
 }
 
+
 //Sonar Config
 sonarqube {
     properties {
