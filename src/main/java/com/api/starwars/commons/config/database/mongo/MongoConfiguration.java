@@ -56,15 +56,19 @@ public class MongoConfiguration {
     @RefreshScope
     public MongoClient client() {
         log.info("Refreshing MongoClient");
+        log.info("host: " + host);
 
         String completeUri;
-        if (profile != null && profile.equals("dev")) {
-            completeUri = MessageFormat.format("mongodb://{0}:{1}/{2}?authSource={3}", host, port, databaseName, authSource);
+        if (!StringUtils.isBlank(profile) && StringUtils.isBlank(username)) {
+            completeUri = MessageFormat.format("mongodb://{0}:{1}/{2}?authSource={3}", host, port, databaseName,
+                    authSource);
         } else {
-            completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}/{4}?authSource={5}", username, password, host, port, databaseName, authSource);
+            completeUri = MessageFormat.format("mongodb://{0}:{1}@{2}:{3}/{4}?authSource={5}&authMechanism=SCRAM-SHA-1", username, password, host,
+                    port, databaseName, authSource);
         }
 
-        final MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(new ConnectionString(completeUri)).build();
+        final MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(completeUri)).build();
         return MongoClients.create(settings, SpringDataMongoDB.driverInformation());
     }
 

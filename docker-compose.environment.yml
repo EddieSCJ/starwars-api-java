@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4510-4559:4510-4559" # external service port range
+      - "127.0.0.1:4566:4566" # LocalStack Edge Proxy
+    environment:
+      - DEBUG=0
+      - DATA_DIR=/data/localstack
+      - HOST_TMP_FOLDER=/tmp/localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SERVICES=sqs,sns
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      - HOSTNAME_EXTERNAL=localstack
+    volumes:
+      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./localstack:/docker-entrypoint-initaws.d:ro
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-data:/tmp/mongodb
+  mongo-seed:
+    build: ./mongo-seed
+    depends_on:
+      - mongodb
+volumes:
+  mongo-data:
+    driver: local

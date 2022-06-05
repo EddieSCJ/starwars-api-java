@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4510-4559:4510-4559" # external service port range
+      - "127.0.0.1:4566:4566" # LocalStack Edge Proxy
+    environment:
+      - DEBUG=0
+      - DATA_DIR=/data/localstack
+      - HOST_TMP_FOLDER=/tmp/localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SERVICES=sqs,sns
+      - AWS_ACCESS_KEY_ID=ACCESS
+      - AWS_SECRET_ACCESS_KEY=SECRET
+      - HOSTNAME_EXTERNAL=localstack
+    volumes:
+      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./localstack:/docker-entrypoint-initaws.d:ro
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-data:/tmp/mongodb
+  mongo-seed:
+    build: ./mongo-seed
+    depends_on:
+      - mongodb
+  starwars:
+    depends_on:
+      - mongodb
+      - mongo-seed
+      - localstack
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_USER=admin
+      - MONGO_PASSWORD=password
+      - MONGO_PORT=27017
+      - MONGO_DB=starwars
+      - MONGO_AUTH_SOURCE=admin
+      - MONGO_CONTAINER_NAME=mongoservice
+      - AUTHORIZATION_SECRET=TazvE@QSs7AfWTMfEwXaR#TB7P6&p@JQ5RqCMqZ%cL5MU$$2qPZyEDkTZH^#cuUW3nbRrTJy^+Hj5wWdNVg?-QypDRMyfE5pCwR#F%bh%73q#F^m*B?@PS
+      - AWS_SECRET_KEY=SECRET
+      - AWS_ACCESS_KEY=ACCESS
+      - AWS_REGION=us-east-1
+      - SNS_ENDPOINT=http://localhost:4566
+      - SQS_ENDPOINT=http://localstack:4566
+      - SQS_PLANET_DELETE_URL=http://localstack:4566/queue/planet-delete.fifo
+      - SWAPI_URL=https://swapi.dev/api
+      - ENV=ENV
+      - PROFILE=container
+      - API_PORT=8080
+    volumes:
+      - ./:/root/dev/myapp/
+      - /root/dev/myapp/build
+volumes:
+  mongo-data:
+    driver: local

@@ -1,6 +1,11 @@
 # Compiled class file
 *.class
 
+# FIles for tests
+
+result.json
+token.json
+
 # Log file
 *.log
 
@@ -9,6 +14,8 @@
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+
+bin
 
 # Package Files #
 *.jar
