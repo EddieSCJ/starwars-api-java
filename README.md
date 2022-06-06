@@ -68,15 +68,7 @@ curl -o result.json --location --request GET 'http://localhost:8080/api/v0/plane
 You'll have two options to start the app, the first one you can run the app and environment together
 in a container.
 
-#### 1. Run as a Container
-This application runs in development mode with [Localstack](https://localstack.cloud) and [Mongo](https://www.mongodb.com) in docker containers.
-```
-chmod +x ./scripts/container-mode.sh
-
-./scripts/container-mode.sh
-```
-
-#### 2. Run in console
+#### 1. Run in console
 If you want just run the app in your java environment without setup any IDE or tool, just run the following
 from the app root.
 
@@ -111,6 +103,7 @@ ENV=ENV;
 API_PORT=8080;
 PROFILE=dev;
 MONGO_AUTH_SOURCE=admin
+KAFKA_BOOTSTRAP_ADDRESS=http://localhost:9093
 ```
 
 Once you set it, just run the following command:
@@ -156,6 +149,7 @@ ENV=ENV
 API_PORT=8080
 PROFILE=test
 MONGO_AUTH_SOURCE=admin
+KAFKA_BOOTSTRAP_ADDRESS=http://localhost:9093
 ```
 
 Once you set it, just run the following command:
