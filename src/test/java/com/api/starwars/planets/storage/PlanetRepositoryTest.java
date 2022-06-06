@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.StringUtils;
@@ -36,7 +37,8 @@ public class PlanetRepositoryTest {
     private MongoTemplate mongoTemplate;
 
     @Mock
-    private IMessageSender sqsManager;
+    @Qualifier("SQSManager")
+    private IMessageSender messageSender;
 
     @Mock
     private INotificationSender snsManager;
@@ -149,7 +151,7 @@ public class PlanetRepositoryTest {
 
             planetRepository.deleteById(FAKE_ID);
             verify(mongoTemplate, times(1)).remove(query(criteria), MongoPlanet.class);
-            verify(sqsManager, times(1)).sendMessage(anyString());
+            verify(messageSender, times(2)).sendMessage(anyString());
             verify(snsManager, times(1)).sendNotification(anyString(), anyString());
         }
 
