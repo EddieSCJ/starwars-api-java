@@ -7,3 +7,7 @@ spring:
       database: starwars
       password: password
       authSource: admin
+
+kafka:
+  bootstrap:
+    address: 'http://localhost:9092'

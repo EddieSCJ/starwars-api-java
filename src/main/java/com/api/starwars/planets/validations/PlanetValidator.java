@@ -1,7 +1,7 @@
 package com.api.starwars.planets.validations;
 
-import com.api.starwars.commons.helpers.MessageSourceHelper;
-import com.api.starwars.commons.validations.AbstractValidator;
+import com.api.starwars.common.validations.AbstractValidator;
+import com.api.starwars.pkg.helpers.MessageSourceHelper;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;

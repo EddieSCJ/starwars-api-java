@@ -2,7 +2,7 @@ package commons.base;
 
 import com.api.starwars.StarwarsApplication;
 import com.api.starwars.auth.jwt.model.mongo.MongoUser;
-import com.api.starwars.commons.config.database.mongo.MongoConfiguration;
+import com.api.starwars.pkg.external.config.database.mongo.MongoConfiguration;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

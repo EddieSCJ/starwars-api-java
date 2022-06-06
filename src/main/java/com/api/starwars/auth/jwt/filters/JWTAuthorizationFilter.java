@@ -1,6 +1,6 @@
 package com.api.starwars.auth.jwt.filters;
 
-import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
+import com.api.starwars.common.exceptions.http.HttpInternalServerErrorException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.extern.slf4j.Slf4j;

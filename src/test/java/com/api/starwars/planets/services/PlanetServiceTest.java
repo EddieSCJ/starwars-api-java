@@ -1,13 +1,13 @@
 package com.api.starwars.planets.services;
 
-import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
-import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
-import com.api.starwars.planets.client.IStarWarsApiClient;
+import com.api.starwars.common.exceptions.http.HttpBadRequestException;
+import com.api.starwars.common.exceptions.http.HttpNotFoundException;
 import com.api.starwars.planets.model.client.PlanetResponseJson;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.services.interfaces.IPlanetMongoRepository;
 import com.api.starwars.planets.services.interfaces.IPlanetRepository;
+import com.api.starwars.planets.services.interfaces.IStarWarsApiClient;
 import com.api.starwars.planets.validations.PlanetValidator;
 import commons.utils.DomainUtils;
 import org.junit.jupiter.api.BeforeEach;

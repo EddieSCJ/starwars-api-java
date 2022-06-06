@@ -1,10 +1,11 @@
 package com.api.starwars.planets.storage;
 
-import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
+import com.api.starwars.common.exceptions.http.HttpNotFoundException;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
-import com.api.starwars.planets.storage.interfaces.ISNSManager;
-import com.api.starwars.planets.storage.interfaces.ISQSManager;
+import com.api.starwars.planets.storage.interfaces.IMessageSender;
+import com.api.starwars.planets.storage.interfaces.INotificationSender;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.client.result.DeleteResult;
 import commons.utils.DomainUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,10 +36,10 @@ public class PlanetRepositoryTest {
     private MongoTemplate mongoTemplate;
 
     @Mock
-    private ISQSManager sqsManager;
+    private IMessageSender sqsManager;
 
     @Mock
-    private ISNSManager snsManager;
+    private INotificationSender snsManager;
 
     @InjectMocks
     private PlanetRepository planetRepository;
@@ -140,7 +141,7 @@ public class PlanetRepositoryTest {
 
         @Test
         @DisplayName("Deve buscar por id, encontrar e deletar com sucesso o MongoPlanet.")
-        void successful() {
+        void successful() throws JsonProcessingException {
             Criteria criteria = where(FIELD_ID).is(FAKE_ID);
 
             when(mongoTemplate.findById(FAKE_ID, MongoPlanet.class)).thenReturn(DomainUtils.getRandomMongoPlanet());
@@ -148,8 +149,8 @@ public class PlanetRepositoryTest {
 
             planetRepository.deleteById(FAKE_ID);
             verify(mongoTemplate, times(1)).remove(query(criteria), MongoPlanet.class);
-            verify(sqsManager, times(1)).sendDeleteMessage(anyString());
-            verify(snsManager, times(1)).sendDeleteNotification(anyString());
+            verify(sqsManager, times(1)).sendMessage(anyString());
+            verify(snsManager, times(1)).sendNotification(anyString(), anyString());
         }
 
         @Test

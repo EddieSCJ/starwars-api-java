@@ -1,7 +1,7 @@
 package com.api.starwars.planets.handler;
 
-import com.api.starwars.commons.log.LoggerUtils;
-import com.api.starwars.commons.response.PageResponse;
+import com.api.starwars.common.response.PageResponse;
+import com.api.starwars.pkg.log.LoggerUtils;
 import com.api.starwars.planets.handler.interfaces.IPlanetService;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.view.PlanetJson;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import static com.api.starwars.planets.enums.OperationsEnum.*;
+import static com.api.starwars.planets.model.enums.OperationsEnum.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 

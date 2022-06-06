@@ -1,12 +1,15 @@
 package com.api.starwars.planets.storage;
 
-import com.api.starwars.commons.exceptions.http.HttpInternalServerErrorException;
-import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
+import com.api.starwars.common.exceptions.http.HttpInternalServerErrorException;
+import com.api.starwars.common.exceptions.http.HttpNotFoundException;
+import com.api.starwars.planets.model.domain.Event;
 import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
+import com.api.starwars.planets.model.view.EventJson;
 import com.api.starwars.planets.services.interfaces.IPlanetRepository;
-import com.api.starwars.planets.storage.interfaces.ISNSManager;
-import com.api.starwars.planets.storage.interfaces.ISQSManager;
+import com.api.starwars.planets.storage.interfaces.IMessageSender;
+import com.api.starwars.planets.storage.interfaces.INotificationSender;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.client.result.DeleteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +34,18 @@ public class PlanetRepository implements IPlanetRepository {
 
     @Qualifier("mongoTemplate")
     private final MongoTemplate mongoTemplate;
-    private final ISQSManager sqsManager;
-    private final ISNSManager snsManager;
+    private final IMessageSender sqsManager;
+    private final IMessageSender kafkaManager;
+    private final INotificationSender snsManager;
 
     @Autowired
-    public PlanetRepository(MongoTemplate mongoTemplate, ISQSManager sqsManager, ISNSManager snsManager) {
+    public PlanetRepository(MongoTemplate mongoTemplate,
+                            @Qualifier("SQSManager") IMessageSender sqsManager,
+                            IMessageSender kafkaManager,
+                            INotificationSender snsManager) {
         this.mongoTemplate = mongoTemplate;
         this.sqsManager = sqsManager;
+        this.kafkaManager = kafkaManager;
         this.snsManager = snsManager;
     }
 
@@ -98,7 +106,7 @@ public class PlanetRepository implements IPlanetRepository {
     public void deleteById(String id) {
         log.info("Iniciando exclusao de planeta no banco pelo id. id: {}.", id);
         Optional<MongoPlanet> mongoPlanet = Optional.ofNullable(mongoTemplate.findById(id, MongoPlanet.class));
-        if(mongoPlanet.isEmpty()) {
+        if (mongoPlanet.isEmpty()) {
             log.info("Nenhum planeta foi deletado por id. id: {}.", id);
             throw new HttpNotFoundException(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id));
         }
@@ -110,9 +118,22 @@ public class PlanetRepository implements IPlanetRepository {
             throw new HttpInternalServerErrorException(format("Nenhum planeta deletado pelo id: {0}.", id));
         }
 
-        sqsManager.sendDeleteMessage(mongoPlanet.get().getName());
-        snsManager.sendDeleteNotification(mongoPlanet.get().getName());
+        this.sendEvents(mongoPlanet.get());
         log.info("Exclusao de planeta no banco pelo id concluida com sucesso. id: {}.", id);
     }
 
+    private void sendEvents(MongoPlanet mongoPlanet) {
+        Event event = new Event("planet", "delete", mongoPlanet.getName());
+        String json;
+
+        try {
+            json = EventJson.fromDomain(event).toJson();
+        } catch (JsonProcessingException exception) {
+            throw new HttpInternalServerErrorException(exception.getMessage());
+        }
+
+        sqsManager.sendMessage(json);
+        kafkaManager.sendMessage(json);
+        snsManager.sendNotification("Planet deletion", json);
+    }
 }

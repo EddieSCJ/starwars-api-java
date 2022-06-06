@@ -1,9 +1,8 @@
 package com.api.starwars.planets.services;
 
-import com.api.starwars.commons.exceptions.http.HttpBadGatewayException;
-import com.api.starwars.commons.exceptions.http.HttpBadRequestException;
-import com.api.starwars.commons.exceptions.http.HttpNotFoundException;
-import com.api.starwars.planets.client.IStarWarsApiClient;
+import com.api.starwars.common.exceptions.http.HttpBadGatewayException;
+import com.api.starwars.common.exceptions.http.HttpBadRequestException;
+import com.api.starwars.common.exceptions.http.HttpNotFoundException;
 import com.api.starwars.planets.handler.interfaces.IPlanetService;
 import com.api.starwars.planets.model.client.MPlanetJson;
 import com.api.starwars.planets.model.client.PlanetResponseJson;
@@ -11,6 +10,7 @@ import com.api.starwars.planets.model.domain.Planet;
 import com.api.starwars.planets.model.mongo.MongoPlanet;
 import com.api.starwars.planets.services.interfaces.IPlanetMongoRepository;
 import com.api.starwars.planets.services.interfaces.IPlanetRepository;
+import com.api.starwars.planets.services.interfaces.IStarWarsApiClient;
 import com.api.starwars.planets.validations.PlanetValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
