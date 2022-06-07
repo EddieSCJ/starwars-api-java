@@ -25,8 +25,8 @@ class SQSManagerTest {
         this.sqsManager.setPlanetDeleteQueueURL("testUrl");
     }
 
-    @DisplayName("Send delete messages should work well")
     @Test
+    @DisplayName("Send sqs messages should work well")
     void TestSendDeleteMessageSuccessful() {
         sqsManager.sendMessage("testando");
         verify(queueMessagingTemplate, times(1)).convertAndSend(anyString(), any(), anyMap());

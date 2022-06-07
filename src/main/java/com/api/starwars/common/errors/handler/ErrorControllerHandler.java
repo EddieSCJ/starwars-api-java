@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.RequestDispatcher;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ErrorControllerHandler implements ErrorController {
 
-    @RequestMapping("/resource-error")
+    @RequestMapping(path = "/resource-error",  method = {RequestMethod.GET, RequestMethod.POST})
     public String handleError(HttpServletRequest request) throws NoHandlerFoundException, HttpInternalServerErrorException {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
