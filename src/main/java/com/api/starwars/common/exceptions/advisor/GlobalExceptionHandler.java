@@ -21,7 +21,7 @@ import org.springframework.web.client.HttpClientErrorException.NotFound;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import static com.api.starwars.pkg.helpers.MessageSourceHelper.getApiErrorMessage;
+import static com.api.starwars.infra.helpers.MessageSourceHelper.getApiErrorMessage;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)

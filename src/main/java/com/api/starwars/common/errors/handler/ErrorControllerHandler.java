@@ -1,7 +1,7 @@
 package com.api.starwars.common.errors.handler;
 
 import com.api.starwars.common.exceptions.http.HttpInternalServerErrorException;
-import com.api.starwars.pkg.helpers.MessageSourceHelper;
+import com.api.starwars.infra.helpers.MessageSourceHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpHeaders;

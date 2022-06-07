@@ -1,7 +1,7 @@
 package com.api.starwars.common.validations;
 
 import com.api.starwars.common.exceptions.http.HttpInternalServerErrorException;
-import com.api.starwars.pkg.helpers.MessageSourceHelper;
+import com.api.starwars.infra.helpers.MessageSourceHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
