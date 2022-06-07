@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.6.8'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.8'
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.8'
+    implementation 'org.springframework.kafka:spring-kafka:2.8.6'
 
     /* Spring Cloud */
     implementation('org.springframework.cloud:spring-cloud-context:3.1.3')

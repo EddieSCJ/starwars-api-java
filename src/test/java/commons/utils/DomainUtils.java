@@ -1,10 +1,10 @@
 package commons.utils;
 
-import com.api.starwars.planets.model.client.MPlanetJson;
-import com.api.starwars.planets.model.client.PlanetResponseJson;
-import com.api.starwars.planets.model.domain.Planet;
-import com.api.starwars.planets.model.mongo.MongoPlanet;
-import com.api.starwars.planets.model.view.PlanetJson;
+import com.api.starwars.planets.app.storage.mongo.model.MongoPlanet;
+import com.api.starwars.planets.domain.model.Planet;
+import com.api.starwars.planets.domain.model.client.PlanetJson;
+import com.api.starwars.planets.domain.model.client.PlanetResponseJson;
+import com.api.starwars.planets.domain.model.view.PlanetView;
 import com.github.javafaker.Faker;
 import org.bson.types.ObjectId;
 
@@ -76,7 +76,7 @@ public class DomainUtils {
                 .concat(",")
                 .concat(FAKER.country().name());
 
-        MPlanetJson mPlanetJson = new MPlanetJson(
+        PlanetJson planetJson = new PlanetJson(
                 FAKER.pokemon().name(),
                 weathers,
                 terrain,
@@ -84,7 +84,7 @@ public class DomainUtils {
         );
 
         PlanetResponseJson planetResponseJson = new PlanetResponseJson();
-        List<MPlanetJson> planets = List.of(mPlanetJson);
+        List<PlanetJson> planets = List.of(planetJson);
 
         planetResponseJson.setResults(planets);
         planetResponseJson.setCount(1);
@@ -100,11 +100,11 @@ public class DomainUtils {
         return planetResponseJson;
     }
 
-    public static PlanetJson getRandomPlanetJson() {
+    public static PlanetView getRandomPlanetJson() {
         String[] weathers = new String[]{FAKER.weather().description(), FAKER.weather().description()};
         String[] terrain = new String[]{FAKER.country().name(), FAKER.country().name()};
 
-        return new PlanetJson(
+        return new PlanetView(
           FAKER.idNumber().toString(),
           FAKER.pokemon().name(),
           weathers,
@@ -114,8 +114,8 @@ public class DomainUtils {
         );
     }
 
-    public static PlanetJson getInvalidPlanetJson() {
-        return new PlanetJson(
+    public static PlanetView getInvalidPlanetJson() {
+        return new PlanetView(
                 null,
                 null,
                 null,

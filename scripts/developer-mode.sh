@@ -23,7 +23,8 @@ export ENV=ENV
 export API_PORT=8080
 export PROFILE=dev
 export MONGO_AUTH_SOURCE=admin
+export KAFKA_BOOTSTRAP_ADDRESS=localhost:9093
 
-./gradlew bootJar -t & ./gradlew bootrun && fg
-
+./gradlew build -x test --info
+java -jar ./build/libs/starwars.jar
 

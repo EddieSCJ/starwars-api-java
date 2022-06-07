@@ -1,8 +1,8 @@
 package com.api.starwars.auth.jwt;
 
-import com.api.starwars.auth.jwt.model.domain.ApplicationUser;
-import com.api.starwars.auth.jwt.model.mongo.MongoUser;
-import com.api.starwars.auth.jwt.service.interfaces.ApplicationUserRepository;
+import com.api.starwars.auth.jwt.app.storage.mongo.ApplicationUserRepository;
+import com.api.starwars.auth.jwt.app.storage.mongo.model.MongoUser;
+import com.api.starwars.auth.jwt.domain.ApplicationUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import commons.base.AbstractIntegrationTest;
