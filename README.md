@@ -19,7 +19,7 @@
 
 #### <p align="center"> Ecosystem </p>
 
-<img width="1360" alt="Star Wars API" src="https://user-images.githubusercontent.com/47372251/172535874-a6b2194c-95ea-4b0e-a940-f8eaa35d8d4c.png">
+<img width="1856" alt="Star Wars API" src="https://user-images.githubusercontent.com/47372251/172541967-601f0421-dc29-4fdd-85c1-4df6d356385c.png">
 
 #### <p align="center"> Description </p>
 
