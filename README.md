@@ -16,6 +16,11 @@
     <a href="https://docs.docker.com/get-docker/" target="_blank"> <img width="13" src="https://raw.githubusercontent.com/davzoku/emoji.ico/master/devicon/mongodb-original.ico"> MongoDB </a>
 </div>
 
+
+#### <p align="center"> Ecosystem </p>
+
+<img width="1360" alt="Star Wars API" src="https://user-images.githubusercontent.com/47372251/172535874-a6b2194c-95ea-4b0e-a940-f8eaa35d8d4c.png">
+
 #### <p align="center"> Description </p>
 
 This api is a simple wrapper for the [Star Wars API](https://swapi.dev/) where you can get information about the characters,
