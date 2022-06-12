@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @Getter
-public class HttpBadRequestException extends RuntimeException {
-    public static final Integer HTTP_STATUS_CODE = HttpStatus.NOT_FOUND.value();
+public class BadGatewayError extends RuntimeException {
+    public static final Integer HTTP_STATUS_CODE = HttpStatus.BAD_GATEWAY.value();
     private final List<String> errors;
 
-    public HttpBadRequestException(List<String> errors) {
+    public BadGatewayError(List<String> errors) {
         this.errors = errors;
     }
 }

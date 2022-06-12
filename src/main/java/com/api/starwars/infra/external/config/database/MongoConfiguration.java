@@ -1,35 +1,23 @@
 package com.api.starwars.infra.external.config.database;
 
-import com.mongodb.*;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClients;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.SpringDataMongoDB;
-import org.springframework.data.mongodb.core.MongoDatabaseFactorySupport;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.mongodb.ReadPreference.primary;
-import static com.mongodb.ReadPreference.secondaryPreferred;
 
 @Slf4j
 @Configuration
 @RefreshScope
 public class MongoConfiguration {
-
-    @Value("${spring.data.mongodb.readPreferenceTags:}")
-    private String readPreferenceTags;
 
     @Value("${spring.data.mongodb.username:}")
     private String username;
@@ -71,54 +59,54 @@ public class MongoConfiguration {
                 .applyConnectionString(new ConnectionString(completeUri)).build();
         return MongoClients.create(settings, SpringDataMongoDB.driverInformation());
     }
-
-    @Bean
-    @RefreshScope
-    public MongoDatabaseFactorySupport<?> databaseFactory(MongoClient client, MongoProperties properties) {
-        log.info("Refreshing MongoDatabaseFactory");
-        return new SimpleMongoClientDatabaseFactory(client, properties.getMongoClientDatabase());
-    }
-
-    @Bean(name = "primaryMongoReadNode")
-    @RefreshScope
-    public MongoTemplate primaryMongoReadNode(MongoDatabaseFactory mongoDatabaseFactory) {
-        log.info("Refreshing PrimaryMongoReadNode");
-
-        MongoTemplate mongoTemplate = new MongoTemplate(mongoDatabaseFactory);
-        mongoTemplate.setReadPreference(primary());
-        return mongoTemplate;
-    }
-
-    @Bean(name = "mongoTemplate")
-    @RefreshScope
-    public MongoTemplate mongoTemplate(MongoDatabaseFactory databaseFactory) {
-        log.info("Refresh MongoTemplate");
-
-        MongoTemplate template = new MongoTemplate(databaseFactory);
-        template.setReadPreference(getReadPreferenceConfig());
-
-        return template;
-    }
-
-    private ReadPreference getReadPreferenceConfig() {
-        TagSet tags = getReadPreferenceTags();
-        return tags == null
-                ? secondaryPreferred()
-                : secondaryPreferred(tags);
-    }
-
-    private TagSet getReadPreferenceTags() {
-        if (StringUtils.isEmpty(readPreferenceTags)) {
-            return null;
-        }
-
-        String[] readPreferenceTags = this.readPreferenceTags.split(",");
-
-        List<Tag> tags = Arrays.stream(readPreferenceTags)
-                .map(tag -> tag.split("#"))
-                .map(splattedTag -> new Tag(splattedTag[0], splattedTag[1]))
-                .toList();
-
-        return new TagSet(tags);
-    }
 }
+//    @Bean
+//    @RefreshScope
+//    public MongoDatabaseFactorySupport<?> databaseFactory(MongoClient client, MongoProperties properties) {
+//        log.info("Refreshing MongoDatabaseFactory");
+//        return new SimpleMongoClientDatabaseFactory(client, properties.getMongoClientDatabase());
+//    }
+//
+//    @Bean(name = "primaryMongoReadNode")
+//    @RefreshScope
+//    public MongoTemplate primaryMongoReadNode(MongoDatabaseFactory mongoDatabaseFactory) {
+//        log.info("Refreshing PrimaryMongoReadNode");
+//
+//        MongoTemplate mongoTemplate = new MongoTemplate(mongoDatabaseFactory);
+//        mongoTemplate.setReadPreference(primary());
+//        return mongoTemplate;
+//    }
+//
+//    @Bean(name = "mongoTemplate")
+//    @RefreshScope
+//    public MongoTemplate mongoTemplate(MongoDatabaseFactory databaseFactory) {
+//        log.info("Refresh MongoTemplate");
+//
+//        MongoTemplate template = new MongoTemplate(databaseFactory);
+//        template.setReadPreference(getReadPreferenceConfig());
+//
+//        return template;
+//    }
+//
+//    private ReadPreference getReadPreferenceConfig() {
+//        TagSet tags = getReadPreferenceTags();
+//        return tags == null
+//                ? secondaryPreferred()
+//                : secondaryPreferred(tags);
+//    }
+//
+//    private TagSet getReadPreferenceTags() {
+//        if (StringUtils.isEmpty(readPreferenceTags)) {
+//            return null;
+//        }
+//
+//        String[] readPreferenceTags = this.readPreferenceTags.split(",");
+//
+//        List<Tag> tags = Arrays.stream(readPreferenceTags)
+//                .map(tag -> tag.split("#"))
+//                .map(splattedTag -> new Tag(splattedTag[0], splattedTag[1]))
+//                .toList();
+//
+//        return new TagSet(tags);
+//    }
+//}

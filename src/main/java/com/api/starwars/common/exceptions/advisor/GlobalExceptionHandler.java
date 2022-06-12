@@ -1,8 +1,9 @@
 package com.api.starwars.common.exceptions.advisor;
 
-import com.api.starwars.common.exceptions.http.HttpBadRequestException;
-import com.api.starwars.common.exceptions.http.HttpNotFoundException;
-import com.api.starwars.common.exceptions.http.HttpUnauthorizedException;
+import com.api.starwars.common.exceptions.http.BadRequestError;
+import com.api.starwars.common.exceptions.http.ConflictError;
+import com.api.starwars.common.exceptions.http.NotFoundError;
+import com.api.starwars.common.exceptions.http.UnauthorizedError;
 import com.api.starwars.common.exceptions.view.BadRequestExceptionResponseJson;
 import com.api.starwars.common.exceptions.view.BaseExceptionResponseJson;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +14,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -30,23 +30,32 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     @ApiResponse(responseCode = "500", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
     public ResponseEntity<BaseExceptionResponseJson> handleGenericException(Exception ex) {
-        BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), getApiErrorMessage("internal_server_error"));
-
+        BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
-    @ExceptionHandler({HttpBadRequestException.class})
+    @ExceptionHandler({BadRequestError.class})
     @ApiResponse(responseCode = "400", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BadRequestExceptionResponseJson.class)))
-    public ResponseEntity<BadRequestExceptionResponseJson> handleBadRequest(HttpBadRequestException exception) {
+    public ResponseEntity<BadRequestExceptionResponseJson> handleBadRequest(BadRequestError exception) {
         BadRequestExceptionResponseJson response = new BadRequestExceptionResponseJson(HttpStatus.BAD_REQUEST.value(), getApiErrorMessage("bad_request"), exception.getErrors());
 
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
-    @ExceptionHandler({HttpNotFoundException.class, NotFound.class})
+    @ExceptionHandler({UnauthorizedError.class,
+//            AccessDeniedException.class
+    })
+    @ApiResponse(responseCode = "401", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
+    public ResponseEntity<BaseExceptionResponseJson> handleUnauthorizedException(Exception ex) {
+        BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+
+        return ResponseEntity.status(response.getHttpStatusCode()).body(response);
+    }
+
+    @ExceptionHandler({NotFoundError.class, NotFound.class})
     @ApiResponse(responseCode = "404", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
     public ResponseEntity<BaseExceptionResponseJson> handleNotFoundException(Exception ex) {
-        BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpNotFoundException.HTTP_STATUS_CODE, ex.getMessage());
+        BaseExceptionResponseJson response = new BaseExceptionResponseJson(NotFoundError.HTTP_STATUS_CODE, ex.getMessage());
 
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
@@ -67,10 +76,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }
 
-    @ExceptionHandler({HttpUnauthorizedException.class, AccessDeniedException.class})
-    @ApiResponse(responseCode = "401", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
-    public ResponseEntity<BaseExceptionResponseJson> handleUnauthorizedException(Exception ex) {
-        BaseExceptionResponseJson response = new BaseExceptionResponseJson(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+    @ExceptionHandler({ConflictError.class})
+    @ApiResponse(responseCode = "409", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseExceptionResponseJson.class)))
+    public ResponseEntity<BaseExceptionResponseJson> handleConflictException(ConflictError ex) {
+        BaseExceptionResponseJson response = new BaseExceptionResponseJson(ConflictError.HTTP_STATUS_CODE, ex.getMessage());
 
         return ResponseEntity.status(response.getHttpStatusCode()).body(response);
     }

@@ -1,26 +1,23 @@
 package com.api.starwars.planets.app.storage.mongo;
 
-import com.api.starwars.common.exceptions.http.HttpInternalServerErrorException;
-import com.api.starwars.common.exceptions.http.HttpNotFoundException;
+import com.api.starwars.common.exceptions.http.InternalServerError;
 import com.api.starwars.planets.app.storage.mongo.model.MongoPlanet;
-import com.api.starwars.planets.domain.message.MessageSender;
-import com.api.starwars.planets.domain.message.NotificationSender;
 import com.api.starwars.planets.domain.model.Planet;
 import com.api.starwars.planets.domain.model.event.Event;
+import com.api.starwars.planets.domain.model.event.EventEnum;
 import com.api.starwars.planets.domain.model.view.EventView;
 import com.api.starwars.planets.domain.storage.PlanetStorage;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.client.result.DeleteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import static com.api.starwars.planets.app.storage.mongo.model.Constants.FIELD_ID;
 import static com.api.starwars.planets.app.storage.mongo.model.Constants.FIELD_NAME;
@@ -33,107 +30,101 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 public class MongoStorage implements PlanetStorage {
 
     @Qualifier("mongoTemplate")
-    private final MongoTemplate mongoTemplate;
-    private final MessageSender sqsManager;
-    private final MessageSender kafkaManager;
-    private final NotificationSender snsManager;
+    private final ReactiveMongoTemplate mongoTemplate;
+//    private final MessageSender sqsManager;
+//    private final MessageSender kafkaManager;
+//    private final NotificationSender snsManager;
 
     @Autowired
-    public MongoStorage(MongoTemplate mongoTemplate,
-                        @Qualifier("SQSManager") MessageSender sqsManager,
-                        MessageSender kafkaManager,
-                        NotificationSender snsManager) {
+    public MongoStorage(ReactiveMongoTemplate mongoTemplate
+//                        @Qualifier("SQSManager") MessageSender sqsManager,
+//                        MessageSender kafkaManager,
+//                        NotificationSender snsManager
+    ) {
         this.mongoTemplate = mongoTemplate;
-        this.sqsManager = sqsManager;
-        this.kafkaManager = kafkaManager;
-        this.snsManager = snsManager;
+//        this.sqsManager = sqsManager;
+//        this.kafkaManager = kafkaManager;
+//        this.snsManager = snsManager;
     }
 
-    public Long count() {
+    public Mono<Long> count() {
         log.info("Iniciando contagem de planetas no banco.");
-        Criteria criteria = where(FIELD_ID).exists(true);
-        Long count = mongoTemplate.count(query(criteria), MongoPlanet.class);
+        Mono<Long> count = mongoTemplate
+                .estimatedCount(MongoPlanet.class)
+                .doOnNext(counter -> log.info("Contagem de planetas no banco concluida com sucesso. planetas: {}.", counter));
 
-        log.info("Contagem de planetas no banco concluida com sucesso. planetas: {}.", count);
         return count;
     }
 
     @Override
-    public Optional<Planet> findById(String id) {
+    public Mono<Planet> findById(String id) {
         log.info("Iniciando busca de planeta no banco pelo id. id: {}.", id);
-        Criteria criteria = where(FIELD_ID).is(id);
-        Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findById(id, MongoPlanet.class));
 
-        if (planet.isEmpty()) {
-            log.info("Busca de planeta no banco pelo id concluída com sucesso. id: {}. Planeta nao encontrado.", id);
-            throw new HttpNotFoundException(format("Nenhum planeta com id {0} foi encontrado.", id));
-        }
-
-        log.info("Busca de planeta no banco pelo id concluida com sucesso. id: {}.", id);
-        return planet.map(MongoPlanet::toDomain);
+        Mono<Planet> planet = mongoTemplate
+                .findById(id, MongoPlanet.class)
+                .doOnSuccess(p -> log.info("Planeta encontrado no banco. id: {}.", id))
+                .flatMap(mongoPlanet -> Mono.just(mongoPlanet.toDomain()))
+                .doOnSuccess(p -> log.info("Busca de planeta no banco pelo id concluida com sucesso. id: {}.", id));
+        return planet;
     }
 
     @Override
-    public Optional<Planet> findByName(String name) {
+    public Mono<Planet> findByName(String name) {
         log.info("Iniciando busca de planeta no banco pelo nome. name: {}.", name);
         Criteria lowercase = where(FIELD_NAME).is(name.toLowerCase());
         Criteria uppercase = where(FIELD_NAME).is(name.toUpperCase());
         Criteria capitalized = where(FIELD_NAME).is(StringUtils.capitalize(name));
-
         Criteria criteria = new Criteria().orOperator(lowercase, uppercase, capitalized);
-        Optional<MongoPlanet> planet = Optional.ofNullable(mongoTemplate.findOne(query(criteria), MongoPlanet.class));
 
-        if (planet.isEmpty()) {
-            log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}. Planeta nao encontrado.", name);
-            throw new HttpNotFoundException(format("Nenhum planeta com nome {0} foi encontrado.", name));
-        }
+        Mono<Planet> planet = mongoTemplate
+                .findOne(query(criteria), MongoPlanet.class)
+                .doOnSuccess(p -> log.info("Planeta encontrado no banco. name: {}.", name))
+                .flatMap(mongoPlanet -> Mono.just(mongoPlanet.toDomain()))
+                .doOnSuccess(p -> log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}.", name));
 
-        log.info("Busca de planeta no banco pelo nome concluida com sucesso. name: {}.", name);
-        return planet.map(MongoPlanet::toDomain);
+        return planet;
     }
 
     @Override
-    public Planet save(Planet planet) {
-        log.info("Iniciando criacao planeta no banco. name: {}.", planet.name());
-        MongoPlanet mongoPlanet = MongoPlanet.fromDomain(planet);
-        MongoPlanet savedMongoPlanet = mongoTemplate.save(mongoPlanet);
-
-        log.info("Criacao planeta no banco concluida com sucesso. id: {}. name: {}.", planet.id(), planet.name());
-        return savedMongoPlanet.toDomain();
+    public Mono<Planet> save(Mono<Planet> planet) {
+        Mono<MongoPlanet> mongoPlanet = planet.as(planetMono -> planetMono.map(MongoPlanet::fromDomain));
+        return mongoTemplate
+                .save(mongoPlanet)
+                .map(MongoPlanet::toDomain)
+                .doOnSuccess(p -> log.info("Planeta salvo no banco. id: {}.", p.id()));
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public Mono<Planet> deleteById(String id) {
         log.info("Iniciando exclusao de planeta no banco pelo id. id: {}.", id);
-        Optional<MongoPlanet> mongoPlanet = Optional.ofNullable(mongoTemplate.findById(id, MongoPlanet.class));
-        if (mongoPlanet.isEmpty()) {
-            log.info("Nenhum planeta foi deletado por id. id: {}.", id);
-            throw new HttpNotFoundException(format("Nenhum planeta foi encontrado para ser deletado pelo id: {0}.", id));
-        }
-
         Criteria criteria = where(FIELD_ID).is(id);
-        DeleteResult deleteResult = mongoTemplate.remove(query(criteria), MongoPlanet.class);
-        if (deleteResult.getDeletedCount() == 0) {
-            log.info("Nenhum planeta foi deletado por id. id: {}.", id);
-            throw new HttpInternalServerErrorException(format("Nenhum planeta deletado pelo id: {0}.", id));
-        }
 
-        this.sendEvents(mongoPlanet.get());
-        log.info("Exclusao de planeta no banco pelo id concluida com sucesso. id: {}.", id);
+        return this.findById(id)
+                .switchIfEmpty(Mono.error(new InternalServerError(format("Planeta não encontrado para ser deletado. id: {0}.", id))))
+                .zipWhen(p -> mongoTemplate.remove(query(criteria), MongoPlanet.class))
+                .doOnSuccess(tuple -> {
+                    if(tuple.getT2().getDeletedCount() == 0) {
+                        log.error("Nenhum planeta foi excluido. id: {}.", id);
+                        throw new InternalServerError(format("Nenhum planeta foi excluido. id: {0}.", id));
+                    }
+
+                    this.sendEvents(tuple.getT1(), EventEnum.DELETE);
+                })
+                .map(Tuple2::getT1);
     }
 
-    private void sendEvents(MongoPlanet mongoPlanet) {
-        Event event = new Event("planet", "delete", mongoPlanet.getName());
+    private void sendEvents(Planet planet, EventEnum eventEnum) {
+        Event event = new Event("planet", eventEnum, planet.name());
         String json;
-
+        log.info("sent event ahahaahaaahaha 11213");
         try {
             json = EventView.fromDomain(event).toJson();
         } catch (JsonProcessingException exception) {
-            throw new HttpInternalServerErrorException(exception.getMessage());
+            throw new InternalServerError(exception.getMessage());
         }
 
-        sqsManager.sendMessage(json);
-        kafkaManager.sendMessage(json);
-        snsManager.sendNotification("Planet deletion", json);
+//        sqsManager.sendMessage(json);
+//        kafkaManager.sendMessage(json);
+//        snsManager.sendNotification("Planet deletion", json);
     }
 }

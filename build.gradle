@@ -26,28 +26,33 @@ bootRun {
 dependencies {
 
     /* Spring Boot */
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.3'
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.8'
-    implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.6.8'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.8'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.8'
-    implementation 'org.springframework.kafka:spring-kafka:2.8.6'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.0'
+
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.8'
+//    implementation 'org.springframework.kafka:spring-kafka:2.8.6'
+
+    /* Feign */
+    implementation "com.playtika.reactivefeign:feign-reactor-core:3.2.1"
+    implementation "com.playtika.reactivefeign:feign-reactor-spring-configuration:3.2.1"
+    implementation "com.playtika.reactivefeign:feign-reactor-webclient:3.2.1"
 
     /* Spring Cloud */
-    implementation('org.springframework.cloud:spring-cloud-context:3.1.3')
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE'
+//    implementation('org.springframework.cloud:spring-cloud-context:3.1.3')
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE'
     
     /* Security */
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.8'
-    implementation 'org.springframework.security:spring-security-web:5.6.4'
+//    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.8'
+//    implementation 'org.springframework.security:spring-security-web:5.6.4'
     implementation 'com.auth0:java-jwt:3.19.2'
 
     /* AWS */
-    implementation 'com.amazonaws:aws-java-sdk:1.12.228'
+    implementation 'com.amazonaws:aws-java-sdk:1.12.237'
 
     /* Database */
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.7.0'
-    implementation 'org.springframework.data:spring-data-mongodb:3.3.4'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive:2.7.0'
 
     /* Docs*/
     implementation('org.springdoc:springdoc-openapi-ui:1.6.9')
@@ -61,11 +66,9 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
 
     /* Testing */
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.8'
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.5'
-    implementation 'org.springframework.security:spring-security-test:5.6.4'
-    testImplementation 'org.testcontainers:testcontainers:1.17.1'
-    testImplementation 'org.testcontainers:junit-jupiter:1.17.1'
+//    testImplementation 'org.springframework.security:spring-security-test:5.6.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'io.projectreactor:reactor-test:3.4.18'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'org.mockito:mockito-inline:4.5.1'
 }

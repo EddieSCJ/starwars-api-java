@@ -3,11 +3,13 @@ package com.api.starwars.planets.domain.model.client;
 import com.api.starwars.planets.domain.model.Planet;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PlanetJson {
     private String name;
     private String climate;

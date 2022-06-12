@@ -1,6 +1,6 @@
 package com.api.starwars.common.errors.handler;
 
-import com.api.starwars.common.exceptions.http.HttpInternalServerErrorException;
+import com.api.starwars.common.exceptions.http.InternalServerError;
 import com.api.starwars.infra.helpers.MessageSourceHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ErrorControllerHandler implements ErrorController {
 
     @RequestMapping(path = "/resource-error",  method = {RequestMethod.GET, RequestMethod.POST})
-    public String handleError(HttpServletRequest request) throws NoHandlerFoundException, HttpInternalServerErrorException {
+    public String handleError(HttpServletRequest request) throws NoHandlerFoundException, InternalServerError {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (status != null) {
@@ -30,6 +30,6 @@ public class ErrorControllerHandler implements ErrorController {
             }
         }
 
-        throw new HttpInternalServerErrorException(MessageSourceHelper.getApiErrorMessage("internal_server_error"));
+        throw new InternalServerError(MessageSourceHelper.getApiErrorMessage("internal_server_error"));
     }
 }

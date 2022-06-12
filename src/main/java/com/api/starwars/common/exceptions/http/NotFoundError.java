@@ -4,11 +4,8 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class HttpNotFoundException extends RuntimeException {
+public class NotFoundError extends RuntimeException {
     public static final Integer HTTP_STATUS_CODE = HttpStatus.NOT_FOUND.value();
-    private final String message;
 
-    public HttpNotFoundException(String message) {
-        this.message = message;
-    }
+    public NotFoundError(String message) { super(message); }
 }

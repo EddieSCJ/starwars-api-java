@@ -1,6 +1,7 @@
 package com.api.starwars.planets.domain.model.view;
 
 import com.api.starwars.planets.domain.model.event.Event;
+import com.api.starwars.planets.domain.model.event.EventEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EventView {
     private final String type;
-    private final String event;
+    private final EventEnum event;
     private final String message;
 
     public static EventView fromDomain(Event event) {

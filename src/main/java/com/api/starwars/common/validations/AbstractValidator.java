@@ -1,6 +1,6 @@
 package com.api.starwars.common.validations;
 
-import com.api.starwars.common.exceptions.http.HttpInternalServerErrorException;
+import com.api.starwars.common.exceptions.http.InternalServerError;
 import com.api.starwars.infra.helpers.MessageSourceHelper;
 
 import java.lang.reflect.Field;
@@ -23,7 +23,7 @@ public abstract class AbstractValidator {
                 callGenericValidators(field, generic);
             }
         } catch (IllegalAccessException exception) {
-            throw new HttpInternalServerErrorException("Ocorre um erro ao fazer validacao dos campos.");
+            throw new InternalServerError("Ocorre um erro ao fazer validacao dos campos.");
         }
 
         return validationMessages;

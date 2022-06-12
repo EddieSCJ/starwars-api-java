@@ -4,10 +4,10 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class HttpInternalServerErrorException extends RuntimeException {
+public class InternalServerError extends RuntimeException {
     public static final Integer HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
-    public HttpInternalServerErrorException(String message) {
+    public InternalServerError(String message) {
         super(message);
     }
 }

@@ -2,24 +2,21 @@ package com.api.starwars.planets.domain.operations;
 
 
 import com.api.starwars.planets.domain.model.Planet;
-import org.springframework.data.domain.Page;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface PlanetOperations {
 
-    Page<Planet> findAll(Integer page, String order, String direction, Integer size);
+    Flux<Planet> findAll(Integer page, Integer size);
 
-    Planet findById(String id, Long cacheInDays);
+    Mono<Planet> findById(final String id, final Long cacheInDays);
 
-    Planet findByName(String name, Long cacheInDays);
+    Mono<Planet> findByName(final String name, final Long cacheInDays);
 
-    Planet updateById(String id, Planet planet);
+    Mono<Planet> updateById(final String id, final Planet planet);
 
-    Planet save(Planet planet);
+    Mono<Planet> save(final Planet planet);
 
-    List<Planet> saveAll(List<Planet> planets);
-
-    void deleteById(String id);
+    Mono<Planet> deleteById(final String id);
 
 }
